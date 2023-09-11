@@ -3,6 +3,11 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with
 
 ## Getting Started
 
+Requirements
+
+1. yarn >= 1.22.19
+2. Node >= 18.13.0
+
 Install Dependencies
 
 ```
