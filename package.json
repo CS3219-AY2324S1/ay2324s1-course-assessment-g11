@@ -1,18 +1,24 @@
 {
-	"private": true,
-	"workspaces": {
-		"packages": [
-			"services/*",
-			"frontend"
-		],
-		"nohoist": [
-			"**/@prisma/client"
-		]
-	},
-	"devDependencies": {
-		"prisma": "^5.3.1"
-	},
-	"dependencies": {
-		"@prisma/client": "^5.3.1"
-	}
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "services/*",
+      "frontend"
+    ],
+    "nohoist": [
+      "**/@prisma/client"
+    ]
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.22.15",
+    "@babel/core": "^7.22.19",
+    "@babel/preset-env": "^7.22.15",
+    "eslint": "^8.49.0",
+    "nodemon": "^3.0.1",
+    "prisma": "^5.3.1",
+    "shx": "^0.3.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.3.1"
+  }
 }
