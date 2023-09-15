@@ -41,7 +41,7 @@ may use.
 └── README.md (and other root-level files & docs)
 ```
 
-### Getting Started:
+### Getting Started - Local Development:
 
 1. **Installing Dependencies:** From the root directory (`/peerprep`), run:
 
@@ -77,6 +77,16 @@ may use.
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```
+
+### Getting Started - Docker:
+
+1. **Run the start-app.sh script:** From the root repo, run
+
+```bash
+./start-app.sh # on mac / linus
+
+start-app.sh # on windows
+```
 
 # now that your
 
