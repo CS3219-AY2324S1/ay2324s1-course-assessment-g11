@@ -62,7 +62,7 @@ may use.
 3. **Initializing Prisma:** In the root file, run the following:
 
    ```bash
-   npx prisma generate
+   npx prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
 4. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
