@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: deployment/dockerfiles/Dockerfile.user-service
+    ports:
+      - "5000:5000" # Adjust this port mapping according to your service
+
+  frontend:
+    build:
+      context: .
+      dockerfile: deployment/dockerfiles/Dockerfile.frontend
+    ports:
+      - "3000:3000"
