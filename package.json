@@ -1,0 +1,18 @@
+{
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"services/*",
+			"frontend"
+		],
+		"nohoist": [
+			"**/@prisma/client"
+		]
+	},
+	"devDependencies": {
+		"prisma": "^5.3.1"
+	},
+	"dependencies": {
+		"@prisma/client": "^5.3.1"
+	}
+}
