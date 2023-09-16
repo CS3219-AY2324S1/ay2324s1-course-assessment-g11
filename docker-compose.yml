@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.user-service
     ports:
-      - "5001:5001" # Adjust this port mapping according to your service
+      - "5001:5001"
     environment:
       - PORT=5001
 
@@ -15,7 +15,7 @@ services:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.matching-service
     ports:
-      - "5002:5002" # Adjust this port mapping according to your service
+      - "5002:5002"
     environment:
       - PORT=5002
 
@@ -24,7 +24,7 @@ services:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.collaboration-service
     ports:
-      - "5003:5003" # Adjust this port mapping according to your service
+      - "5003:5003"
     environment:
       - PORT=5003
 
@@ -33,7 +33,7 @@ services:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.question-service
     ports:
-      - "5004:5004" # Adjust this port mapping according to your service
+      - "5004:5004"
     environment:
       - PORT=5004
 
