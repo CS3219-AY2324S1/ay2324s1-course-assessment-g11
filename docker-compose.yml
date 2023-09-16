@@ -6,9 +6,9 @@ services:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.user-service
     ports:
-      - "5000:5000" # Adjust this port mapping according to your service
+      - "5001:5001" # Adjust this port mapping according to your service
     environment:
-      - PORT=5000
+      - PORT=5001
 
   frontend:
     build:
