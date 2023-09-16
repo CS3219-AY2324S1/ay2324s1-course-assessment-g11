@@ -1,4 +1,4 @@
-# Use the base image you created above
+# Use the base image
 FROM peerprep-base:latest
 
 # Set working directory
@@ -14,5 +14,5 @@ RUN yarn prisma generate
 # Install dependencies using Yarn Workspaces
 RUN yarn install --cwd /app
 
-# Adjust the CMD if you had one before
+# Run service
 CMD [ "yarn", "workspace", "question-service", "start" ]

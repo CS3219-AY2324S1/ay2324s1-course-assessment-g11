@@ -85,29 +85,30 @@ may use.
 ```bash
 ./start-app.sh # on mac / linus
 
+# or
+
 start-app.sh # on windows
-```
-
-# now that your
-
 ```
 
 ### Notes:
 
 - After setting up Yarn Workspaces, any `node_modules` directories in individual
-services or applications can be safely removed.
+  services or applications can be safely removed.
 - Always ensure thorough testing after adding or updating dependencies to ensure
-all parts of the system function as expected.
+  all parts of the system function as expected.
 
 ### Prisma Notes
 
 Next steps:
 
 1. Set the DATABASE_URL in the .env file to point to your existing database. If
-your database has no tables yet, read https://pris.ly/d/getting-started
+   your database has no tables yet, read https://pris.ly/d/getting-started
 2. Set the provider of the datasource block in schema.prisma to match your
-database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
+   database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
 3. Run prisma db pull to turn your database schema into a Prisma schema.
 4. Run prisma generate to generate the Prisma Client. You can then start
-querying your database.
+   querying your database.
+
+```
+
 ```
