@@ -1,28 +1,35 @@
 const apiDoc = {
-  swagger: '2.0',
-  basePath: '/',
+  openapi: '3.1.0',
   info: {
     title: 'API for user data and match preferences',
     version: '1.0.0'
   },
-  definitions: {
-    User: {
-      type: 'object',
-      properties: {
-        // TODO: Add the match properties
-        uid: {
-          description: 'The uid of the user in Firestore',
-          type: 'string'
-        },
-        displayName: {
-          description: 'The display name of the user in GitHub',
-          type: 'string'
+  components: {
+    schemas: {
+      User: {
+        type: 'object',
+        properties: {
+          displayName: {
+            description: 'The display name of the user in GitHub',
+            type: 'string'
+          },
+          photoUrl: {
+            description: 'The URL of the user\'s GitHub photo',
+            type: 'string'
+          },
+          matchDifficulty: {
+            description: 'The user\'s preferred question difficulty',
+            type: 'integer'
+          },
+          matchProgrammingLanguage: {
+            description: 'The user\'s preferred programming language',
+            type: 'string'
+          }
         }
-      },
-      required: ['uid']
+      }
     }
   },
   paths: {}
 };
 
-export default apiDoc;
+module.exports = apiDoc;

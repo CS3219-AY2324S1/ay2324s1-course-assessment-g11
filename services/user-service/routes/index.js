@@ -13,24 +13,48 @@
 //
 // module.exports = router;
 
-export default function(userDatabase) {
+const routes = function(userDatabaseClient) {
 	let operations = {
 		POST
 	};
 
 	function POST(req, res, next) {
-		// TODO: Actually implement it
-		// res.status(200).json(worldsService.getWorlds(req.query.worldName));
+		userDatabaseClient.createUser(req.body).then(
+			(result) => {
+				if (result === null) {
+					res.status(400).end();
+				} else {
+					res.status(201).json(result);
+				}
+			}
+		).catch((error) => {
+			console.log(error);
+			res.status(500).end();
+		});
 	}
 
 	POST.apiDoc = {
-		summary: 'Creates a new entry for user ',
+		summary: 'Creates a new entry for user',
 		operationId: 'createUserEntry',
 		requestBody: {
 			content: {
 				"application/json": {
 					schema: {
-						$ref: "#/components/schemas/User",
+						allOf: [
+							{
+								$ref: "#/components/schemas/User",
+							},
+							{
+								type: "object",
+								properties: {
+									uid: {
+										description: "The GitHub uid of the user",
+										type: "string"
+									}
+								}
+							}
+						],
+						required: ['uid']
 					},
 				},
 			},
@@ -46,8 +70,16 @@ export default function(userDatabase) {
 					},
 				},
 			},
+			400: {
+				description: "Attempted to create user with uid that is already in the database",
+			},
+			500: {
+				description: "Server encountered an error",
+			},
 		},
 	};
 
 	return operations;
 }
+
+module.exports = routes;

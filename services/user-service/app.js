@@ -1,12 +1,12 @@
-import { initialize } from 'express-openapi';
-import apiDoc from "./routes/api-doc";
+const { initialize } =  require('express-openapi');
+const apiDoc = require("./routes/api-doc");
+const client = require("./db/client");
 
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
-var indexRouter = require('./routes/index');
+const port = 5000;
 
 var app = express();
 
@@ -21,7 +21,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 initialize({
   app,
   apiDoc: apiDoc,
+  dependencies: {
+    userDatabaseClient: client
+  },
   paths: './routes'
 });
 
-module.exports = app;
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
