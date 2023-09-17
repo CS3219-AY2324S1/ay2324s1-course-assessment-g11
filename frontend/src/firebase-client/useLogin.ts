@@ -1,5 +1,3 @@
-"use client";
-
 import { GithubAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";

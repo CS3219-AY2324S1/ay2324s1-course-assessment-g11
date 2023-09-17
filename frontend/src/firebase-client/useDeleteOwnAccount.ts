@@ -1,4 +1,3 @@
-"use client";
 
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
