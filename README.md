@@ -51,7 +51,8 @@ may use.
    or
    ```bash
    yarnpkg install
-   ``` (if you have hadoop yarn installed)
+   ```
+   (if you have hadoop yarn installed)
 
    This command will install dependencies for all services and the frontend in a
    centralized `node_modules` directory at the root.
