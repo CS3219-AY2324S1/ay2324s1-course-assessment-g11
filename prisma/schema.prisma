@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model AppUsers {
+model AppUser {
   uid    String  @id
   displayName  String?
   photoUrl String?

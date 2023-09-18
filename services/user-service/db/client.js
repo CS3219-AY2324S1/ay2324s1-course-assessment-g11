@@ -1,53 +1,56 @@
-const { PrismaClient } = require('@prisma/client');
+const {PrismaClient} = require('@prisma/client');
 
 const prisma = new PrismaClient();
 
-const createUser = async (data) => {
-  const checkUid = data.uid;
-  const isThereExistingUser = await prisma.appUsers.findUnique({
-    where: {
-      uid: checkUid
+const userDatabaseClient = {
+  async createUser(data) {
+    const checkUid = data.uid;
+    const isThereExistingUser = await prisma.appUser.findUnique({
+      where: {
+        uid: checkUid
+      }
+    }).then((user) => {
+      return (user !== null);
+    });
+
+    if (isThereExistingUser) {
+      return null;
     }
-  }).then((user) => {
-    return (user !== null);
-  });
 
-  if (isThereExistingUser) {
-    return null;
+    const newUser = await prisma.appUser.create({
+      data: data
+    });
+
+    return newUser;
+  },
+
+  async getUserByUid(uid) {
+    // Will return null if no such user exists
+    const result = await prisma.appUser.findUnique({
+      where: {
+        uid: uid,
+      },
+    });
+    return result;
+  },
+
+  async updateUserByUid(uid, data) {
+    const updatedResult = await prisma.appUser.update({
+      where: {
+        uid: uid
+      },
+      data: data
+    });
+    return updatedResult;
+  },
+
+  async deleteUserByUid(uid) {
+    await prisma.appUser.delete({
+      where: {
+        uid: uid
+      },
+    });
   }
-
-  const newUser = await prisma.appUsers.create({
-    data: data
-  });
-
-  return newUser;
-}
-const getUserByUid = async (uid) => {
-  // Will return null if no such user exists
-  const result = await prisma.appUsers.findUnique({
-    where: {
-      uid: uid,
-    },
-  });
-  return result;
 }
 
-const updateUserByUid = async (uid, data) => {
-  const updatedResult = await prisma.appUsers.update({
-    where: {
-      uid: uid
-    },
-    data: data
-  });
-  return updatedResult;
-}
-
-const deleteUserByUid = async (uid) => {
-  await prisma.appUsers.delete({
-    where: {
-      uid: uid
-    },
-  });
-}
-
-module.exports = { createUser, getUserByUid, updateUserByUid, deleteUserByUid };
+module.exports=userDatabaseClient;

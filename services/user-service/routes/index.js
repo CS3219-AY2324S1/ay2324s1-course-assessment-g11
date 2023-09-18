@@ -1,24 +1,10 @@
-// var db = require("../db/index.js");
-//
-// var express = require("express");
-// var router = express.Router();
-//
-// const { PrismaClient } = require("@prisma/client");
-// const prisma = new PrismaClient();
-//
-// router.get("/", async (req, res, next) => {
-// 	const result = await db.query("SELECT * FROM users.users;");
-// 	res.json(result);
-// });
-//
-// module.exports = router;
-
 const routes = function(userDatabaseClient) {
 	let operations = {
 		POST
 	};
 
 	function POST(req, res, next) {
+		console.log(req);
 		userDatabaseClient.createUser(req.body).then(
 			(result) => {
 				if (result === null) {
@@ -36,38 +22,35 @@ const routes = function(userDatabaseClient) {
 	POST.apiDoc = {
 		summary: 'Creates a new entry for user',
 		operationId: 'createUserEntry',
-		requestBody: {
-			content: {
-				"application/json": {
-					schema: {
-						allOf: [
-							{
-								$ref: "#/components/schemas/User",
-							},
-							{
-								type: "object",
-								properties: {
-									uid: {
-										description: "The GitHub uid of the user",
-										type: "string"
-									}
+		parameters: [
+			{
+				in: 'body',
+				name: "userData",
+				required: true,
+				schema: {
+					allOf: [
+						{
+							$ref: "#/definitions/User",
+						},
+						{
+							type: "object",
+							properties: {
+								uid: {
+									description: "The GitHub uid of the user",
+									type: "string"
 								}
 							}
-						],
-						required: ['uid']
-					},
-				},
-			},
-		},
+						}
+					],
+					required: ['uid']
+				}
+			}
+		],
 		responses: {
 			201: {
 				description: "Newly created user",
-				content: {
-					"application/json": {
-						schema: {
-							$ref: "#/components/schemas/User",
-						},
-					},
+				schema: {
+					$ref: "#/definitions/User",
 				},
 			},
 			400: {
@@ -82,4 +65,4 @@ const routes = function(userDatabaseClient) {
 	return operations;
 }
 
-module.exports = routes;
+module.exports=routes;

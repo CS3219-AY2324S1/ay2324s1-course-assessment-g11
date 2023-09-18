@@ -57,29 +57,21 @@ const routes = function(userDatabaseClient) {
         in: 'path',
         name: 'uid',
         required: true,
-        schema: {
-          type: "string"
-        }
+        type: "string"
       }
     ],
     responses: {
       200: {
         description: "The user matching the GitHub uid",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/User",
-            },
-          },
+        schema: {
+          $ref: "#/definitions/User",
         },
       },
       404: {
         description: "No user with the uid was found in the database",
-        content: {}
       },
       500: {
         description: "Server encountered an error",
-        content: {}
       }
     },
   };
@@ -92,38 +84,29 @@ const routes = function(userDatabaseClient) {
         in: 'path',
         name: 'uid',
         required: true,
+        type: "string"
+      },
+      {
+        in: 'body',
+        name: "userData",
+        required: true,
         schema: {
-          type: "string"
+          $ref: "#/definitions/User",
         }
       }
     ],
-    requestBody: {
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/User",
-          },
-        },
-      },
-    },
     responses: {
       200: {
         description: "User updated successfully",
-        content: {
-          "application/json": {
-            schema: {
-              $ref: "#/components/schemas/User",
-            },
-          },
+        schema: {
+          $ref: "#/definitions/User",
         },
       },
       404: {
         description: "No user with the uid was found in the database",
-        content: {}
       },
       500: {
         description: "Server encountered an error",
-        content: {}
       },
     },
   };
@@ -136,32 +119,18 @@ const routes = function(userDatabaseClient) {
         in: 'path',
         name: 'uid',
         required: true,
-        schema: {
-          type: "string"
-        }
+        type: "string"
       }
     ],
-    requestBody: {
-      content: {
-        "application/json": {
-          schema: {
-            $ref: "#/components/schemas/User",
-          },
-        },
-      },
-    },
     responses: {
       204: {
-        description: "User deleted",
-        content: {},
+        description: "User deleted"
       },
       404: {
-        description: "No user with the uid was found in the database",
-        content: {}
+        description: "No user with the uid was found in the database"
       },
       500: {
-        description: "Server encountered an error",
-        content: {}
+        description: "Server encountered an error"
       },
     },
   };
@@ -169,4 +138,4 @@ const routes = function(userDatabaseClient) {
   return operations;
 }
 
-module.exports = routes;
+module.exports=routes;

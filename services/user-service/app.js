@@ -1,30 +1,28 @@
-const { initialize } =  require('express-openapi');
-const apiDoc = require("./routes/api-doc");
-const client = require("./db/client");
 
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const {initialize} = require("express-openapi");
+
+const client = require("./db/client");
+const express = require("express");
+const path = require("path");
+const logger = require("morgan");
+const apiDoc = require("./routes/api-doc");
+
 const port = 5000;
 
-var app = express();
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// app.use('/', indexRouter);
 
 initialize({
   app,
+  paths: './routes',
   apiDoc: apiDoc,
   dependencies: {
     userDatabaseClient: client
-  },
-  paths: './routes'
+  }
 });
 
 app.listen(port, () => {
