@@ -4,7 +4,6 @@ const routes = function(userDatabaseClient) {
 	};
 
 	function POST(req, res, next) {
-		console.log(req);
 		userDatabaseClient.createUser(req.body).then(
 			(result) => {
 				if (result === null) {
