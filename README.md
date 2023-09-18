@@ -95,6 +95,13 @@ may use.
 start-app.sh # on windows
 ```
 
+2. Made a change in code? To refresh containers, run
+
+```bash
+docker-compose up --force-recreate --build -d
+docker image prune -f
+```
+
 ### Notes:
 
 - After setting up Yarn Workspaces, any `node_modules` directories in individual
