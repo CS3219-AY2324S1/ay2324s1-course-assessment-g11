@@ -48,31 +48,35 @@ may use.
    ```bash
    yarn install
    ```
+   or
+   ```bash
+   yarnpkg install
+   ``` (if you have hadoop yarn installed)
 
    This command will install dependencies for all services and the frontend in a
    centralized `node_modules` directory at the root.
 
-2. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
+1. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
    `user-service`), use:
 
    ```bash
    yarn workspace user-service add [dependency-name]
    ```
 
-3. **Initializing Prisma:** In the root file, run the following:
+2. **Initializing Prisma:** In the root file, run the following:
 
    ```bash
    yarn prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
-4. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
+3. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
    the `start` script for `user-service`), use:
 
    ```bash
    yarn workspace user-service start
    ```
 
-5. **Running Frontend Scripts:** To run the frontend cod, use:
+4. **Running Frontend Scripts:** To run the frontend cod, use:
    ```bash
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
