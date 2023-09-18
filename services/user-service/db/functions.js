@@ -1,11 +1,9 @@
-const {PrismaClient} = require('@prisma/client');
+const  prismaClient  = require("./prismaClient")
 
-const prisma = new PrismaClient();
-
-const userDatabaseClient = {
+const userDatabaseFunctions = {
   async createUser(data) {
     const checkUid = data.uid;
-    const isThereExistingUser = await prisma.appUser.findUnique({
+    const isThereExistingUser = await prismaClient.appUser.findUnique({
       where: {
         uid: checkUid
       }
@@ -17,7 +15,7 @@ const userDatabaseClient = {
       return null;
     }
 
-    const newUser = await prisma.appUser.create({
+    const newUser = await prismaClient.appUser.create({
       data: data
     });
 
@@ -26,7 +24,7 @@ const userDatabaseClient = {
 
   async getUserByUid(uid) {
     // Will return null if no such user exists
-    const result = await prisma.appUser.findUnique({
+    const result = await prismaClient.appUser.findUnique({
       where: {
         uid: uid,
       },
@@ -35,7 +33,7 @@ const userDatabaseClient = {
   },
 
   async updateUserByUid(uid, data) {
-    const updatedResult = await prisma.appUser.update({
+    const updatedResult = await prismaClient.appUser.update({
       where: {
         uid: uid
       },
@@ -45,7 +43,7 @@ const userDatabaseClient = {
   },
 
   async deleteUserByUid(uid) {
-    await prisma.appUser.delete({
+    await prismaClient.appUser.delete({
       where: {
         uid: uid
       },
@@ -53,4 +51,4 @@ const userDatabaseClient = {
   }
 }
 
-module.exports=userDatabaseClient;
+module.exports=userDatabaseFunctions;

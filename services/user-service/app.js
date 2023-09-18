@@ -1,7 +1,7 @@
 
 const {initialize} = require("express-openapi");
 
-const client = require("./db/client");
+const databaseFunctions = require("./db/functions");
 const express = require("express");
 const path = require("path");
 const logger = require("morgan");
@@ -21,7 +21,7 @@ initialize({
   paths: './routes',
   apiDoc: apiDoc,
   dependencies: {
-    userDatabaseClient: client
+    userDatabaseFunctions: databaseFunctions
   }
 });
 

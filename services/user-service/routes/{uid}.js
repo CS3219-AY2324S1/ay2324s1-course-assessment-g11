@@ -1,5 +1,5 @@
 
-const routes = function(userDatabaseClient) {
+const routes = function(userDatabaseFunctions) {
   let operations = {
     GET,
     PUT,
@@ -7,7 +7,7 @@ const routes = function(userDatabaseClient) {
   };
 
   function GET(req, res, next) {
-    userDatabaseClient.getUserByUid(req.params.uid).then(
+    userDatabaseFunctions.getUserByUid(req.params.uid).then(
       (result) => {
         if (result === null) {
           res.status(404).end();
@@ -22,7 +22,7 @@ const routes = function(userDatabaseClient) {
   }
 
   function PUT(req, res, next) {
-    userDatabaseClient.updateUserByUid(req.params.uid, req.body).then(
+    userDatabaseFunctions.updateUserByUid(req.params.uid, req.body).then(
       (result) => {
         res.status(200).json(result);
       }
@@ -37,7 +37,7 @@ const routes = function(userDatabaseClient) {
   }
 
   function DELETE(req, res, next) {
-    userDatabaseClient.deleteUserByUid(req.params.uid).then(() => {
+    userDatabaseFunctions.deleteUserByUid(req.params.uid).then(() => {
       res.status(204).end();
     }).catch((error) => {
       if (error.code === "P2025") {

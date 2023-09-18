@@ -1,10 +1,10 @@
-const routes = function(userDatabaseClient) {
+const routes = function(userDatabaseFunctions) {
 	let operations = {
 		POST
 	};
 
 	function POST(req, res, next) {
-		userDatabaseClient.createUser(req.body).then(
+		userDatabaseFunctions.createUser(req.body).then(
 			(result) => {
 				if (result === null) {
 					res.status(400).end();
