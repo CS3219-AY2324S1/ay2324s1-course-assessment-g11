@@ -6,7 +6,7 @@ var router = express.Router();
 router.get("/", async (req, res, next) => {
   // const result = await db.query("SELECT * FROM users.users;");
   // res.json(result);
-  return res.json("test");
+  return res.send("user-service");
 });
 
 module.exports = router;
