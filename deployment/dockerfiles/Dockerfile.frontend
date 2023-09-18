@@ -1,0 +1,16 @@
+# Use the base image you created above
+FROM peerprep-base:latest
+
+# Set working directory for frontend
+WORKDIR /app/frontend
+
+# Copy frontend files
+COPY frontend .
+
+RUN yarn install --cwd /app
+RUN yarn build 
+
+# Start command for the frontend
+CMD [ "yarn", "workspace", "frontend", "start" ]
+
+
