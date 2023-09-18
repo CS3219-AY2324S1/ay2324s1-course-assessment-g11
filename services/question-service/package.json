@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "yarn run build && PORT=3001 node ./bin/www"
+    "start": "yarn run build && node ./bin/www"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
