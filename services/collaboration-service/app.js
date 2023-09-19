@@ -11,8 +11,8 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.broadcast.emit("hi");
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
+  socket.on("textchange", (msg) => {
+    io.emit("textchange", msg);
   });
 });
 

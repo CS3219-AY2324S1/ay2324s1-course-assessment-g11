@@ -3,26 +3,22 @@
   <title>DShared text editor</title>
 </head>
 <body>
-  <form id="form" action="">
-    <textarea id="textbox" rows="4" cols="50">Some text here</textarea>
-    <button>Send</button>
-  </form>
+  <textarea id="textbox" rows="4" cols="50">Some text here</textarea>
   
   <script src="/socket.io/socket.io.js"></script>
 <script>
   var socket = io();
 
   var textbox = document.getElementById('textbox');
-  var form = document.getElementById('form');
 
-  form.addEventListener('submit', function(e) {
+  textbox.addEventListener('change', function(e) {
     e.preventDefault();
     if (textbox.value) {
-      socket.emit('chat message', textbox.value);
+      socket.emit('textchange', textbox.value);
     }
   });
 
-  socket.on('chat message', function(msg) {
+  socket.on('textchange', function(msg) {
     textbox.value = msg;
     window.scrollTo(0, document.body.scrollHeight);
   });
