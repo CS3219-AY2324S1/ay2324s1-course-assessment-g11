@@ -26,6 +26,7 @@ router.post("/create", (req, res) => {
     user1_id,
     user2_id,
     status: "active",
+    text: "",
   };
 
   // Respond with the session details
@@ -40,9 +41,36 @@ router.post("/create", (req, res) => {
   const roomName = `session_${session_id}`;
   io.on("connection", (socket) => {
     socket.join(roomName);
-    console.log(socket.id + " joined room:", roomId);
+    console.log(socket.id + " joined room:" + roomName);
   });
 });
 
-// Export the router
+// API to save session information
+router.post("/save", (req, res) => {
+  try {
+    const { session_id, text } = req.body;
+    console.log(session_id);
+
+    if (!session_id in sessions) {
+      return res.status(400).json({ error: "Invalid sessionId provided" });
+    }
+
+    const session = sessions[session_id];
+    session.text = text;
+    session.status = "active";
+
+    res.status(200).json({
+      message: "Session saved successfully",
+      session_id: session.session_id,
+      user1_id: session.user1_id,
+      user2_id: session.user2_id,
+      status: session.status,
+      text: session.text,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error saving session" });
+  }
+});
+
 module.exports = router;
