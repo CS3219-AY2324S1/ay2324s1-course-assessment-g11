@@ -1,0 +1,18 @@
+# Use the base image
+FROM peerprep-base:latest
+
+# Set working directory
+WORKDIR /app/services/user-service
+
+# Copy root level package.json, yarn.lock, and the entire services directory
+COPY package.json yarn.lock /app/
+COPY services/user-service /app/services/user-service
+COPY prisma ./prisma/
+
+RUN yarn prisma generate
+
+# Install dependencies using Yarn Workspaces
+RUN yarn install --cwd /app
+
+# Run service
+CMD [ "yarn", "workspace", "user-service", "start" ]
