@@ -83,9 +83,9 @@ export function SpotlightCard({
   children,
   className = ''
 }: SpotlightCardProps) {
-  return <div className={`relative h-full rounded-3xl p-px 
-  before:absolute before:w-80 before:h-80 before:-left-40 before:-top-40 before:bg-secondary before:rounded-full before:opacity-30 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-50 before:z-10 before:blur-[200px] 
-  after:absolute after:w-96 after:h-96 after:-left-48 after:-top-48 after:bg-secondary after:rounded-full after:opacity-30 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-30 after:z-30 after:blur-[100px] 
+  return <div className={`relative h-full p-px 
+  before:absolute before:w-96 before:h-96 before:-left-48 before:-top-48 before:bg-secondary before:opacity-20 before:pointer-events-none before:transition-opacity before:duration-500 before:translate-x-[var(--mouse-x)] before:translate-y-[var(--mouse-y)] before:group-hover:opacity-20 before:z-10 before:blur-[200px] 
+  after:absolute after:w-96 after:h-96 after:-left-48 after:-top-48 after:bg-secondary after:opacity-10 after:pointer-events-none after:transition-opacity after:duration-500 after:translate-x-[var(--mouse-x)] after:translate-y-[var(--mouse-y)] after:hover:opacity-20 after:z-30 after:blur-[100px] 
   overflow-hidden ${className}`}>
     {children}
   </div>
