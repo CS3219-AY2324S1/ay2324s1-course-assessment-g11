@@ -7,8 +7,13 @@ const sessions = {};
 
 // API to create a collaborative session
 router.post("/create", (req, res) => {
+  const io = req.server_config.io;
+
   // Extract user information from the request (assuming user1 and user2 IDs)
   const { user1_id, user2_id } = req.body;
+
+  console.log(user1_id);
+  console.log(user2_id);
 
   if (!user1_id || !user2_id || user1_id == user2_id) {
     return res.status(400).json({ error: "Invalid input parameters" });
@@ -31,10 +36,11 @@ router.post("/create", (req, res) => {
     status: "active",
   });
 
-  // Notify users to join the room
+  // Users to join the room
   const roomName = `session_${session_id}`;
   io.on("connection", (socket) => {
     socket.join(roomName);
+    console.log(socket.id + " joined room:", roomId);
   });
 });
 

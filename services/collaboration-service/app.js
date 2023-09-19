@@ -31,7 +31,16 @@ app.use(
   },
   require("./routes/index")
 );
-app.use("/session", require("./routes/session"));
+app.use(
+  "/session",
+  function (req, res, next) {
+    req.server_config = {
+      io: io,
+    };
+    next();
+  },
+  require("./routes/session")
+);
 
 server.listen(PORT, () => {
   console.log("listening on *:5001");
