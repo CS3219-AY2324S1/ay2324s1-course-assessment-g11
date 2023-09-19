@@ -1,23 +1,23 @@
 
-export function TypographyH1({ children }: { children: React.ReactNode }) {
+export function TypographyH1({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
-    <h1 className="scroll-m-20 text-4xl font-black tracking-tight lg:text-5xl leading-normal lg:leading-normal">
+    <h1 className={`scroll-m-20 text-4xl font-black tracking-tight lg:text-5xl leading-normal lg:leading-normal ${className}`}>
       {children}
     </h1>
   )
 }
 
-export function TypographyH2({ children }: { children: React.ReactNode }) {
+export function TypographyH2({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
-    <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0 leading-normal lg:leading-normal">
+    <h2 className={`scroll-m-20 text-3xl font-semibold tracking-tight leading-normal lg:leading-normal ${className}`}>
       {children}
     </h2>
   )
 }
 
-export function TypographyH3({ children }: { children: React.ReactNode }) {
+export function TypographyH3({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
-    <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight leading-normal lg:leading-normal">
+    <h3 className={`scroll-m-20 text-2xl font-semibold tracking-tight leading-normal lg:leading-normal ${className}`}>
       {children}
     </h3>
   )
@@ -76,5 +76,14 @@ export function TypographyCode({ children }: { children: React.ReactNode }) {
     <code className="font-mono text-base font-normal">
       {children}
     </code>
+  )
+}
+
+export function TypographyLink({ children, href }: { children: React.ReactNode, href: string }) {
+  return (
+    <a href={href} className="group text-primary text-sm font-semibold leading-tight" target="_blank" rel="noopener noreferrer">
+      {children}
+      <span className="block max-w-0 group-hover:max-w-full transition-all duration-300 delay-300 group-hover:delay-0 h-0.5 bg-primary"></span>
+    </a>
   )
 }

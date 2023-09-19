@@ -11,14 +11,16 @@ const notoSans = Noto_Sans({
 export default function Home() {
   return (
     <main
-      className={`p-24 ${notoSans.className} flex flex-col items-center justify-center min-h-screen text-center`}
+      className={`${notoSans.className}`}
     >
-      <TypographyH1>Elevate your technical interview prep.</TypographyH1>
-      <TypographyH3 >Crush technical interviews by polishing your skills with friends.</TypographyH3>
-      <Button className="my-4">
-        <AiFillGithub className="mr-2 w-6 h-6" />
-        Sign In with GitHub
-      </Button>
+      <div className="h-[calc(100vh-80px)] flex flex-col items-center justify-center text-center">
+        <TypographyH1 className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Elevate your technical interview prep.</TypographyH1>
+        <TypographyH3 className="text-foreground">Crush technical interviews by polishing your skills with friends.</TypographyH3>
+        <Button className="my-4">
+          <AiFillGithub className="mr-2 w-6 h-6" />
+          Sign up with GitHub
+        </Button>
+      </div>
     </main>
   )
 }
