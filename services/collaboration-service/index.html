@@ -1,27 +1,39 @@
-<head>
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>DShared text editor</title>
-</head>
-<body>
-  <textarea id="textbox" rows="4" cols="50">Some text here</textarea>
-  
-  <script src="/socket.io/socket.io.js"></script>
-<script>
-  var socket = io();
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Code Collaboration Room</title>
+  </head>
+  <body>
+    <h1>Text Collaboration Room</h1>
+    <input type="text" id="roomId" placeholder="Enter Room ID" />
+    <button id="joinButton">Join Room</button>
 
-  var textbox = document.getElementById('textbox');
+    <textarea id="textEditor" rows="10" cols="50"></textarea>
 
-  textbox.addEventListener('change', function(e) {
-    e.preventDefault();
-    if (textbox.value) {
-      socket.emit('textchange', textbox.value);
-    }
-  });
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const socket = io();
+      const roomIdInput = document.getElementById("roomId");
+      const joinButton = document.getElementById("joinButton");
+      const textEditor = document.getElementById("textEditor");
 
-  socket.on('textchange', function(msg) {
-    textbox.value = msg;
-    window.scrollTo(0, document.body.scrollHeight);
-  });
-</script>
-</body>
+      joinButton.addEventListener("click", () => {
+        const roomId = roomIdInput.value;
+
+        socket.emit("join-room", roomId);
+        console.log("joined room");
+
+        socket.on("textchange", ({ text }) => {
+          textEditor.value = text;
+          console.log("textchange");
+        });
+
+        textEditor.addEventListener("change", () => {
+          const text = textEditor.value;
+          socket.emit("textchange", text);
+        });
+      });
+    </script>
+  </body>
 </html>
