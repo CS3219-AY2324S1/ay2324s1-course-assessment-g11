@@ -7,7 +7,7 @@ const bodyParser = require("body-parser");
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, {
+io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
@@ -20,26 +20,18 @@ const PORT = process.env.PORT || 5001;
 app.use(bodyParser.json()); // what this?
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
-});
-
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("join-room", (roomId) => {
-    socket.join(roomId);
-    console.log(socket.id + " joined room:", roomId);
-
-    socket.on("textchange", (text) => {
-      io.to(roomId).emit("textchange", { text });
-    });
-
-    socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
-    });
-  });
-});
+/* Routers */
+app.use(
+  "/test",
+  function (req, res, next) {
+    req.server_config = {
+      io: io,
+    };
+    next();
+  },
+  require("./routes/index")
+);
+app.use("/session", require("./routes/session"));
 
 server.listen(PORT, () => {
   console.log("listening on *:5001");
