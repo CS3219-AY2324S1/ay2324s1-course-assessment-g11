@@ -7,10 +7,10 @@ Install Postgres 15.4
 Run these commands at each service folder root.
 ```
   install dependencies:
-     > npm install
+     > yarn install --dev
 
    run the app:
-     > SET DEBUG=user-service:* & npm start
+     > SET DEBUG=user-service:* & yarn run start
 ```
 
 Open localhost:3000 on your browser to see the result.
