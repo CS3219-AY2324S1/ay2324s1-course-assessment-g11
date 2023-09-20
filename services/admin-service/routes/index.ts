@@ -1,5 +1,5 @@
 import express, {Router} from 'express';
-import {removeAdminFromGithubUid, setGithubUidAsAdmin} from "../firebase-admin/firebaseApp";
+import {removeAdminFromGithubUid, setGithubUidAsAdmin} from "../firebase-server/firebaseApp";
 
 var router : Router = express.Router();
 
