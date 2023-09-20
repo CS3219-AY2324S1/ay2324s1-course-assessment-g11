@@ -16,13 +16,13 @@ io = new Server(server, {
 
 const PORT = process.env.PORT || 5001;
 
-/* Middlewares */
-app.use(bodyParser.json()); // what this?
-app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
-
 /* Routers */
 app.use("/test", require("./routes/index"));
 app.use("/session", require("./routes/session"));
+
+/* Middlewares */
+app.use(bodyParser.json()); // what this?
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
   console.log("listening on *:5001");
