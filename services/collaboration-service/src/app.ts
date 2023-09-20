@@ -5,8 +5,6 @@ import swaggerUi from "swagger-ui-express";
 import bodyParser from "body-parser";
 import { createTestRoute } from "./routes/index";
 import { createSessionRoute } from "./routes/session";
-
-// Since JSON files don't have a default export, you might need to use this syntax:
 import * as swaggerFile from "../swagger-output.json";
 
 const app = express();
