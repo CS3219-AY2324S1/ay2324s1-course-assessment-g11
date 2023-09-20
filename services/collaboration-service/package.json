@@ -1,11 +1,12 @@
 {
   "name": "collaboration-service",
   "version": "0.0.0",
-  "main": "app.ts",
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "yarnpkg run build && node app.ts",
+    "start": "yarn run build && node ./dist/app.js",
+    "dev": "yarn run build && nodemon ./dist/app.js",
+    "ts-node": "ts-node app.ts",
     "swagger-autogen": "node swagger.js"
   },
   "dependencies": {
