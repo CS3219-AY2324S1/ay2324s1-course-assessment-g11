@@ -17,5 +17,8 @@
     "swagger-autogen": "^2.23.5",
     "swagger-ui-express": "^5.0.0",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "ts-migrate": "^0.1.35"
   }
 }
