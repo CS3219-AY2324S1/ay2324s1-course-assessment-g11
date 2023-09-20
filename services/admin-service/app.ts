@@ -1,7 +1,7 @@
 import express, {Express, Request, Response, Router} from 'express';
 
 const app: Express = express();
-const port = 4000;
+const port = 5005;
 
 import router from './routes/index';
 

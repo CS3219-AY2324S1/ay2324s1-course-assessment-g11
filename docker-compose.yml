@@ -37,6 +37,15 @@ services:
     environment:
       - PORT=5004
 
+  admin-service:
+    build:
+      context: .
+      dockerfile: deployment/dockerfiles/Dockerfile.admin-service
+    ports:
+      - "5005:5005"
+    environment:
+      - PORT=5005
+
   frontend:
     build:
       context: .

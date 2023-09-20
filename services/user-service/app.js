@@ -6,7 +6,7 @@ const path = require("path");
 const logger = require("morgan");
 const apiDoc = require("./routes/api-doc");
 
-const port = 5000;
+const port = 5001;
 
 const app = express();
 
