@@ -2,11 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 router.get("/", (req, res) => {
-  const io = req.server_config.io;
-
   res.sendFile(__dirname + "/index.html");
-
-  io.on("connection", (socket) => {
+  io.once("connection", (socket) => {
     console.log("User connected:", socket.id);
 
     socket.on("join-room", (roomId) => {

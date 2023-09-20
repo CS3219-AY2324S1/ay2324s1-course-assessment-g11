@@ -7,8 +7,6 @@ const sessions = {};
 
 // API to create a collaborative session
 router.post("/create", (req, res) => {
-  const io = req.server_config.io;
-
   // Extract user information from the request (assuming user1 and user2 IDs)
   const { user1_id, user2_id } = req.body;
 
@@ -39,7 +37,7 @@ router.post("/create", (req, res) => {
 
   // Users to join the room
   const roomName = `session_${session_id}`;
-  io.on("connection", (socket) => {
+  io.once("connection", (socket) => {
     socket.join(roomName);
     console.log(socket.id + " joined room:" + roomName);
   });

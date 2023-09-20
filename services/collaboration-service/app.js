@@ -21,26 +21,8 @@ app.use(bodyParser.json()); // what this?
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 /* Routers */
-app.use(
-  "/test",
-  function (req, res, next) {
-    req.server_config = {
-      io: io,
-    };
-    next();
-  },
-  require("./routes/index")
-);
-app.use(
-  "/session",
-  function (req, res, next) {
-    req.server_config = {
-      io: io,
-    };
-    next();
-  },
-  require("./routes/session")
-);
+app.use("/test", require("./routes/index"));
+app.use("/session", require("./routes/session"));
 
 server.listen(PORT, () => {
   console.log("listening on *:5001");
