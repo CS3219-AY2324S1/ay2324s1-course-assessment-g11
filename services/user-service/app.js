@@ -1,4 +1,3 @@
-
 const {initialize} = require("express-openapi");
 
 const databaseFunctions = require("./db/functions");
