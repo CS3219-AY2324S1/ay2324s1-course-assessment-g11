@@ -12,12 +12,13 @@ import { router as sessionRouter } from "./routes/session";
 
 const app: Express = express();
 const server: HTTPServer = http.createServer(app);
-export const io: SocketIOServer = new SocketIOServer(server, {
+const socketIoOptions: any = {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
-});
+};
+export const io: SocketIOServer = new SocketIOServer(server, socketIoOptions);
 
 const PORT: number = parseInt(process.env.PORT || "5001")
 

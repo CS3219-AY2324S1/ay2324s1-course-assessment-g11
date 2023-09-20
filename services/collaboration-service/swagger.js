@@ -1,4 +1,3 @@
-// @ts-expect-error TS(2580): Cannot find name 'require'. Do you need to install... Remove this comment to see the full error message
 const swaggerAutogen = require("swagger-autogen")();
 
 const doc = {
@@ -12,7 +11,7 @@ const doc = {
 };
 
 const outputFile = "./swagger-output.json";
-const endpointsFiles = ["./app.js"];
+const endpointsFiles = ["./app.ts"];
 
 /* NOTE: if you use the express Router, you must pass in the 
    'endpointsFiles' only the root file where the route starts,
