@@ -20,9 +20,8 @@ Prerequisites for PeerPrep Monorepo:
 
 ---
 
-Make sure to adjust these prerequisites based on the specific requirements of
-your services and applications, as well as any additional tools or systems you
-may use.
+Adjust these prerequisites based on the specific requirements of
+your services / frontend.
 
 ### Structure:
 
@@ -48,10 +47,13 @@ may use.
    ```bash
    yarn install
    ```
+
    or
+
    ```bash
    yarnpkg install
    ```
+
    (if you have hadoop yarn installed)
 
    This command will install dependencies for all services and the frontend in a
@@ -64,21 +66,26 @@ may use.
    yarn workspace user-service add [dependency-name]
    ```
 
-2. **Initializing Prisma:** In the root file, run the following:
+1. **Initializing Prisma:** In the root file, run the following:
 
    ```bash
    yarn prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
-3. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
+1. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
    the `start` script for `user-service`), use:
 
    ```bash
    yarn workspace user-service start
    ```
 
-4. **Running Frontend Scripts:** To run the frontend cod, use:
+1. **Running Frontend Scripts:** To run the frontend cod, use:
+
    ```bash
+   yarn workspace frontend dev ## For development
+
+   # or
+
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```

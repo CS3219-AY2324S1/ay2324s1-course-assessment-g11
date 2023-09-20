@@ -1,30 +1,26 @@
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'express'.
-var express = require("express");
-// @ts-expect-error TS(2451): Cannot redeclare block-scoped variable 'router'.
-var router = express.Router();
+import express, { Request, Response } from 'express';
+import { Socket } from 'socket.io';
+import { io } from '../app';
 
-router.get("/", (req: any, res: any) => {
-  // @ts-expect-error TS(2304): Cannot find name '__dirname'.
+export const router = express.Router();
+
+router.get("/", (req: Request, res: Response) => {
   res.sendFile(__dirname + "/index.html");
-  // @ts-expect-error TS(2304): Cannot find name 'io'.
-  io.once("connection", (socket: any) => {
-    console.log("User connected:", socket.id);
-
-    socket.on("join-room", (roomId: any) => {
-      socket.join(roomId);
-      console.log(socket.id + " joined room:", roomId);
-
-      socket.on("textchange", (text: any) => {
-        // @ts-expect-error TS(2304): Cannot find name 'io'.
-        io.to(roomId).emit("textchange", { text });
-      });
-    });
-
-    socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
-    });
-  });
 });
 
-// @ts-expect-error TS(2580): Cannot find name 'module'. Do you need to install ... Remove this comment to see the full error message
-module.exports = router;
+io.on("connection", (socket: Socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("join-room", (roomId: string) => {
+    socket.join(roomId);
+    console.log(socket.id + " joined room:", roomId);
+
+    socket.on("textchange", (text: string) => {
+      io.to(roomId).emit("textchange", { text });
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
