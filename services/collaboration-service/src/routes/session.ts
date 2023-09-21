@@ -24,6 +24,20 @@ interface CreateSessionRequest extends Request{
 
 // API to create a collaborative session
 router.post("/create", (req: CreateSessionRequest, res: Response) => {
+  /*	#swagger.requestBody = {
+        required: true,
+        schema: {
+          properties: {
+              user1_id: {
+                  type: "string"
+              },
+              user2_id: {
+                  type: "string"
+              }
+            }
+          }
+      } */
+  
   // Extract user information from the request (assuming user1 and user2 IDs)
   const { user1_id, user2_id } = req.body;
 
