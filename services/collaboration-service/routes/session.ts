@@ -15,8 +15,15 @@ interface Session {
 // Simulated database to store session information
 const sessions: Record<string, Session> = {};
 
+interface CreateSessionRequest extends Request{
+  body: {
+    user1_id: string;
+    user2_id: string;
+  }
+}
+
 // API to create a collaborative session
-router.post("/create", (req: Request, res: Response) => {
+router.post("/create", (req: CreateSessionRequest, res: Response) => {
   // Extract user information from the request (assuming user1 and user2 IDs)
   const { user1_id, user2_id } = req.body;
 
@@ -55,8 +62,15 @@ router.post("/create", (req: Request, res: Response) => {
   });
 });
 
+interface SaveSessionRequest extends Request{
+  body: {
+    session_id: string;
+    text: string;
+  }
+}
+
 // API to save session information
-router.post("/save", (req: Request, res: Response) => {
+router.post("/save", (req: SaveSessionRequest, res: Response) => {
   try {
     const { session_id, text } = req.body;
     console.log(session_id);
