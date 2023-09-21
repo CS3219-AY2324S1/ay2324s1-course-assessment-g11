@@ -3,22 +3,20 @@ import prismaClient from "./prismaClient";
 const userDatabaseFunctions = {
   async createUser(data : any) {
     const checkUid = data.uid;
-    return prismaClient.appUser.findUnique({
+    const existingUser = await prismaClient.appUser.findUnique({
       where: {
         uid: checkUid
       }
+    })
+
+    if (existingUser !== null) {
+      return null;
+    }
+
+    return prismaClient.appUser.create({
+      data: data
     }).then((user) => {
-      if (user === null) {
-        // User does not exist. Create the new user and return it.
-        return prismaClient.appUser.create({
-          data: data
-        }).then((user) => {
-          return user;
-        });
-      } else {
-        // Signal that new user was not created since user already exists.
-        return null;
-      }
+      return user;
     });
   },
 

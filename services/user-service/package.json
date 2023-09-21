@@ -5,7 +5,8 @@
   "scripts": {
     "start": "yarn swagger-autogen && ts-node-dev ./app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest"
   },
   "dependencies": {
     "debug": "~2.6.9",
@@ -20,6 +21,8 @@
     "@types/node": "^20.6.2",
     "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.4",
+    "vitest-mock-extended": "^1.2.1"
   }
 }
