@@ -5,6 +5,7 @@ import logger from "morgan";
 import indexRouter from "./routes";
 
 const port = 5001;
+//const port = process.env.PORT;
 
 const app = express();
 
