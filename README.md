@@ -80,7 +80,12 @@ your services / frontend.
    ```
 
 1. **Running Frontend Scripts:** To run the frontend cod, use:
+
    ```bash
+   yarn workspace frontend dev ## For development
+
+   # or
+
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```

@@ -1,5 +1,5 @@
-const { Client, Pool } = require("pg");
-const { PrismaClient } = require("@prisma/client");
+import { Client, Pool, QueryResult } from "pg";
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 const users = prisma.user.findMany();
@@ -14,7 +14,7 @@ const pool = new Pool({
   port: 5432,
 });
 
-const pool_query = (text, params, callback) => {
+const pool_query = (text: string, params: any, callback: (err: Error, result: QueryResult<any>) => void) => {
   return pool.query(text, params, callback);
 };
 
@@ -27,16 +27,11 @@ const client = new Client({
   port: 5432,
 });
 
-const client_query = async (text, params, callback) => {
+export const client_query = async (text: string, params: any[], callback: (err: Error, result: QueryResult<any>) => void) => {
   await client.connect();
   const result = client.query(text, params, callback);
   await client.end();
   return result;
 };
 
-const query = pool_query;
-
-module.exports = {
-  query,
-  client_query,
-};
+export const query = pool_query;
