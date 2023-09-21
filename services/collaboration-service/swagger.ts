@@ -17,8 +17,9 @@ const endpointsFiles = ["./src/app.ts"];
    'endpointsFiles' only the root file where the route starts,
    such as index.js, app.js, routes.js, ... */
 
-swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc).then(
-  async () => {
-    await import("./src/app"); // Your project's root file
-  }
-);
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc)
+  /*.then(
+    async () => {
+      await import("./src/app"); // Your project's root file
+    }
+  );*/  // to run it after swagger-autogen
