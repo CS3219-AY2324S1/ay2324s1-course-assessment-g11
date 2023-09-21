@@ -5,7 +5,7 @@ const app: Express = express();
 const port = 5005;
 //const port = process.env.PORT;
 
-import router from './routes/index';
+import router from './api/index';
 
 app.use('/', router);
 

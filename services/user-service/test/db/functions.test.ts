@@ -1,8 +1,8 @@
 import {beforeEach, expect, describe, it, vi} from 'vitest'
-import userDatabaseFunctions from '../../db/functions'
-import prismaMock from '../../db/__mocks__/prismaClient'
+import userDatabaseFunctions from '../../src/db/functions'
+import prismaMock from '../../src/db/__mocks__/prismaClient'
 
-vi.mock('../../db/prismaClient')
+vi.mock('../../src/db/prismaClient')
 
 const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 0,
   matchProgrammingLanguage: "Python" };

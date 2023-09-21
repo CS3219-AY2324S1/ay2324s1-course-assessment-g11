@@ -2,7 +2,7 @@
 import express from "express";
 import path from "path";
 import logger from "morgan";
-import indexRouter from "./routes";
+import indexRouter from "./api/index";
 
 const port = 5001;
 //const port = process.env.PORT;
