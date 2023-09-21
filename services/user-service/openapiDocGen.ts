@@ -2,10 +2,10 @@ import swaggerAutogen from 'swagger-autogen';
 
 const doc = {
   info: {
-    title: 'Admin Service API',
-    description: 'API for granting/revoking administrative roles on app users',
+    title: 'User Service API',
+    description: 'API for storing custom user data',
   },
-  host: 'localhost:5005',
+  host: 'localhost:5001',
   schemes: ['http'],
 };
 

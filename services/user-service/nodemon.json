@@ -1,5 +1,0 @@
-{
-  "ext": ".ts,.js",
-  "ignore": [],
-  "exec": "yarn node ./app.js"
-}
