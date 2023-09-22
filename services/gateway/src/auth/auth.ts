@@ -21,17 +21,17 @@ export const setupIsLoggedIn = (app, routes) => {
   });
 }
 
-export const setupUserIdMatch = (app, routes) => {
+export const setupUserIdMatch = (app : Express, routes : any[]) => {
   routes.forEach(r => {
     if (r.user_match_required) {
-      app.use(r.url + "/:githubId", function(req, res, next) {
+      app.use(r.url + "/:uid", function(req, res, next) {
         const idToken = req.get("User-Id-Token");
-        const paramGithubId = req.params.githubId;
-        if (!idToken || !paramGithubId) {
+        const paramUid = req.params.uid;
+        if (!idToken || !paramUid) {
           res.redirect(redirectLink)
         }
 
-        promiseVerifyIsCorrectUser(idToken, paramGithubId).then(() => {
+        promiseVerifyIsCorrectUser(idToken, paramUid).then(() => {
           console.log("Passing to next function!")
           next();
         }).catch((error) => {

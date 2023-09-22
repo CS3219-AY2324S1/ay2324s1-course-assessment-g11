@@ -34,29 +34,18 @@ export function promiseVerifyIsLoggedIn(idToken) {
   });
 }
 
-export function promiseVerifyIsCorrectUser(idToken, paramGithubId) {
+export function promiseVerifyIsCorrectUser(idToken : string, paramUid : string) {
   return new Promise( (resolve, reject) => {
     const verifiedUserMatch = firebaseAuth
       .verifyIdToken(idToken, true)
       .then((decodedToken) => {
         const uid = decodedToken.uid;
-        return firebaseAuth.getUser(uid).then(
-          (userRecord) => {
-            const providerDataArray = userRecord.providerData;
-            for (let i = 0; i < providerDataArray.length; i++) {
-              const providerData = providerDataArray[i];
-              if (providerData.providerId === "github.com") {
-                const foundGithubId = providerData.providerId;
-                if (foundGithubId === paramGithubId) {
-                  return true;
-                }
-              }
-            }
-            return false;
-          }
-        )
-      })
-      .catch((error) => {
+        if (uid === paramUid) {
+          return true;
+        } else {
+          return false;
+        }
+      }).catch((error) => {
         console.log(error);
         return false;
       });
@@ -64,7 +53,7 @@ export function promiseVerifyIsCorrectUser(idToken, paramGithubId) {
     if (verifiedUserMatch) {
       resolve();
     } else {
-      reject("GitHub ID parameter does not match!");
+      reject("Uid parameter does not match!");
     }
   });
 }

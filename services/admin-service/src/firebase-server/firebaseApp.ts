@@ -7,8 +7,6 @@ import process from "process";
 
 dotenv.config({ path: path.resolve(process.cwd(), "../../.env")});
 
-const DEFAULT_PROVIDER_ID : string = "github.com";
-
 // Will not work unless you have the correct service account details saved in the environment variable
 const serviceAccountObject : object = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT as string);
 
@@ -18,59 +16,47 @@ const firebaseApp : App = admin.initializeApp({
 
 const firebaseAuth : Auth = getAuth(firebaseApp);
 
-async function getFirebaseUidFromGithubUid(githubUid: string) {
-  return firebaseAuth.getUserByProviderUid(DEFAULT_PROVIDER_ID, githubUid).then(
-    (user: UserRecord) => {
-      return user.uid;
+async function setUserClaimsWrapper(uid: string, customUserClaims: object | null) {
+  return firebaseAuth.setCustomUserClaims(uid, customUserClaims).then(() => {
+      return true;
     }
   ).catch((error) => {
     if (error.code === "auth/user-not-found") {
-      // Github UID does not correspond to a user registered on Firebase
-      return null;
+      // Given uid does not correspond to a user registered on Firebase
+      return false;
     }
     // Otherwise, just throw the error
     throw error;
+  });
+}
+
+async function listAllFirebaseUsers(nextPageToken? : string) {
+  const maxResultsPerPage = 10;
+  if (nextPageToken) {
+    return firebaseAuth.listUsers(maxResultsPerPage, nextPageToken).then((listUsersResult) => {
+      return listUsersResult;
+    });
+  } else {
+    return firebaseAuth.listUsers(maxResultsPerPage).then((listUsersResult) => {
+      return listUsersResult;
+    });
+  }
+}
+
+async function setFirebaseUidAsAdmin(uid: string) {
+  return setUserClaimsWrapper(uid, { admin: true })
+    .then((operationCompleted) => {
+    // Check if operation was completed
+    return operationCompleted;
   })
 }
 
-async function setGithubUidAsAdmin(githubUid: string) {
-  return getFirebaseUidFromGithubUid(githubUid).then((providerUid) => {
-    // The UID used for setting the claim is specific to Firebase
-    if (providerUid === null) {
-      return false;
-    }
-
-    firebaseAuth
-      .setCustomUserClaims(providerUid as string, { admin: true })
-      .then(() => {
-        // The new custom claims will propagate to the user's ID token the
-        // next time a new one is issued.
-
-        // setCustomUserClaims will override any existing claims.
-        // For this app, we use custom claims only to denote admin/not admin
-      })
-    return true;
+async function removeAdminFromFirebaseUid(uid: string) {
+  return setUserClaimsWrapper(uid, null)
+    .then((operationCompleted) => {
+    // Check if operation was completed
+    return operationCompleted;
   })
 }
 
-async function removeAdminFromGithubUid(githubUid: string) {
-  return getFirebaseUidFromGithubUid(githubUid).then((providerUid) => {
-    // The UID used for setting the claim is specific to Firebase
-    if (providerUid === null) {
-      return false;
-    }
-
-    firebaseAuth
-      .setCustomUserClaims(providerUid as string, null)
-      .then(() => {
-        // The new custom claims will propagate to the user's ID token the
-        // next time a new one is issued.
-
-        // setCustomUserClaims will override any existing claims.
-        // For this app, we use custom claims only to denote admin/not admin
-      })
-    return true;
-  })
-}
-
-export { setGithubUidAsAdmin, removeAdminFromGithubUid };
+export { listAllFirebaseUsers, setFirebaseUidAsAdmin, removeAdminFromFirebaseUid };

@@ -1,13 +1,24 @@
 import express, {Router} from 'express';
-import {removeAdminFromGithubUid, setGithubUidAsAdmin} from "../firebase-server/firebaseApp";
+import {listAllFirebaseUsers, removeAdminFromFirebaseUid, setFirebaseUidAsAdmin} from "../firebase-server/firebaseApp";
 
 var router : Router = express.Router();
 
-router.put('/setAdmin/:githubId', function(req : express.Request, res : express.Response) {
-  return setGithubUidAsAdmin(req.params.githubId).then((userFound) => {
+router.get('/', function(req : express.Request, res : express.Response) {
+  // Extract the next page token
+  const nextPageToken = req.get('Next-Page-Token');
+  listAllFirebaseUsers(nextPageToken).then((result) => {
+    res.status(200).json(result);
+  }).catch((error) => {
+    console.log(error);
+    res.status(500).end();
+  })
+});
+
+router.put('/setAdmin/:uid', function(req : express.Request, res : express.Response) {
+  setFirebaseUidAsAdmin(req.params.uid).then((userFound) => {
     if (userFound) {
       res.status(200).json({
-        "providerId": req.params.githubId
+        "providerId": req.params.uid
       });
     } else {
       // User not found
@@ -19,11 +30,11 @@ router.put('/setAdmin/:githubId', function(req : express.Request, res : express.
   })
 });
 
-router.put('/removeAdmin/:githubId', function(req : express.Request, res : express.Response) {
-  return removeAdminFromGithubUid(req.params.githubId).then((userFound) => {
+router.put('/removeAdmin/:uid', function(req : express.Request, res : express.Response) {
+  removeAdminFromFirebaseUid(req.params.uid).then((userFound) => {
     if (userFound) {
       res.status(200).json({
-        "providerId": req.params.githubId
+        "providerId": req.params.uid
       });
     } else {
       // User not found

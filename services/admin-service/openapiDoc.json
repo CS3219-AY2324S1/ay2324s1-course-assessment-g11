@@ -11,12 +11,25 @@
     }
   ],
   "paths": {
-    "/setAdmin/{githubId}": {
+    "/": {
+      "get": {
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/setAdmin/{uid}": {
       "put": {
         "description": "",
         "parameters": [
           {
-            "name": "githubId",
+            "name": "uid",
             "in": "path",
             "required": true,
             "schema": {
@@ -37,12 +50,12 @@
         }
       }
     },
-    "/removeAdmin/{githubId}": {
+    "/removeAdmin/{uid}": {
       "put": {
         "description": "",
         "parameters": [
           {
-            "name": "githubId",
+            "name": "uid",
             "in": "path",
             "required": true,
             "schema": {
