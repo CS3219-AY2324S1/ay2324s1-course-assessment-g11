@@ -15,8 +15,6 @@ describe('functions', () => {
   })
   describe('createUser', () => {
     it('createUser should return the generated user if its uid does not exist in database yet', async () => {
-      // Used to simulate finding that the user is not yet in the database
-      prismaMock.appUser.findUnique.mockResolvedValueOnce(null);
 
       // Used to add the user
       prismaMock.appUser.create.mockResolvedValueOnce(fullNewUser);
@@ -30,13 +28,11 @@ describe('functions', () => {
       // Used to simulate finding that the user is in the database
       prismaMock.appUser.findUnique.mockResolvedValueOnce(fullNewUser);
 
-      prismaMock.appUser.create.mockResolvedValueOnce(fullNewUser);
       const user = await userDatabaseFunctions.createUser(fullNewUser);
       expect(user).toStrictEqual(null);
     })
 
     it('createUser should only need uid to work', async () => {
-      prismaMock.appUser.findUnique.mockResolvedValueOnce(null);
       prismaMock.appUser.create.mockResolvedValueOnce(partialNewUser);
       const user = await userDatabaseFunctions.createUser(partialNewUser);
       expect(user).toStrictEqual(partialNewUser);

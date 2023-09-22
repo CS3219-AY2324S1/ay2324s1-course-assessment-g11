@@ -9,7 +9,7 @@ const userDatabaseFunctions = {
       }
     })
 
-    if (existingUser !== null) {
+    if (existingUser) {
       return null;
     }
 
