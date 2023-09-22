@@ -38,16 +38,26 @@ router.get('/', function(req, res, next) {
   res.send('question-service');
 });
 
-router.post('/question', async (req: express.Request<{}, {}, NewQuestion>, res, next) => {
-  req.body.content = sanitizeHtml(req.body.content);
+function validateNewQuestion(reqBody: any): reqBody is NewQuestion {
+  return reqBody.title && reqBody.content && ["easy", "medium", "hard"].includes(reqBody.difficulty);
+}
+
+router.post('/question', async (req, res, next) => {
+  // Validate request body
+  if (!validateNewQuestion(req.body)) {
+    res.status(400).send("Invalid question");
+    return;
+  }
   if (req.body.title.length > 200) {
     res.status(400).send("Title too long");
     return;
   }
-  if (req.body.difficulty !== "easy" && req.body.difficulty !== "medium" && req.body.difficulty !== "hard") {
-    res.status(400).send("Invalid difficulty");
-    return;
-  }
+  req.body.content = sanitizeHtml(req.body.content);
+  req.body.topics = req.body.topics ?? [];
+  req.body.testCasesInputs = req.body.testCasesInputs ?? [];
+  req.body.testCasesOutputs = req.body.testCasesOutputs ?? [];
+  req.body.defaultCode = req.body.defaultCode ?? {};
+  req.body.solution = req.body.solution ?? {};
   // Connect to question db
   try {
     await mongoClient.connect();
@@ -59,7 +69,16 @@ router.post('/question', async (req: express.Request<{}, {}, NewQuestion>, res, 
       res.status(400).send("Question with same title already exists: " + same_title_qn._id);
       return;
     }
-    let result = await collection.insertOne(req.body);
+    let result = await collection.insertOne({
+      ...req.body,
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
+      topics: req.body.topics ?? [],
+      testCasesInputs: req.body.testCasesInputs ?? [],
+      testCasesOutputs: req.body.testCasesOutputs ?? [],
+      defaultCode: req.body.defaultCode ?? {},
+      solution: req.body.solution ?? {},
+    });
     if (!result.acknowledged) {
       res.status(500).send("Failed to insert question");
       return;
@@ -70,3 +89,38 @@ router.post('/question', async (req: express.Request<{}, {}, NewQuestion>, res, 
   }
 });
 
+router.get("/questions", async (req, res, next) => {
+  let searchObj: any = {};
+  if (req.body.topics && req.body.topics.length > 0) {
+    searchObj.topics = {"$elemMatch": { "$in": req.body.topics}};
+  }
+  if (req.body.difficulty && req.body.difficulty.length > 0) {
+    searchObj.difficulty = { "$in": req.body.difficulty};
+  }
+  if (req.body.searchTitle) {
+    // TODO: Implement atlas search
+    // searchObj.title = { "$regex": req.body.searchTitle, "$options": "i"};
+  }
+  const limit = req.body.limit ?? 10;
+  const page = req.body.page ?? 1;
+  const sortObj = req.body.sort ?? {title: 1};
+  try {
+    await mongoClient.connect();
+    let db = mongoClient.db("question_db");
+    let collection = db.collection("questions");
+    console.log(searchObj)
+    console.log(limit)
+    console.log(page)
+    let result = await collection.find(searchObj).sort(sortObj).limit(limit+1).skip((page-1)*limit).toArray();
+    console.log(result)
+    let hasNextPage = result.length === limit + 1;
+    if (hasNextPage) {
+      result = result.slice(0, limit);
+    }
+    let responseObj: any = { questions: result };
+    responseObj["hasNextPage"] = hasNextPage;
+    res.status(200).send(responseObj);
+  } finally {
+    await mongoClient.close();
+  }
+});
