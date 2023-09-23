@@ -6,7 +6,7 @@
     "start": "yarn swagger-autogen && ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest -c ./test/vitest.config.unit.ts"
   },
   "dependencies": {
     "debug": "~2.6.9",
