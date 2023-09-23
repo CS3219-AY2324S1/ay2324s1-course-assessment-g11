@@ -3,10 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "yarn swagger-autogen && ts-node-dev src/app.ts",
+    "start": "dotenv -e ../../.env yarn swagger-autogen && ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "build": "tsc",
-    "test": "vitest -c ./test/vitest.config.unit.ts"
+    "test": "vitest run -c ./test/vitest.config.unit.ts",
+    "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarn systemtest:ci",
+    "systemtest:ci": "yarn systemtest:docker:up && yarn systemtest:prisma:migrate:deploy && yarn systemtest:vitest && yarn systemtest:docker:down",
+    "systemtest:docker:up": "docker compose --env-file systemtest/secrets/.env.user-service-system-test -f ./systemtest/user-service-postgre-Docker-compose.yml up -d",
+    "systemtest:prisma:migrate:deploy": "yarn prisma migrate deploy && prisma generate",
+    "systemtest:vitest": "vitest run -c ./systemtest/vitest.config.system.ts",
+    "systemtest:docker:down": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml down"
   },
   "dependencies": {
     "debug": "~2.6.9",
@@ -20,6 +26,7 @@
     "@types/morgan": "^1.9.5",
     "@types/node": "^20.6.2",
     "@types/supertest": "^2.0.12",
+    "dotenv-cli": "^7.3.0",
     "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0",
