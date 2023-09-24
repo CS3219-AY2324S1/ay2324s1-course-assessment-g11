@@ -15,6 +15,7 @@
     "systemtest:docker:down": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml down"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.18.2",
     "morgan": "~1.9.1"

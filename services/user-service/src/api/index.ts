@@ -7,7 +7,7 @@ indexRouter.post("/", function(req : express.Request, res : express.Response) {
 	userDatabaseFunctions.createUser(req.body).then(
 		(result) => {
 			if (result === null) {
-				res.status(400).end();
+				res.status(400).append("Is-User-Already-Found", "true").end();
 			} else {
 				res.status(201).json(result);
 			}
