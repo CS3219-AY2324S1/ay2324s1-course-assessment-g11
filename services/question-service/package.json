@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "start": "yarn run build && node ./bin/www",
-    "dev": "yarn run build && nodemon ./bin/www"
+    "start": "ts-node src/app.ts",
+    "dev": "nodemon src/app.ts",
+    "start:dev": "yarn build && node ./dist/app.js"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
@@ -23,6 +24,7 @@
     "@types/morgan": "^1.9.5",
     "@types/node": "^20.6.2",
     "@types/sanitize-html": "^2.9.0",
+    "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2"
   }
