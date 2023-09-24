@@ -5,8 +5,6 @@ import {App} from "firebase-admin/lib/app";
 import path from 'path';
 import process from "process";
 
-dotenv.config({ path: path.resolve(process.cwd(), "../../.env")});
-
 // Will not work unless you have the correct service account details saved in the environment variable
 const serviceAccountObject : object = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT as string);
 

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "dotenv -e ../../.env yarn swagger-autogen && ts-node-dev src/app.ts",
+    "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "build": "tsc",
     "test": "vitest run -c ./test/vitest.config.unit.ts",
