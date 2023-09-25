@@ -193,3 +193,30 @@ router.delete("/question/:id", async (req, res, next) => {
     await mongoClient.close();
   }
 });
+
+router.get("/random-question", async (req, res, next) => {
+  if (!req.body.difficulty || !["easy", "medium", "hard"].includes(req.body.difficulty)) {
+    res.status(400).send("Invalid difficulty");
+    return;
+  }
+  let difficulty = req.body.difficulty;
+  let topics = req.body.topics ?? [];
+  try {
+    await mongoClient.connect();
+    let db = mongoClient.db("question_db");
+    let collection = db.collection<Question>("questions");
+    // Find random question filtered by difficulty and topics
+    let matchSearchObj: any = {difficulty: difficulty};
+    if (topics.length > 0) {
+      matchSearchObj.topics = {"$elemMatch": { "$in": topics}};
+    }
+    let result = await collection.aggregate([{$match: matchSearchObj}, {$sample: {size: 1}}]).toArray();
+    if (!result) {
+      res.status(404).send("Question not found");
+      return;
+    }
+    res.status(200).send(result);
+  } finally {
+    await mongoClient.close();
+  }
+});
