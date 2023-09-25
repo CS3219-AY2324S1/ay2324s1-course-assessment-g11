@@ -1,11 +1,9 @@
-// https://medium.com/geekculture/create-an-api-gateway-using-nodejs-and-express-933d1ca23322
-
 import express, {Express} from 'express';
 import cors from 'cors';
 import { setupLogging } from "./logging/logging";
 import { setupAdmin, setupUserIdMatch, setupIsLoggedIn } from "./auth/auth";
 import { setupProxies } from "./proxy/proxy";
-import { ROUTES } from "./routes/routes";
+import { proxied_routes } from "./proxied_routes/proxied_routes";
 import { createEventRoutes } from "./api/events/index";
 import {createServer} from "http";
 import {Server, Socket} from "socket.io";
@@ -38,10 +36,10 @@ app.use(cors())
 app.use('/events', createEventRoutes(io));
 
 setupLogging(app);
-setupIsLoggedIn(app, ROUTES);
-setupUserIdMatch(app, ROUTES);
-setupAdmin(app, ROUTES);
-setupProxies(app, ROUTES);
+setupIsLoggedIn(app, proxied_routes);
+setupUserIdMatch(app, proxied_routes);
+setupAdmin(app, proxied_routes);
+setupProxies(app, proxied_routes);
 
 server.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
