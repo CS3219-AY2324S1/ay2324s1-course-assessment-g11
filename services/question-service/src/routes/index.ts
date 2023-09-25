@@ -1,8 +1,9 @@
 import "dotenv/config";
 import express from 'express';
 import sanitizeHtml from 'sanitize-html';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
 import { NewQuestion } from '../models/new_question.model';
+import { Question } from "../models/question.model";
 
 export const router = express.Router();
 
@@ -107,12 +108,8 @@ router.get("/questions", async (req, res, next) => {
   try {
     await mongoClient.connect();
     let db = mongoClient.db("question_db");
-    let collection = db.collection("questions");
-    console.log(searchObj)
-    console.log(limit)
-    console.log(page)
+    let collection = db.collection<Question>("questions");
     let result = await collection.find(searchObj).sort(sortObj).limit(limit+1).skip((page-1)*limit).toArray();
-    console.log(result)
     let hasNextPage = result.length === limit + 1;
     if (hasNextPage) {
       result = result.slice(0, limit);
@@ -120,6 +117,58 @@ router.get("/questions", async (req, res, next) => {
     let responseObj: any = { questions: result };
     responseObj["hasNextPage"] = hasNextPage;
     res.status(200).send(responseObj);
+  } finally {
+    await mongoClient.close();
+  }
+});
+
+router.get("/question/:id", async (req, res, next) => {
+  try {
+    await mongoClient.connect();
+    let db = mongoClient.db("question_db");
+    let collection = db.collection<Question>("questions");
+    let result = await collection.findOne({"_id": new ObjectId(req.params.id)});
+    if (!result) {
+      res.status(404).send("Question not found");
+      return;
+    }
+    res.status(200).send(result);
+  } finally {
+    await mongoClient.close();
+  }
+});
+
+router.put("/question/:id", async (req, res, next) => {
+  // Validate request body
+  if (req.body.title && req.body.title.length > 200) {
+    res.status(400).send("Title too long");
+    return;
+  }
+  if (req.body.content) {
+    req.body.content = sanitizeHtml(req.body.content);
+  }
+  // Connect to question db
+  try {
+    await mongoClient.connect();
+    let db = mongoClient.db("question_db");
+    let collection = db.collection("questions");
+    // Find question with same title
+    let same_title_qn = await collection.findOne({title: req.body.title});
+    if (same_title_qn && same_title_qn._id.toString() !== req.params.id) {
+      res.status(400).send("Question with same title already exists: " + same_title_qn._id);
+      return;
+    }
+    let result = await collection.updateOne({"_id": new ObjectId(req.params.id)}, {
+      $set: {
+        ...req.body,
+        dateUpdated: new Date(),
+      }
+    });
+    if (!result.acknowledged) {
+      res.status(500).send("Failed to update question");
+      return;
+    }
+    res.status(200).send("Updated question");
   } finally {
     await mongoClient.close();
   }
