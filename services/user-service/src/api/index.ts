@@ -4,6 +4,7 @@ const indexRouter = express.Router();
 import userDatabaseFunctions from "../db/functions";
 
 indexRouter.post("/", function(req : express.Request, res : express.Response) {
+	console.log(req.body)
 	userDatabaseFunctions.createUser(req.body).then(
 		(result) => {
 			if (result === null) {

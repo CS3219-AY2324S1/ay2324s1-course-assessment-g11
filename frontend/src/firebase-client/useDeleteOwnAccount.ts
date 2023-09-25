@@ -2,7 +2,7 @@
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
-import {userServiceAddress } from "@/firebase-client/gateway-address";
+import {gatewayEventAddress} from "@/firebase-client/gateway-address";
 
 export const useDeleteOwnAccount = () => {
   const { dispatch } = useContext(AuthContext);
@@ -17,7 +17,7 @@ export const useDeleteOwnAccount = () => {
           This event propagates to all the microservices to prompt them to delete all data with the
           recently deleted UID
       */
-      await fetch(userServiceAddress + currentUser.uid, {
+      await fetch(gatewayEventAddress + "userDeleted/" + currentUser.uid, {
         method: "DELETE"
       });
 

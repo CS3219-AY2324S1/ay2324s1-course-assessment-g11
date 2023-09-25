@@ -3,4 +3,3 @@
  */
 const gatewayAddress = "http://localhost:4000/";
 export const gatewayEventAddress = gatewayAddress + "events/";
-export const userServiceAddress = "http://localhost:5001/";
