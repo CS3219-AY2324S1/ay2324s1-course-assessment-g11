@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 
-const socket = io('http://localhost:5001');
+const socket = io('http://localhost:5001/test');
 
 export default function Home() {
   const [text, setText] = useState<string>('');
