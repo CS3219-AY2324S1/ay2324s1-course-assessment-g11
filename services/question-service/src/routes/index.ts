@@ -173,3 +173,23 @@ router.put("/question/:id", async (req, res, next) => {
     await mongoClient.close();
   }
 });
+
+router.delete("/question/:id", async (req, res, next) => {
+  try {
+    await mongoClient.connect();
+    let db = mongoClient.db("question_db");
+    let collection = db.collection("questions");
+    let result = await collection.deleteOne({"_id": new ObjectId(req.params.id)});
+    if (!result.acknowledged) {
+      res.status(500).send("Failed to delete question");
+      return;
+    }
+    if (result.deletedCount === 0) {
+      res.status(404).send("Question not found");
+      return;
+    }
+    res.status(200).send("Deleted question");
+  } finally {
+    await mongoClient.close();
+  }
+});
