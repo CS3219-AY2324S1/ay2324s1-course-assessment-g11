@@ -7,7 +7,7 @@ Visit http://localhost:5001/docs for REST API docs.
 WebSocket Events (copied from `routes/room.ts#initSocketListeners`):
 
 ```typescript
-  socket.on("/room/join", (room_id: string) => {...};
+  socket.on("/room/join", (room_id: string, user_id: string) => {...};
 
   socket.on("/room/update", (text: string) => roomUpdate(io, socket, room_id, text));
 
@@ -15,6 +15,11 @@ WebSocket Events (copied from `routes/room.ts#initSocketListeners`):
 
   socket.on("/room/load", () => loadTextFromDb(io, socket, room_id));
 ```
+
+`socket.disconnect()`
+
+On disconnect, removes users from session db and change status to inactive if no users are present.
+To reconnect, simply join the same room again.
 
 ### Demo
 
