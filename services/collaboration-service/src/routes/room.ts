@@ -28,6 +28,23 @@ function mapSocketToRoomAndUser(
   };
 }
 
+function updateStatus(socket_id: string) {
+  if (!socketMap[socket_id]) {
+    return;
+  }
+  const { room_id } = socketMap[socket_id];
+  const session = sessions[room_id];
+  if (!session) {
+    return;
+  }
+
+  if (session.users.length === 0) {
+    session.status = "inactive";
+  } else {
+    session.status = "active";
+  }
+}
+
 function joinRoom(room_id: string, user_id: string): void {
   if (!sessions[room_id]) {
     sessions[room_id] = {
@@ -113,6 +130,7 @@ function loadTextFromDb(io: Server, socket: Socket, room_id: string): void {
 function userDisconnect(socket: Socket): void {
   console.log("User disconnected:", socket.id);
   disconnectUserFromDb(socket.id);
+  updateStatus(socket.id);
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
