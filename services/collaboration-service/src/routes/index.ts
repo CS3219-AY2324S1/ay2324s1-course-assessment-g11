@@ -1,6 +1,4 @@
-import express, { Request, Response } from 'express';
-import { Socket } from 'socket.io';
-import { io } from '../app';
+import express, { Request, Response } from "express";
 
 export const router = express.Router();
 

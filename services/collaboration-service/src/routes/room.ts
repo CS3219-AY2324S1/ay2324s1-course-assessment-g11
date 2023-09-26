@@ -70,13 +70,28 @@ function roomUpdateFromDb(io: Server, socket: Socket, room_id: string): void {
   }
 }
 
+function loadTextFromDb(io: Server, socket: Socket, room_id: string): void {
+  if (sessions[room_id] && sessions[room_id].saved_text) {
+    const text = sessions[room_id].saved_text!;
+    roomUpdate(io, socket, room_id, text);
+  }
+}
+
+function initSocketListeners(io: Server, socket: Socket, room_id: string) {
+  socket.on("/room/update", (text) => roomUpdate(io, socket, room_id, text));
+
+  socket.on("/room/save", (text) => saveText(room_id, text));
+
+  socket.on("/room/load", () => loadTextFromDb(io, socket, room_id));
+}
+
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
   // API to join a room
-  router.post("/join/:id", (req: Request, res: Response) => {
-    const room_id = req.params.id as string;
-    const user_id = req.query.user_id as string;
+  router.post("/join", (req: Request, res: Response) => {
+    const room_id = req.body.room_id as string;
+    const user_id = req.body.user_id as string;
 
     if (!room_id) {
       return res.status(400).json({ error: "Invalid input parameters" });
@@ -91,13 +106,7 @@ export const roomRouter = (io: Server) => {
       console.log(socket.id + " joined room:", room_id);
       roomUpdateFromDb(io, socket, room_id);
 
-      socket.on("/room/update", (text) =>
-        roomUpdate(io, socket, room_id, text)
-      );
-
-      socket.on("disconnect", () => {
-        console.log("User disconnected:", socket.id);
-      });
+      initSocketListeners(io, socket, room_id);
     });
 
     res.status(200).json({
@@ -109,7 +118,8 @@ export const roomRouter = (io: Server) => {
   // API to save text
   router.post("/save", (req: Request, res: Response) => {
     try {
-      const { room_id, text } = req.body;
+      const room_id = req.body.room_id as string;
+      const text = req.body.text as string;
 
       if (!(room_id in sessions)) {
         return res.status(400).json({ error: "Invalid roomId provided" });
@@ -137,11 +147,7 @@ export const roomRouter = (io: Server) => {
       joinRoom(room_id, socket.id);
       roomUpdateFromDb(io, socket, room_id);
 
-      socket.on("/room/update", (text) =>
-        roomUpdate(io, socket, room_id, text)
-      );
-
-      socket.on("/room/save", (text) => saveText(room_id, text));
+      initSocketListeners(io, socket, room_id);
     });
 
     socket.on("disconnect", () => {

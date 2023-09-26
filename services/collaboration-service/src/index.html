@@ -9,6 +9,7 @@
 
     <textarea id="textEditor" rows="10" cols="50"></textarea>
     <button id="saveButton">Save</button>
+    <button id="loadButton">Load</button>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -108,6 +109,11 @@
           } else {
             saveRoomBySocket(socket, text);
           }
+        });
+
+        loadButton.addEventListener("click", () => {
+          console.log("to load");
+          socket.emit("/room/load");
         });
       };
     </script>

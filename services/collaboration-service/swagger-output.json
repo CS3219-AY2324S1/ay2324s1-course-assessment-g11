@@ -21,32 +21,32 @@
         }
       }
     },
-    "/room/join/{id}": {
-      "get": {
+    "/room/join": {
+      "post": {
         "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK"
           },
           "400": {
             "description": "Bad Request"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "room_id": {
+                    "example": "any"
+                  },
+                  "user_id": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
