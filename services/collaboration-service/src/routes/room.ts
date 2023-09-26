@@ -78,9 +78,11 @@ function loadTextFromDb(io: Server, socket: Socket, room_id: string): void {
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
-  socket.on("/room/update", (text) => roomUpdate(io, socket, room_id, text));
+  socket.on("/room/update", (text: string) =>
+    roomUpdate(io, socket, room_id, text)
+  );
 
-  socket.on("/room/save", (text) => saveText(room_id, text));
+  socket.on("/room/save", (text: string) => saveText(room_id, text));
 
   socket.on("/room/load", () => loadTextFromDb(io, socket, room_id));
 }
