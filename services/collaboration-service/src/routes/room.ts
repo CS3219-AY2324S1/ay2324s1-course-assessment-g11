@@ -5,6 +5,7 @@ interface Room {
   users_socket_id: Array<string>;
   status: "active" | "inactive";
   text: string;
+  saved_text?: string;
 }
 
 const sessions: Record<string, Room> = {};
@@ -36,6 +37,20 @@ function saveRoom(room_id: string, text: string): void {
   }
 }
 
+function saveText(room_id: string, text: string): void {
+  if (!sessions[room_id]) {
+    sessions[room_id] = {
+      users_socket_id: [],
+      status: "active",
+      text: text,
+      saved_text: text,
+    };
+  } else {
+    sessions[room_id].text = text;
+    sessions[room_id].saved_text = text;
+  }
+}
+
 // Socket callbacks
 function roomUpdate(
   io: Server,
@@ -59,7 +74,7 @@ export const roomRouter = (io: Server) => {
   const router = express.Router();
 
   // API to join a room
-  router.get("/join/:id", (req: Request, res: Response) => {
+  router.post("/join/:id", (req: Request, res: Response) => {
     const room_id = req.params.id as string;
     const user_id = req.query.user_id as string;
 
@@ -100,7 +115,7 @@ export const roomRouter = (io: Server) => {
         return res.status(400).json({ error: "Invalid roomId provided" });
       }
 
-      saveRoom(room_id, text);
+      saveText(room_id, text);
 
       res.status(200).json({
         message: "Session saved successfully",
@@ -125,6 +140,8 @@ export const roomRouter = (io: Server) => {
       socket.on("/room/update", (text) =>
         roomUpdate(io, socket, room_id, text)
       );
+
+      socket.on("/room/save", (text) => saveText(room_id, text));
     });
 
     socket.on("disconnect", () => {
