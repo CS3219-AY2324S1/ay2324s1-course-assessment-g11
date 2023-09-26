@@ -48,6 +48,13 @@ function roomUpdate(
   saveRoom(room_id, text);
 }
 
+function roomUpdateFromDb(io: Server, socket: Socket, room_id: string): void {
+  if (sessions[room_id]) {
+    const text = sessions[room_id].text;
+    roomUpdate(io, socket, room_id, text);
+  }
+}
+
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
@@ -64,8 +71,10 @@ export const roomRouter = (io: Server) => {
 
     io.once("connection", (socket: Socket) => {
       console.log("Room.ts: User connected:", socket.id);
+
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
+      roomUpdateFromDb(io, socket, room_id);
 
       socket.on("/room/update", (text) =>
         roomUpdate(io, socket, room_id, text)
@@ -83,7 +92,7 @@ export const roomRouter = (io: Server) => {
   });
 
   // API to save text
-  router.post("/save", (req: SaveTextRequest, res: Response) => {
+  router.post("/save", (req: Request, res: Response) => {
     try {
       const { room_id, text } = req.body;
 
@@ -111,6 +120,7 @@ export const roomRouter = (io: Server) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
       joinRoom(room_id, socket.id);
+      roomUpdateFromDb(io, socket, room_id);
 
       socket.on("/room/update", (text) =>
         roomUpdate(io, socket, room_id, text)
