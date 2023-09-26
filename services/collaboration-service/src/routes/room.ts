@@ -2,25 +2,41 @@ import express, { Request, Response } from "express";
 import { Socket, Server } from "socket.io";
 
 interface Room {
-  users_socket_id: Array<string>;
+  users: Array<string>;
   status: "active" | "inactive";
   text: string;
   saved_text?: string;
 }
 
+interface SocketDetails {
+  room_id: string;
+  user_id: string;
+}
+
 const sessions: Record<string, Room> = {};
-const users: Record<string, string> = {}; // true_user_id, socket_id
+const socketMap: Record<string, SocketDetails> = {};
 
 // Data Access Layer
+function mapSocketToRoomAndUser(
+  socket_id: string,
+  room_id: string,
+  user_id: string
+) {
+  socketMap[socket_id] = {
+    room_id: room_id,
+    user_id: user_id,
+  };
+}
+
 function joinRoom(room_id: string, user_id: string): void {
   if (!sessions[room_id]) {
     sessions[room_id] = {
-      users_socket_id: [user_id],
+      users: [user_id],
       status: "active",
       text: "",
     };
   } else {
-    sessions[room_id].users_socket_id.push(user_id);
+    sessions[room_id].users.push(user_id);
     sessions[room_id].status = "active";
   }
 }
@@ -28,7 +44,7 @@ function joinRoom(room_id: string, user_id: string): void {
 function saveRoom(room_id: string, text: string): void {
   if (!sessions[room_id]) {
     sessions[room_id] = {
-      users_socket_id: [],
+      users: [],
       status: "active",
       text: text,
     };
@@ -40,7 +56,7 @@ function saveRoom(room_id: string, text: string): void {
 function saveText(room_id: string, text: string): void {
   if (!sessions[room_id]) {
     sessions[room_id] = {
-      users_socket_id: [],
+      users: [],
       status: "active",
       text: text,
       saved_text: text,
@@ -48,6 +64,23 @@ function saveText(room_id: string, text: string): void {
   } else {
     sessions[room_id].text = text;
     sessions[room_id].saved_text = text;
+  }
+}
+
+function disconnectUserFromDb(socket_id: string): void {
+  if (!socketMap[socket_id]) {
+    return;
+  }
+  const { room_id, user_id } = socketMap[socket_id];
+  const session = sessions[room_id];
+
+  if (!session) {
+    return;
+  } else {
+    const index = session.users.indexOf(user_id);
+    if (index > -1) {
+      sessions[room_id].users.splice(index, 1);
+    }
   }
 }
 
@@ -77,6 +110,11 @@ function loadTextFromDb(io: Server, socket: Socket, room_id: string): void {
   }
 }
 
+function userDisconnect(socket: Socket): void {
+  console.log("User disconnected:", socket.id);
+  disconnectUserFromDb(socket.id);
+}
+
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   socket.on("/room/update", (text: string) =>
     roomUpdate(io, socket, room_id, text)
@@ -89,6 +127,21 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
 
 export const roomRouter = (io: Server) => {
   const router = express.Router();
+
+  // API to get room details
+  router.get("/:room_id", (req: Request, res: Response) => {
+    const room_id = req.params.room_id as string;
+
+    if (!sessions[room_id]) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+
+    return res.status(200).json({
+      message: "Session exists",
+      room_id: room_id,
+      info: sessions[room_id],
+    });
+  });
 
   // API to join a room
   router.post("/join", (req: Request, res: Response) => {
@@ -116,6 +169,7 @@ export const roomRouter = (io: Server) => {
       console.log("Room.ts: User connected:", socket.id);
 
       socket.join(room_id);
+      mapSocketToRoomAndUser(socket.id, room_id, user_id);
       console.log(socket.id + " joined room:", room_id);
       roomUpdateFromDb(io, socket, room_id);
 
@@ -149,18 +203,17 @@ export const roomRouter = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log("Room.ts: User connected:", socket.id);
 
-    socket.on("/room/join", (room_id: string) => {
+    socket.on("/room/join", (room_id: string, user_id: string) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
-      joinRoom(room_id, socket.id);
+      joinRoom(room_id, user_id);
+      mapSocketToRoomAndUser(socket.id, room_id, user_id);
       roomUpdateFromDb(io, socket, room_id);
 
       initSocketListeners(io, socket, room_id);
     });
 
-    socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
-    });
+    socket.on("disconnect", () => userDisconnect(socket));
   });
 
   return router;

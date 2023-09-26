@@ -21,6 +21,29 @@
         }
       }
     },
+    "/room/{room_id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "room_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
     "/room/join": {
       "post": {
         "description": "",

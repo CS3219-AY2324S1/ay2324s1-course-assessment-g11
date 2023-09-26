@@ -4,7 +4,7 @@
 
 Visit http://localhost:5001/docs for REST API docs.
 
-WebSocket Events:
+WebSocket Events (copied from `routes/room.ts#initSocketListeners`):
 
 ```typescript
   socket.on("/room/join", (room_id: string) => {...};

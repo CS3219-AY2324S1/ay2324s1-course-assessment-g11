@@ -10,6 +10,7 @@
     <textarea id="textEditor" rows="10" cols="50"></textarea>
     <button id="saveButton">Save</button>
     <button id="loadButton">Load</button>
+    <button id="disconnectButton">Disconnect</button>
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -23,7 +24,7 @@
       if (api === "rest") {
         joinRoomByRestApi(room, user);
       } else {
-        joinRoomBySocket(socket, room);
+        joinRoomBySocket(socket, room, user);
       }
 
       /** Using REST API -- not recommended **/
@@ -76,8 +77,8 @@
       }
 
       /** Recommended: Using Socket.io EventEmitters as API **/
-      function joinRoomBySocket(socket, room) {
-        socket.emit("/room/join", room);
+      function joinRoomBySocket(socket, room, user) {
+        socket.emit("/room/join", room, user);
       }
 
       function saveRoomBySocket(socket, text) {
@@ -87,6 +88,7 @@
       // Socket EventListeners and EventEmitters
       const textEditor = document.getElementById("textEditor");
       const saveButton = document.getElementById("saveButton");
+      const loadButton = document.getElementById("loadButton");
 
       window.onload = () => {
         socket.on("/room/update", ({ text }) => {
@@ -114,6 +116,11 @@
         loadButton.addEventListener("click", () => {
           console.log("to load");
           socket.emit("/room/load");
+        });
+
+        disconnectButton.addEventListener("click", () => {
+          console.log("to disconnect");
+          socket.disconnect();
         });
       };
     </script>
