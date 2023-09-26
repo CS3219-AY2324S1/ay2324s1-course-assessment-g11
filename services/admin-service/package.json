@@ -5,7 +5,7 @@
   "scripts": {
     "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
     "test": "dotenv -e ../../.env.firebase_emulators_test yarn test:ci",
-    "test:ci": "firebase emulators:exec \"vitest run -c vitest.config.unit.ts\"",
+    "test:ci": "firebase emulators:exec \"vitest run -c ./test/vitest.config.unit.ts\"",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts"
   },
   "dependencies": {
