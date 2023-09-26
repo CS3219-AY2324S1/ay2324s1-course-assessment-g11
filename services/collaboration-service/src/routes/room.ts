@@ -97,7 +97,18 @@ export const roomRouter = (io: Server) => {
       return res.status(400).json({ error: "Invalid input parameters" });
     }
 
-    joinRoom(room_id, user_id);
+    try {
+      joinRoom(room_id, user_id);
+
+      res.status(201).json({
+        message: "Session created successfully",
+        room_id: room_id,
+        info: sessions[room_id],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error saving session" });
+    }
 
     io.once("connection", (socket: Socket) => {
       console.log("Room.ts: User connected:", socket.id);
@@ -107,11 +118,6 @@ export const roomRouter = (io: Server) => {
       roomUpdateFromDb(io, socket, room_id);
 
       initSocketListeners(io, socket, room_id);
-    });
-
-    res.status(200).json({
-      room_id: room_id,
-      info: sessions[room_id],
     });
   });
 
@@ -127,7 +133,7 @@ export const roomRouter = (io: Server) => {
 
       saveText(room_id, text);
 
-      res.status(200).json({
+      res.status(201).json({
         message: "Session saved successfully",
         info: sessions[room_id],
       });

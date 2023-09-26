@@ -30,16 +30,16 @@
       // Sets the server connection to accept the next incoming connection to room 1.
       // Fine as long as all calls to GET API proceeds with immediate socket connection.
       function joinRoomByRestApi(room, user) {
-        var apiUrl = `http://localhost:5001/room/join`;
+        var apiUrl = "http://localhost:5001/room/join";
 
         fetch(apiUrl, {
-          Method: "POST",
-          Headers: {
-            Accept: "application.json",
+          method: "POST",
+          headers: {
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
-          Body: JSON.stringify({ room_id: room, user_id: user }),
-          Cache: "default",
+          body: JSON.stringify({ room_id: room, user_id: user }),
+          cache: "default",
         })
           .then((response) => {
             return response.json();
@@ -53,16 +53,16 @@
       }
 
       function saveRoomByRestApi(room, text) {
-        var apiUrl = `http://localhost:5001/room/save}`;
+        var apiUrl = "http://localhost:5001/room/save";
 
         fetch(apiUrl, {
-          Method: "POST",
-          Headers: {
-            Accept: "application.json",
+          method: "POST",
+          headers: {
+            Accept: "application/json",
             "Content-Type": "application/json",
           },
-          Body: JSON.stringify({ room_id: room, text: text }),
-          Cache: "default",
+          body: JSON.stringify({ room_id: room, text: text }),
+          cache: "default",
         })
           .then((response) => {
             return response.json();
