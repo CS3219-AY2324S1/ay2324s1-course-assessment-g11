@@ -1,129 +1,128 @@
-import express, { Request, Response } from 'express';
-import { join } from 'path';
-import { Socket, Server } from 'socket.io';
+import express, { Request, Response } from "express";
+import { Socket, Server } from "socket.io";
 
 interface Room {
-    users_socket_id: Array<string>;
-    status: "active" | "inactive";
-    text: string;
+  users_socket_id: Array<string>;
+  status: "active" | "inactive";
+  text: string;
 }
-  
-interface SaveTextRequest extends Request {
-    body: {
-        room_id: string;
-        text: string;
-    };
-}
-  
+
 const sessions: Record<string, Room> = {};
-const users: Record<string, string> = {};  // true_user_id, socket_id
+const users: Record<string, string> = {}; // true_user_id, socket_id
 
 // Data Access Layer
 function joinRoom(room_id: string, user_id: string): void {
-    if (!sessions[room_id]) {
-        sessions[room_id] = {
-            users_socket_id: [user_id],
-            status: "active",
-            text: "",
-        };
-    } else {
-        sessions[room_id].users_socket_id.push(user_id);
-        sessions[room_id].status = "active";
-    }
+  if (!sessions[room_id]) {
+    sessions[room_id] = {
+      users_socket_id: [user_id],
+      status: "active",
+      text: "",
+    };
+  } else {
+    sessions[room_id].users_socket_id.push(user_id);
+    sessions[room_id].status = "active";
+  }
 }
 
 function saveRoom(room_id: string, text: string): void {
-    if (!sessions[room_id]) {
-        sessions[room_id] = {
-            users_socket_id: [],
-            status: "active",
-            text: text,
-        };
-    } else {
-        sessions[room_id].text = text;
-    }
+  if (!sessions[room_id]) {
+    sessions[room_id] = {
+      users_socket_id: [],
+      status: "active",
+      text: text,
+    };
+  } else {
+    sessions[room_id].text = text;
+  }
 }
 
 // Socket callbacks
-function roomUpdate(io: Server, socket: Socket, room_id: string, text: string): void {
-    console.log(room_id + "  " + socket.id + " text changed:", text);
-    io.to(room_id).emit("/room/update", { text });
-    saveRoom(room_id, text);
+function roomUpdate(
+  io: Server,
+  socket: Socket,
+  room_id: string,
+  text: string
+): void {
+  console.log(room_id + "  " + socket.id + " text changed:", text);
+  io.to(room_id).emit("/room/update", { text });
+  saveRoom(room_id, text);
 }
 
 export const roomRouter = (io: Server) => {
-    const router = express.Router();
-    
-    // API to join a room
-    router.get("/join/:id", (req: Request, res: Response) => {
-        const room_id = req.params.id as string;
-        const user_id = req.query.user_id as string;
+  const router = express.Router();
 
-        if (!room_id) {
-            return res.status(400).json({ error: "Invalid input parameters" });
-        }
+  // API to join a room
+  router.get("/join/:id", (req: Request, res: Response) => {
+    const room_id = req.params.id as string;
+    const user_id = req.query.user_id as string;
 
-        joinRoom(room_id, user_id);
+    if (!room_id) {
+      return res.status(400).json({ error: "Invalid input parameters" });
+    }
 
-        io.once("connection", (socket: Socket) => {
-            console.log("Room.ts: User connected:", socket.id);
-            socket.join(room_id);
-            console.log(socket.id + " joined room:", room_id);
-    
-            socket.on("/room/update", (text) => roomUpdate(io, socket, room_id, text));
+    joinRoom(room_id, user_id);
 
-            socket.on("disconnect", () => {
-                console.log("User disconnected:", socket.id);
-            });
-        });
+    io.once("connection", (socket: Socket) => {
+      console.log("Room.ts: User connected:", socket.id);
+      socket.join(room_id);
+      console.log(socket.id + " joined room:", room_id);
 
-        res.status(200).json({
-            room_id: room_id,
-            info: sessions[room_id]
-        });
-    })
+      socket.on("/room/update", (text) =>
+        roomUpdate(io, socket, room_id, text)
+      );
 
-    // API to save text
-    router.post("/save", (req: SaveTextRequest, res: Response) => {
-        try {
-        const { room_id, text } = req.body;
-    
-        if (!(room_id in sessions)) {
-            return res.status(400).json({ error: "Invalid roomId provided" });
-        }
-    
-        const session = sessions[room_id];
-        session.text = text;
-        session.status = "active";
-    
-        res.status(200).json({
-            message: "Session saved successfully",
-            info: sessions[room_id],
-        });
-        } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Error saving session" });
-        }
+      socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+      });
     });
 
-    // WebSocket style API
-    io.on("connection", (socket: Socket) => {
-        console.log("Room.ts: User connected:", socket.id);
+    res.status(200).json({
+      room_id: room_id,
+      info: sessions[room_id],
+    });
+  });
 
-        socket.on("/room/join", (room_id: string) => {
-            socket.join(room_id);
-            console.log(socket.id + " joined room:", room_id);
-            joinRoom(room_id, socket.id);
-            
-            socket.on("/room/update", (text) => roomUpdate(io, socket, room_id, text));
-        });
+  // API to save text
+  router.post("/save", (req: SaveTextRequest, res: Response) => {
+    try {
+      const { room_id, text } = req.body;
 
-        socket.on("disconnect", () => {
-            console.log("User disconnected:", socket.id);
-        });
+      if (!(room_id in sessions)) {
+        return res.status(400).json({ error: "Invalid roomId provided" });
+      }
+
+      saveRoom(room_id, text);
+
+      res.status(200).json({
+        message: "Session saved successfully",
+        info: sessions[room_id],
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error saving session" });
+    }
+  });
+
+  // WebSocket style API
+  io.on("connection", (socket: Socket) => {
+    console.log("Room.ts: User connected:", socket.id);
+
+    socket.on("/room/join", (room_id: string) => {
+      socket.join(room_id);
+      console.log(socket.id + " joined room:", room_id);
+      joinRoom(room_id, socket.id);
+
+      socket.on("/room/update", (text) =>
+        roomUpdate(io, socket, room_id, text)
+      );
     });
 
-    return router;
+    socket.on("disconnect", () => {
+      console.log("User disconnected:", socket.id);
+    });
+  });
+
+  return router;
 };
 
 export default roomRouter;
