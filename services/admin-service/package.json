@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
+    "test": "dotenv -e ../../.env.firebase_emulators_test yarn test:ci",
+    "test:ci": "firebase emulators:exec \"vitest run -c vitest.config.unit.ts\"",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts"
   },
   "dependencies": {
@@ -16,6 +18,7 @@
     "@types/node": "^20.6.2",
     "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.5"
   }
 }

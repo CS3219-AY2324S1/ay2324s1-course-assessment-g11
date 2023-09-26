@@ -1,12 +1,12 @@
 import express, {Router} from 'express';
-import {listAllFirebaseUsers, removeAdminFromFirebaseUid, setFirebaseUidAsAdmin} from "../firebase-server/firebaseApp";
+import firebaseWrappers from "../firebase-server/firebaseWrappers";
 
 var router : Router = express.Router();
 
 router.get('/', function(req : express.Request, res : express.Response) {
   // Extract the next page token
   const nextPageToken = req.get('Next-Page-Token');
-  listAllFirebaseUsers(nextPageToken).then((result) => {
+  firebaseWrappers.listAllFirebaseUsers(nextPageToken).then((result) => {
     res.status(200).json(result);
   }).catch((error) => {
     console.log(error);
@@ -15,7 +15,7 @@ router.get('/', function(req : express.Request, res : express.Response) {
 });
 
 router.put('/setAdmin/:uid', function(req : express.Request, res : express.Response) {
-  setFirebaseUidAsAdmin(req.params.uid).then((userFound) => {
+  firebaseWrappers.setFirebaseUidAsAdmin(req.params.uid).then((userFound) => {
     if (userFound) {
       res.status(200).json({
         "providerId": req.params.uid
@@ -31,7 +31,7 @@ router.put('/setAdmin/:uid', function(req : express.Request, res : express.Respo
 });
 
 router.put('/removeAdmin/:uid', function(req : express.Request, res : express.Response) {
-  removeAdminFromFirebaseUid(req.params.uid).then((userFound) => {
+  firebaseWrappers.removeAdminFromFirebaseUid(req.params.uid).then((userFound) => {
     if (userFound) {
       res.status(200).json({
         "providerId": req.params.uid
