@@ -3,8 +3,8 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import http, { Server as HTTPServer } from "http";
-// import swaggerUi from "swagger-ui-express";
-// import swaggerFile from "../swagger-output.json";
+import swaggerUi from "swagger-ui-express";
+import swaggerFile from "../swagger-output.json";
 
 import {router as indexRouter} from './routes';
 
@@ -29,7 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 /* Routers */
 app.use("/api/question-service", indexRouter);
 
-// app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
   console.log(`Listening on *:${PORT}`);

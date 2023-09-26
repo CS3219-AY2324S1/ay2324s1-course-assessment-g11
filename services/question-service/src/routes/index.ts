@@ -1,4 +1,5 @@
 import "dotenv/config";
+import util from 'util';
 import express from 'express';
 import sanitizeHtml from 'sanitize-html';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
@@ -43,6 +44,9 @@ function validateNewQuestion(reqBody: any): reqBody is NewQuestion {
   return reqBody.title && reqBody.content && ["easy", "medium", "hard"].includes(reqBody.difficulty);
 }
 
+/**
+ * Create a new question.
+ */
 router.post('/question', async (req, res, next) => {
   // Validate request body
   if (!validateNewQuestion(req.body)) {
@@ -85,12 +89,27 @@ router.post('/question', async (req, res, next) => {
       return;
     }
     res.status(201).send(result.insertedId);
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to insert question");
   } finally {
     await mongoClient.close();
   }
 });
 
+/**
+ * Get questions based on topics or difficulty, with offset based pagination.
+ */
 router.get("/questions", async (req, res, next) => {
+  /**
+   * #swagger.description = 'Get questions based on topics or difficulty, with offset based pagination.'
+   * #swagger.parameters['topics'] = { description: 'Array of topics to filter by.', type: 'array' }
+   * #swagger.parameters['difficulty'] = { description: 'Array of difficulties to filter by.', type: 'array' }
+   * #swagger.parameters['searchTitle'] = { description: 'Search for questions with titles containing this string.', type: 'string' }
+   * #swagger.parameters['limit'] = { description: 'Number of questions to return per page.', type: 'number' }
+   * #swagger.parameters['page'] = { description: 'Page number to return.', type: 'number' }
+   * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
+   */
   let searchObj: any = {};
   if (req.body.topics && req.body.topics.length > 0) {
     searchObj.topics = {"$elemMatch": { "$in": req.body.topics}};

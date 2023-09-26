@@ -1,0 +1,97 @@
+[
+    {
+        "difficulty": "easy",
+        "topics": ["Strings", "Algorithms"],
+        "title": "Reverse a String",
+        "content": "Write a function that reverses a string. The input string is given as an array of characters s.\n\nYou must do this by modifying the input array in-place with O(1) extra memory.\n\n \n\nExample 1:\n\nInput: s = [\"h\",\"e\",\"l\",\"l\",\"o\"]\nOutput: [\"o\",\"l\",\"l\",\"e\",\"h\"]\nExample 2:\n\nInput: s = [\"H\",\"a\",\"n\",\"n\",\"a\",\"h\"]\nOutput: [\"h\",\"a\",\"n\",\"n\",\"a\",\"H\"]\n \n\nConstraints:\n\n1 <= s.length <= 105\ns[i] is a printable ascii character.",
+        "testCaseInputs": ["hello", "Hannah"],
+        "testCaseOutputs": ["olleh", "hannaH"],
+        "defaultCode": {
+            "python": "class Solution:\n    def reverseString(self, s: List[str]) -> None:\n        \"\"\"\n        Do not return anything, modify s in-place instead.\n        \"\"\"\n        ",
+            "cpp": "class Solution {\npublic:\n    void reverseString(vector<char>& s) {\n        \n    }\n};",
+            "java": "class Solution {\n    public void reverseString(char[] s) {\n        \n    }\n}"
+        },
+        "solutionCode": {
+            "python": "class Solution:\n    def reverseString(self, s: List[str]) -> None:\n        \"\"\"\n        Do not return anything, modify s in-place instead.\n        \"\"\"\n        s.reverse()"
+        }
+    },
+    {
+        "difficulty": "easy",
+        "topics": ["Data Structures", "Algorithms"],
+        "title": "Linked List Cycle Detection",
+        "content": "Given head, the head of a linked list, determine if the linked list has a cycle in it.\n\nThere is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.\n\nReturn true if there is a cycle in the linked list. Otherwise, return false.",
+        "testCaseInputs": [],
+        "testCaseOutputs": [],
+        "defaultCode": {
+            "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, x):\n#         self.val = x\n#         self.next = None\n\nclass Solution:\n    def hasCycle(self, head: ListNode) -> bool:\n        ",
+            "cpp": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        \n    }\n};",
+            "java": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        \n    }\n}"
+        },
+        "solutionCode": {}
+    },
+    {
+        "difficulty": "easy",
+        "topics": ["Algorithms"],
+        "title": "Roman to Integer",
+        "content": "Roman numerals are represented by seven different symbols: I, V, X, L, C, D and M.\n\nSymbol       Value\nI             1\nV             5\nX             10\nL             50\nC             100\nD             500\nM             1000\nFor example, 2 is written as II in Roman numeral, just two one's added together. 12 is written as XII, which is simply X + II.\n\nThe number 27 is written as XXVII, which is XX + V + II.\n\nRoman numerals are usually written largest to smallest from left to right. However, the numeral for four is not IIII. Instead, the number four is written as IV. Because the one is before the five we subtract it making four.\n\nThe same principle applies to the number nine, which is written as IX. There are six instances where subtraction is used:\n\nI can be placed before V (5) and X (10) to make 4 and 9. \nX can be placed before L (50) and C (100) to make 40 and 90. \nC can be placed before D (500) and M (1000) to make 400 and 900.\nGiven a roman numeral, convert it to an integer.",
+        "testCaseInputs": ["III", "IV", "IX", "LVIII", "MCMXCIV"],
+        "testCaseOutputs": ["3", "4", "9", "58", "1994"],
+        "defaultCode": {
+            "python": "class Solution:\n    def romanToInt(self, s: str) -> int:\n        ",
+            "cpp": "class Solution {\npublic:\n    int romanToInt(string s) {\n        \n    }\n};",
+            "java": "class Solution {\n    public int romanToInt(String s) {\n        \n    }\n}"
+        }
+    },
+    {
+        "difficulty": "easy",
+        "topics": ["Algorithms", "Bit Manipulation"],
+        "title": "Add Binary",
+        "content": "Given two binary strings a and b, return their sum as a binary string.",
+        "testCaseInputs": ["11\n1", "1010\n1011"],
+        "testCaseOutputs": ["100", "10101"],
+        "defaultCode": {
+            "python": "class Solution:\n    def addBinary(self, a: str, b: str) -> str:\n        ",
+            "cpp": "class Solution {\npublic:\n    string addBinary(string a, string b) {\n        \n    }\n};",
+            "java": "class Solution {\n    public String addBinary(String a, String b) {\n        \n    }\n}"
+        }
+    },
+    {
+        "difficulty": "easy",
+        "topics": ["Algorithms", "Recursion"],
+        "title": "Fibonacci Number",
+        "content": "The Fibonacci numbers, commonly denoted F(n) form a sequence, called the Fibonacci sequence, such that each number is the sum of the two preceding ones, starting from 0 and 1. That is,\n\nF(0) = 0, F(1) = 1\nF(n) = F(n - 1) + F(n - 2), for n > 1.\nGiven n, calculate F(n).",
+        "testCaseInputs": ["2", "3", "4", "5", "6"],
+        "testCaseOutputs": ["1", "2", "3", "5", "8"],
+        "defaultCode": {
+            "python": "class Solution:\n    def fib(self, n: int) -> int:\n        ",
+            "cpp": "class Solution {\npublic:\n    int fib(int n) {\n        \n    }\n};",
+            "java": "class Solution {\n    public int fib(int n) {\n        \n    }\n}"
+        }
+    },
+    {
+        "difficulty": "easy",
+        "topics": ["Data Structures"],
+        "title": "Implement Stack using Queues",
+        "content": "Implement a last in first out (LIFO) stack using only two queues. The implemented stack should support all the functions of a normal queue (push, top, pop, and empty).\n\nImplement the MyStack class:\n\nvoid push(int x) Pushes element x to the top of the stack.\nint pop() Removes the element on the top of the stack and returns it.\nint top() Returns the element on the top of the stack.\nboolean empty() Returns true if the stack is empty, false otherwise.\nNotes:\n\nYou must use only standard operations of a queue, which means only push to back, peek/pop from front, size, and is empty operations are valid.\nDepending on your language, the queue may not be supported natively. You may simulate a queue using a list or deque (double-ended queue) as long as you use only a queue's standard operations.\n\n\nExample 1:\n\nInput\n[\"MyStack\", \"push\", \"push\", \"top\", \"pop\", \"empty\"]\n[[], [1], [2], [], [], []]\nOutput\n[null, null, null, 2, 2, false]\n\nExplanation\nMyStack myStack = new MyStack();\nmyStack.push(1);\nmyStack.push(2);\nmyStack.top(); // return 2\nmyStack.pop(); // return 2\nmyStack.empty(); // return False\n\n\nConstraints:\n\n1 <= x <= 9\nAt most 100 calls will be made to push, pop, top, and empty.\nAll the calls to pop and top are valid.\n",
+        "testCaseInputs": [],
+        "testCaseOutputs": [],
+        "defaultCode": {
+            "python": "class MyStack:\n\n    def __init__(self):\n        \"\"\"\n        Initialize your data structure here.\n        \"\"\"\n        \n\n    def push(self, x: int) -> None:\n        \"\"\"\n        Push element x onto stack.\n        \"\"\"\n        \n\n    def pop(self) -> int:\n        \"\"\"\n        Removes the element on top of the stack and returns that element.\n        \"\"\"\n        \n\n    def top(self) -> int:\n        \"\"\"\n        Get the top element.\n        \"\"\"\n        \n\n    def empty(self) -> bool:\n        \"\"\"\n        Returns whether the stack is empty.\n        \"\"\"\n        \n\n# Your MyStack object will be instantiated and called as such:\n# obj = MyStack()\n# obj.push(x)\n# param_2 = obj.pop()\n# param_3 = obj.top()\n# param_4 = obj.empty()",
+            "cpp": "class MyStack {\npublic:\n    /** Initialize your data structure here. */\n    MyStack() {\n        \n    }\n    \n    /** Push element x onto stack. */\n    void push(int x) {\n        \n    }\n    \n    /** Removes the element on top of the stack and returns that element. */\n    int pop() {\n        \n    }\n    \n    /** Get the top element. */\n    int top() {\n        \n    }\n    \n    /** Returns whether the stack is empty. */\n    bool empty() {\n        \n    }\n};",
+            "java": "class MyStack {\n\n    /** Initialize your data structure here. */\n    public MyStack() {\n        \n    }\n    \n    /** Push element x onto stack. */\n    public void push(int x) {\n        \n    }\n    \n    /** Removes the element on top of the stack and returns that element. */\n    public int pop() {\n        \n    }\n    \n    /** Get the top element. */\n    public int top() {\n        \n    }\n    \n    /** Returns whether the stack is empty. */\n    public boolean empty() {\n        \n    }\n}\n\n/**\n * Your MyStack object will be instantiated and called as such:\n * MyStack obj = new MyStack();\n * obj.push(x);\n * int param_2 = obj.pop();\n * int param_3 = obj.top();\n * boolean param_4 = obj.empty();\n */"
+        }
+    },
+    {
+        "difficulty": "medium",
+        "topics": ["Algorithms", "Bit Manipulation"],
+        "title": "Repeated DNA Sequences",
+        "content": "The DNA sequence is composed of a series of nucleotides abbreviated as 'A', 'C', 'G', and 'T'.\n\nFor example, \"ACGAATTCCG\" is a DNA sequence.\nWhen studying DNA, it is useful to identify repeated sequences within the DNA.\n\nGiven a string s that represents a DNA sequence, return all the 10-letter-long sequences (substrings) that occur more than once in a DNA molecule. You may return the answer in any order.\n\n \n\nExample 1:\n\nInput: s = \"AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT\"\nOutput: [\"AAAAACCCCC\",\"CCCCCAAAAA\"]\nExample 2:\n\nInput: s = \"AAAAAAAAAAAAA\"\nOutput: [\"AAAAAAAAAA\"]\n\n\nConstraints:\n\n1 <= s.length <= 105\ns[i] is either 'A', 'C', 'G', or 'T'.",
+        "testCaseInputs": ["AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT", "AAAAAAAAAAAAA"],
+        "testCaseOutputs": ["AAAAACCCCC\nCCCCCAAAAA", "AAAAAAAAAA"],
+        "defaultCode": {
+            "python": "class Solution:\n    def findRepeatedDnaSequences(self, s: str) -> List[str]:\n        ",
+            "cpp": "class Solution {\npublic:\n    vector<string> findRepeatedDnaSequences(string s) {\n        \n    }\n};",
+            "java": "class Solution {\n    public List<String> findRepeatedDnaSequences(String s) {\n        \n    }\n}"
+        }
+    }
+]
