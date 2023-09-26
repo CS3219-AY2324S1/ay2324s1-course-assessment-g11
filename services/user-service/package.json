@@ -9,7 +9,7 @@
     "test": "vitest run -c ./test/vitest.config.unit.ts",
     "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarn systemtest:ci",
     "systemtest:ci": "yarn systemtest:docker:up && yarn systemtest:prisma:migrate:deploy && yarn systemtest:vitest && yarn systemtest:docker:down",
-    "systemtest:docker:up": "docker compose --env-file systemtest/secrets/.env.user-service-system-test -f ./systemtest/user-service-postgre-Docker-compose.yml up -d",
+    "systemtest:docker:up": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml up -d",
     "systemtest:prisma:migrate:deploy": "yarn prisma migrate deploy && prisma generate",
     "systemtest:vitest": "vitest run -c ./systemtest/vitest.config.system.ts",
     "systemtest:docker:down": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml down"
