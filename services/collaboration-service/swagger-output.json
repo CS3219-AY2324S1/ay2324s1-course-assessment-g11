@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/test/": {
+    "/": {
       "get": {
         "description": "",
         "responses": {
@@ -21,9 +21,26 @@
         }
       }
     },
-    "/session/create": {
-      "post": {
+    "/room/join/{id}": {
+      "get": {
         "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -31,39 +48,10 @@
           "400": {
             "description": "Bad Request"
           }
-        },
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "properties": {
-                  "user1_id": {
-                    "type": "string"
-                  },
-                  "user2_id": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "application/xml": {
-              "schema": {
-                "properties": {
-                  "user1_id": {
-                    "type": "string"
-                  },
-                  "user2_id": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
         }
       }
     },
-    "/session/save": {
+    "/room/save": {
       "post": {
         "description": "",
         "responses": {
@@ -83,7 +71,7 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "session_id": {
+                  "room_id": {
                     "example": "any"
                   },
                   "text": {

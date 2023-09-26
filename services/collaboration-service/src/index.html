@@ -6,24 +6,30 @@
   </head>
   <body>
     <h1>Text Collaboration Room</h1>
-    <input type="text" id="roomId" placeholder="Enter Room ID" />
-    <button id="joinButton">Join Room</button>
 
     <textarea id="textEditor" rows="10" cols="50"></textarea>
 
     <script src="/socket.io/socket.io.js"></script>
+    <!-- <script>
+      var apiUrl = "http://localhost:5001/rooms/1?user_id=gabriel";
+      fetch(apiUrl)
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          // Work with JSON data here
+          console.log(data);
+        })
+        .catch((err) => {
+          // Do something for an error here
+        });
+    </script> -->
     <script>
-      const socket = io();
+      const socket = io("ws://localhost:5001/rooms/1?user_id=gabriel");
       const roomIdInput = document.getElementById("roomId");
-      const joinButton = document.getElementById("joinButton");
       const textEditor = document.getElementById("textEditor");
 
-      joinButton.addEventListener("click", () => {
-        const roomId = roomIdInput.value;
-
-        socket.emit("join-room", roomId);
-        console.log("joined room");
-
+      window.onload = () => {
         socket.on("textchange", ({ text }) => {
           textEditor.value = text;
           console.log("textchange");
@@ -31,9 +37,10 @@
 
         textEditor.addEventListener("change", () => {
           const text = textEditor.value;
+          console.log(text);
           socket.emit("textchange", text);
         });
-      });
+      };
     </script>
   </body>
 </html>

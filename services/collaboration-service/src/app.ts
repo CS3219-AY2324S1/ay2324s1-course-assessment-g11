@@ -7,8 +7,7 @@ import { Server as SocketIOServer } from "socket.io";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "../swagger-output.json";
 import bodyParser from "body-parser";
-import { router as testRouter } from "./routes/index";
-import { router as sessionRouter } from "./routes/session";
+import roomRouter from "./routes/room";
 
 const app: Express = express();
 const server: HTTPServer = http.createServer(app);
@@ -18,7 +17,7 @@ const socketIoOptions: any = {
     methods: ["GET", "POST"],
   },
 };
-export const io: SocketIOServer = new SocketIOServer(server, socketIoOptions);
+const io: SocketIOServer = new SocketIOServer(server, socketIoOptions);
 
 const PORT: number = parseInt(process.env.PORT || "5001")
 
@@ -31,10 +30,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 /* Routers */
-app.use("/test", testRouter);
-app.use("/session", sessionRouter);
-
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
+app.use("/room", roomRouter(io));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
   console.log(`Listening on *:${PORT}`);
