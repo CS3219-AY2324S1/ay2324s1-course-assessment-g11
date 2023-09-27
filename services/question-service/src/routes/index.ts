@@ -3,7 +3,7 @@ import util from 'util';
 import express from 'express';
 import sanitizeHtml from 'sanitize-html';
 import { MongoClient, ObjectId, ServerApiVersion } from 'mongodb';
-import { NewQuestion } from '../models/new_question.model';
+import { NewQuestion, isDifficulty } from '../models/new_question.model';
 import { Question } from "../models/question.model";
 
 export const router = express.Router();
@@ -41,15 +41,26 @@ router.get('/', function(req, res, next) {
 });
 
 function validateNewQuestion(reqBody: any): reqBody is NewQuestion {
-  return reqBody.title && reqBody.content && ["easy", "medium", "hard"].includes(reqBody.difficulty);
+  return reqBody.title && reqBody.content && isDifficulty(reqBody.difficulty);
 }
 
 /**
  * Create a new question.
  */
 router.post('/question', async (req, res, next) => {
-  // Validate request body
-  if (!validateNewQuestion(req.body)) {
+  /**
+   * #swagger.description = 'Create a new question.'
+   * #swagger.parameters['title'] = { description: 'Title of the question.', type: 'string' }
+   * #swagger.parameters['content'] = { description: 'Content of the question.', type: 'string' }
+   * #swagger.parameters['topics'] = { description: 'Array of topics of the question.', type: 'array' }
+   * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }
+   * #swagger.parameters['testCasesInputs'] = { description: 'Array of test case inputs.', type: 'array' }
+   * #swagger.parameters['testCasesOutputs'] = { description: 'Array of test case outputs.', type: 'array' }
+   * #swagger.parameters['defaultCode'] = { description: 'Object of default code for each language.', type: 'object' }
+   * #swagger.parameters['solution'] = { description: 'Object of solution code for each language.', type: 'object' }
+   */
+  const reqBody = req.body as NewQuestion;
+  if (!validateNewQuestion(reqBody)) {
     res.status(400).send("Invalid question");
     return;
   }
@@ -115,6 +126,12 @@ router.get("/questions", async (req, res, next) => {
     searchObj.topics = {"$elemMatch": { "$in": req.body.topics}};
   }
   if (req.body.difficulty && req.body.difficulty.length > 0) {
+    for (let difficulty of req.body.difficulty) {
+      if (!isDifficulty(difficulty)) {
+        res.status(400).send("Invalid difficulty");
+        return;
+      }
+    }
     searchObj.difficulty = { "$in": req.body.difficulty};
   }
   if (req.body.searchTitle) {
@@ -136,6 +153,9 @@ router.get("/questions", async (req, res, next) => {
     let responseObj: any = { questions: result };
     responseObj["hasNextPage"] = hasNextPage;
     res.status(200).send(responseObj);
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to get questions");
   } finally {
     await mongoClient.close();
   }
@@ -152,6 +172,9 @@ router.get("/question/:id", async (req, res, next) => {
       return;
     }
     res.status(200).send(result);
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to get question");
   } finally {
     await mongoClient.close();
   }
@@ -159,12 +182,27 @@ router.get("/question/:id", async (req, res, next) => {
 
 router.put("/question/:id", async (req, res, next) => {
   // Validate request body
+  /**
+   * #swagger.description = 'Update a question.'
+   * #swagger.parameters['title'] = { description: 'Title of the question.', type: 'string' }
+   * #swagger.parameters['content'] = { description: 'Content of the question.', type: 'string' }
+   * #swagger.parameters['topics'] = { description: 'Array of topics of the question.', type: 'array' }
+   * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }
+   * #swagger.parameters['testCasesInputs'] = { description: 'Array of test case inputs.', type: 'array', items: { type: 'string' } }
+   * #swagger.parameters['testCasesOutputs'] = { description: 'Array of test case outputs.', type: 'array', items: { type: 'string' } }
+   * #swagger.parameters['defaultCode'] = { description: 'Object of default code for each language.', type: 'object' }
+   * #swagger.parameters['solution'] = { description: 'Object of solution code for each language.', type: 'object' }
+   */
   if (req.body.title && req.body.title.length > 200) {
     res.status(400).send("Title too long");
     return;
   }
   if (req.body.content) {
     req.body.content = sanitizeHtml(req.body.content);
+  }
+  if (req.body.difficulty && !isDifficulty(req.body.difficulty)) {
+    res.status(400).send("Invalid difficulty");
+    return;
   }
   // Connect to question db
   try {
@@ -188,6 +226,9 @@ router.put("/question/:id", async (req, res, next) => {
       return;
     }
     res.status(200).send("Updated question");
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to update question");
   } finally {
     await mongoClient.close();
   }
@@ -208,13 +249,21 @@ router.delete("/question/:id", async (req, res, next) => {
       return;
     }
     res.status(200).send("Deleted question");
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to delete question");
   } finally {
     await mongoClient.close();
   }
 });
 
 router.get("/random-question", async (req, res, next) => {
-  if (!req.body.difficulty || !["easy", "medium", "hard"].includes(req.body.difficulty)) {
+  /**
+   * #swagger.description = 'Get a random question.'
+   * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }
+   * #swagger.parameters['topics'] = { description: 'Array of topics of the question to choose.', type: 'array' }
+   */
+  if (!isDifficulty(req.body.difficulty)) {
     res.status(400).send("Invalid difficulty");
     return;
   }
@@ -235,6 +284,9 @@ router.get("/random-question", async (req, res, next) => {
       return;
     }
     res.status(200).send(result);
+  } catch (err) {
+    console.log(util.inspect(err, {showHidden: false, depth: null, colors: true}));
+    res.status(500).send("Failed to get random question");
   } finally {
     await mongoClient.close();
   }

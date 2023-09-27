@@ -1,7 +1,12 @@
 // Specify the interface for a new question object
+const difficulties = ["easy", "medium", "hard"] as const;
+export type Difficulty = typeof difficulties[number];
+export function isDifficulty(difficulty: unknown): difficulty is Difficulty {
+    return typeof difficulty === "string" && difficulties.includes(difficulty as Difficulty);
+};
 export interface NewQuestion {
     topics: string[];
-    difficulty: "easy" | "medium" | "hard";
+    difficulty: Difficulty;
     title: string;
     content: string; // Markdown text
     testCasesInputs: string[];

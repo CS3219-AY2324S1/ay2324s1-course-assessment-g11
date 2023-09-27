@@ -21,7 +21,7 @@ async function run() {
     validator: {
         $jsonSchema: {
             bsonType: "object",
-            required: [ "topics", "difficulty", "title", "content", "testCaseInputs", "testCaseOutputs", "defaultCode", "dateCreated", "dateUpdated" ],
+            required: [ "topics", "difficulty", "title", "content", "testCaseInputs", "testCaseOutputs", "dateCreated", "dateUpdated" ],
             properties: {
                 topics: {
                 bsonType: "array",

@@ -10,13 +10,6 @@ import {router as indexRouter} from './routes';
 
 const app: Express = express();
 const server: HTTPServer = http.createServer(app);
-const socketIoOptions: any = {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "DELETE", "PUT"],
-  },
-};
-
 const PORT: number = parseInt(process.env.PORT || "5002")
 
 /* Middlewares */
