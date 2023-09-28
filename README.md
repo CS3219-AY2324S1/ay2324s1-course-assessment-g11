@@ -28,12 +28,10 @@ your services / frontend.
 ```
 /peerprep
 ├── /services
-│   ├── /admin-service (express application)
 │   ├── /user-service (express application)
 │   ├── /matching-service (express application)
 │   ├── /question-service (express application)
-│   ├── /collaboration-service (express application)
-│   └── /gateway (express application)
+│   └── /collaboration-service (express application)
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
