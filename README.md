@@ -28,6 +28,7 @@ your services / frontend.
 ```
 /peerprep
 ├── /services
+│   ├── /admin-service (express application)
 │   ├── /user-service (express application)
 │   ├── /matching-service (express application)
 │   ├── /question-service (express application)
@@ -131,3 +132,25 @@ Next steps:
 ```
 
 ```
+
+### Firebase Local Emulator Suite
+The [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite) is used to support
+automated testing of any Firebase-related functionality.
+
+The following files at the project root define the Firebase project as well as the emulators used:
+* `.firebaserc` - The Firebase project definitions
+* `firebase.json` - The emulators that are used
+
+For local testing, the file used for passing in environment variables has to be named:
+```
+.env.firebase_emulators_test
+```
+
+This file should contain the following environment variables:
+```
+FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
+FIREBASE_SERVICE_ACCOUNT={insert secret JSON value here}
+```
+
+In the CI environment, the environment variables have to be defined separately.
+For example, FIREBASE_SERVICE_ACCOUNT will be passed in as a secret on GitHub Actions.
