@@ -37,6 +37,18 @@ services:
     environment:
       - PORT=5004
 
+  admin-service:
+    build:
+      context: .
+      dockerfile: deployment/dockerfiles/Dockerfile.admin-service
+    ports:
+      - "5005:5005"
+    environment:
+      PORT: 5005
+      FIREBASE_SERVICE_ACCOUNT: /run/secrets/firebase_admin_service_account
+    secrets:
+      - firebase_admin_service_account
+
   frontend:
     build:
       context: .
