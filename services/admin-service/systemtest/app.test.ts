@@ -108,7 +108,7 @@ describe('Admin service /index', () => {
     });
 
     it(`List ${numberOfListedUsers} users in the database`, async () => {
-      const firstResponse = await request(app).get(`/`).send()
+      const firstResponse = await request(app).get(`/listUsers`).send()
       expect(firstResponse.status).toStrictEqual(200);
 
       const firstResponseBody = firstResponse.body;
@@ -118,7 +118,7 @@ describe('Admin service /index', () => {
       expect(firstUserList.length).toStrictEqual(10);
       expect(nextPageToken).toBeTruthy(); // next page token is a string
 
-      const secondResponse = await request(app).get(`/`).set('Next-Page-Token', nextPageToken).send();
+      const secondResponse = await request(app).get(`/listUsers`).set('Next-Page-Token', nextPageToken).send();
       expect(secondResponse.status).toStrictEqual(200);
 
       const secondResponseBody = secondResponse.body;

@@ -3,7 +3,7 @@ import firebaseWrappers from "../firebase-server/firebaseWrappers";
 
 var router : Router = express.Router();
 
-router.get('/', function(req : express.Request, res : express.Response) {
+router.get('/listUsers', function(req : express.Request, res : express.Response) {
   // Extract the next page token
   const nextPageToken = req.get('Next-Page-Token');
   firebaseWrappers.listAllFirebaseUsers(nextPageToken).then((result) => {
