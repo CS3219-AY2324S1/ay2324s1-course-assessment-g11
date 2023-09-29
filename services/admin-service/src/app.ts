@@ -2,8 +2,7 @@ import express, {Express} from 'express';
 
 const app: Express = express();
 
-const port = 5005;
-//const port = process.env.PORT;
+const port = process.env.PORT || 5005;
 
 import router from './api/index';
 
