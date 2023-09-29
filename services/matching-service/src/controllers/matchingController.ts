@@ -1,39 +1,13 @@
 import { Request, Response } from "express";
 import prisma from "../prismaClient";
+import { Server } from "socket.io";
 
-// const users: User[] = [
-//   // user data here based on user service but for now making some assumptions
-//   {
-//     id: 1,
-//     name: "John Doe",
-//     email: "test",
-//     role: "student",
-//     skills: ["test"],
-//     interests: ["test"],
-//     profilePicture: "test",
-//     preferences: {
-//       skills: ["test"],
-//       interests: ["test"],
-//     },
-//     isLookingForMatch: false,
-//   },
-//   {
-//     id: 2,
-//     name: "Jane Doe",
-//     email: "test",
-//     role: "student",
-//     skills: ["test"],
-//     interests: ["test"],
-//     profilePicture: "test",
-//     preferences: {
-//       skills: ["test"],
-//       interests: ["test"],
-//     },
-//     isLookingForMatch: false,
-//   },
-// ];
+export const findMatch = async (req: Request, res: Response) => {
+  const io: Server = req.app.get("io");
 
-export const findMatch = async (req: Request, res: Response, io: Server) => {
+  const users = await prisma.user.findMany();
+  console.log(users);
+
   const userId = parseInt(req.params.userId);
   const user = await prisma.user.findUnique({
     where: { id: userId },

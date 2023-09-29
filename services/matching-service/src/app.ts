@@ -9,8 +9,10 @@ const port = 3000;
 app.use(express.json());
 app.use("/api/matching", matchingRoutes);
 
-const httpServer = createServer(app);
+const httpServer = require("http").createServer(app);
 const io = new Server(httpServer);
+
+app.set("io", io);
 
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
