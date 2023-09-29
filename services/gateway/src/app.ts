@@ -8,13 +8,14 @@ import { createEventRoutes } from "./api/events/index";
 import {createServer} from "http";
 import {Server, Socket} from "socket.io";
 import {ClientToServerEvents, eventNames, ServerToClientEvents} from "../../../event_types/event_definitions";
+import {frontend_link} from "./frontend_link/frontend_link";
 
 
 const app : Express = express()
 const server = createServer(app)
 const io = new Server<ServerToClientEvents,ClientToServerEvents>(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: frontend_link,
     methods: ["POST", "DELETE"],
   },
 });

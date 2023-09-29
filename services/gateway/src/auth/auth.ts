@@ -1,7 +1,8 @@
 import { promiseVerifyIsLoggedIn, promiseVerifyIsCorrectUser, promiseVerifyIsAdmin } from './firebase';
 import express, {Express} from "express";
+import {frontend_link} from "../frontend_link/frontend_link";
 
-const redirectLink = "http://localhost:3000";
+const redirectLink = frontend_link;
 
 export const setupIsLoggedIn = (app : Express, routes : any[]) => {
   routes.forEach(r => {
