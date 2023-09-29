@@ -27,8 +27,6 @@ export const useLogin = () => {
       setIsPending(false);
 
       /*
-        Current implementation is to send this directly to the User Service.
-
         TODO: Implement connection to the Gateway to send out a UserLoggedIn event on a message queue
           This event propagates to the User microservice to check if it has an entry for storing the user's data.
           If no entry (meaning that user logged in for the first time), create an entry.

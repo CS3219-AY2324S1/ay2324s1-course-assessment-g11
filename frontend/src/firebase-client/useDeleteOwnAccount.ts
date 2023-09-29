@@ -11,8 +11,6 @@ export const useDeleteOwnAccount = () => {
       const currentUser = auth.currentUser;
 
       /*
-        Current implementation is to send this directly to the User Service.
-
         TODO: Implement connection to the Gateway to send out a UserDeleted event on a message queue
           This event propagates to all the microservices to prompt them to delete all data with the
           recently deleted UID
