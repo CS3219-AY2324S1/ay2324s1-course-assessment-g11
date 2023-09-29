@@ -26,9 +26,7 @@ io.on("connection", (socket: Socket) => {
   })
 });
 
-
-const port = 4000;
-//const port = process.env.PORT;
+const port = process.env.PORT || 4000;
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true}))
