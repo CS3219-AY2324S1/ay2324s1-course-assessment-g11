@@ -1,5 +1,5 @@
 
-import express from "express";
+import express, {Express} from "express";
 import path from "path";
 import logger from "morgan";
 import indexRouter from "./api/index";
@@ -7,10 +7,10 @@ import cors from "cors";
 import {io} from "socket.io-client";
 import {eventNames, roomNames} from "../../../event_types/event_definitions";
 
-const port = process.env.PORT || 5001;
+const port : number = parseInt(process.env.PORT || "5001");
 
-const app = express();
-const gateway_url = process.env.GATEWAY_URL || "http://localhost:4000";
+const app : Express = express();
+const gateway_url : string = process.env.GATEWAY_URL || "http://localhost:4000";
 const socket = io(gateway_url);
 
 socket.emit(eventNames.joinEventRoom, roomNames.userRoom);
