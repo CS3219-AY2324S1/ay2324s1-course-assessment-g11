@@ -5,7 +5,6 @@ import process from "process";
 import dotenv from "dotenv";
 import {App} from "firebase-admin/lib/app";
 
-dotenv.config({ path: path.resolve(process.cwd(), "../../.env")});
 const serviceAccount : object = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT as string);
 
 const firebaseApp : App = admin.initializeApp({

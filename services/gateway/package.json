@@ -5,7 +5,7 @@
   "description": "Gateway Service between frontend and backend",
   "main": "src/app.ts",
   "scripts": {
-    "start": "ts-node-dev src/app.ts",
+    "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
