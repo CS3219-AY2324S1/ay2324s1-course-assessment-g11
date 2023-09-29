@@ -3,14 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "tsc",
-    "start": "yarn run build && node ./bin/www"
+    "build": "yarn run swagger-autogen && tsc",
+    "start": "yarn run swagger-autogen && ts-node src/app.ts",
+    "dev": "yarn run swagger-autogen && nodemon src/app.ts",
+    "start:prod": "yarn build && node ./dist/app.js",
+    "swagger-autogen": "ts-node swagger.ts"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "socket.io": "^4.7.2"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.4",
