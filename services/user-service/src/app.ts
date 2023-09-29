@@ -7,12 +7,11 @@ import cors from "cors";
 import {io} from "socket.io-client";
 import {eventNames, roomNames} from "../../../event_types/event_definitions";
 
-const port = 5001;
-//const port = process.env.PORT;
+const port = process.env.PORT || 5001;
 
 const app = express();
-const gateway_url = "http://localhost:4000"
-const socket = io(gateway_url)
+const gateway_url = process.env.GATEWAY_URL || "http://localhost:4000";
+const socket = io(gateway_url);
 
 socket.emit(eventNames.joinEventRoom, roomNames.userRoom);
 
