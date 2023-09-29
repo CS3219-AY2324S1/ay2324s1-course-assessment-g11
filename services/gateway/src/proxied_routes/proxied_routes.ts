@@ -1,4 +1,6 @@
-export const proxied_routes = [
+import {ProxiedRoute} from "./proxied_route_type";
+
+export const proxied_routes : ProxiedRoute[] = [
   {
     url: '/users',
     admin_required_methods: [], // Empty, so no admin verification is done for all methods to the user-service
