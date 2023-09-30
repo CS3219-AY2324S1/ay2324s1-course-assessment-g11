@@ -33,7 +33,7 @@ export default function Room() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="description" className="h-full">
-            <Description question={question} className="h-full"/>
+            <Description question={question} participants={["Charisma", "Chun Wei"]} className="h-full"/>
           </TabsContent>
           <TabsContent value="solution">Solution</TabsContent>
         </Tabs>
