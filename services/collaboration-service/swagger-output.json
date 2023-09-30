@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/api/collaboration-service/demo/": {
+    "/demo/": {
       "get": {
         "description": "",
         "responses": {
