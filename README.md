@@ -43,6 +43,17 @@ your services / frontend.
 
 ### Getting Started - Local Development:
 
+1. **Installing secret detection hooks:** From the root directory, run:
+    ```bash
+    pip install pre-commit
+    pre-commit install
+    ```
+   
+**Disclaimer:** There is no guarantee that all secrets will be detected.
+As a tip, if you think a file will eventually store secrets, immediately add it to .gitignore upon creating
+it in case you forget later on when you have a lot more files to commit.
+
+
 1. **Installing Dependencies:** From the root directory (`/peerprep`), run:
 
    ```bash
