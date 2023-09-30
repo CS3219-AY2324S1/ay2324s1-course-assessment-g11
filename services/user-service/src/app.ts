@@ -2,7 +2,7 @@
 import express, {Express} from "express";
 import path from "path";
 import logger from "morgan";
-import indexRouter from "./api/index";
+import indexRouter from "./routes/index";
 import cors from "cors";
 import {io} from "socket.io-client";
 import {eventNames, roomNames} from "../../../event_types/event_definitions";

@@ -1,5 +1,5 @@
 import {beforeEach, expect, describe, it, vi} from 'vitest'
-import indexRouter from '../../src/api/index'
+import indexRouter from '../../src/routes/index'
 import userDatabaseFunctionsMock from '../../src/db/__mocks__/functions'
 import express from 'express';
 import {PrismaClientKnownRequestError} from "@prisma/client/runtime/library";
