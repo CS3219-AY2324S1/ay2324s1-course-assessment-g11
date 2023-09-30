@@ -38,7 +38,6 @@ export default function Room() {
           <TabsContent value="solution">Solution</TabsContent>
         </Tabs>
         <div className="flex-1">
-
           <CodeEditor />
         </div>
       </div>
