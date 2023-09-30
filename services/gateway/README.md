@@ -43,3 +43,11 @@ Besides proxying requests, the gateway service also serves as the emitter for ev
 3) The log in functionality will make a HTTP call to the gateway at the `/events/userLoggedIn` route
 4) This route will emit an event to the room
 5) The backend service that is subscribed to the room can consume the event
+
+## Required environment variables
+The Gateway requires a `FIREBASE_SERVICE_ACCOUNT` environment variable.
+
+## Local testing of the Gateway
+Steps:
+1) Add an `.env` file at the project root with the above-mentioned variable
+2) At the project root, run `yarn workspace gateway start`
