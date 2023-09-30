@@ -2,8 +2,6 @@ import { Request, Response } from "express";
 import { Server } from "socket.io";
 import prisma from "../prismaClient";
 
-const temp = false;
-
 export const findMatch = async (req: Request, res: Response) => {
   const io: Server = req.app.get("io");
 

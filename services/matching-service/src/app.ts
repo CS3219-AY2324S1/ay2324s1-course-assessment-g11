@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 app.use(express.json());
-app.use("/api/matching", matchingRoutes);
+app.use("/api/matching-service", matchingRoutes);
 
 const httpServer = require("http").createServer(app);
 const io = new Server(httpServer);
