@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/": {
+    "/api/collaboration-service/demo/": {
       "get": {
         "description": "",
         "responses": {
@@ -21,7 +21,7 @@
         }
       }
     },
-    "/room/{room_id}": {
+    "/api/collaboration-service/room/{room_id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -44,7 +44,7 @@
         }
       }
     },
-    "/room/join": {
+    "/api/collaboration-service/room/join": {
       "post": {
         "description": "",
         "responses": {
@@ -77,7 +77,7 @@
         }
       }
     },
-    "/room/save": {
+    "/api/collaboration-service/room/save": {
       "post": {
         "description": "",
         "responses": {
