@@ -80,11 +80,11 @@
 
       /** Recommended: Using Socket.io EventEmitters as API **/
       function joinRoomBySocket(socket, room, user) {
-        socket.emit("/room/join", room, user);
+        socket.emit("api/collaboration-service/room/join", room, user);
       }
 
       function saveRoomBySocket(socket, text) {
-        socket.emit("/room/save", text);
+        socket.emit("api/collaboration-service/room/save", text);
       }
 
       // Socket EventListeners and EventEmitters
@@ -93,15 +93,15 @@
       const loadButton = document.getElementById("loadButton");
 
       window.onload = () => {
-        socket.on("/room/update", ({ text }) => {
+        socket.on("api/collaboration-service/room/update", ({ text }) => {
           textEditor.value = text;
-          console.log("/room/update");
+          console.log("api/collaboration-service/room/update");
         });
 
         textEditor.addEventListener("change", () => {
           const text = textEditor.value;
           console.log(text);
-          socket.emit("/room/update", text);
+          socket.emit("api/collaboration-service/room/update", text);
         });
 
         saveButton.addEventListener("click", () => {
@@ -117,7 +117,7 @@
 
         loadButton.addEventListener("click", () => {
           console.log("to load");
-          socket.emit("/room/load");
+          socket.emit("api/collaboration-service/room/load");
         });
 
         disconnectButton.addEventListener("click", () => {

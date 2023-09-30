@@ -13,6 +13,13 @@ interface SocketDetails {
   user_id: string;
 }
 
+enum SocketEvents {
+  ROOM_JOIN = "api/collaboration-service/room/join",
+  ROOM_UPDATE = "api/collaboration-service/room/update",
+  ROOM_SAVE = "api/collaboration-service/room/save",
+  ROOM_LOAD = "api/collaboration-service/room/load",
+}
+
 const sessions: Record<string, Room> = {};
 const socketMap: Record<string, SocketDetails> = {};
 
@@ -109,7 +116,7 @@ function roomUpdate(
   text: string
 ): void {
   console.log(room_id + "  " + socket.id + " text changed:", text);
-  io.to(room_id).emit("/room/update", { text });
+  io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { text });
   saveRoom(room_id, text);
 }
 
@@ -134,13 +141,13 @@ function userDisconnect(socket: Socket): void {
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
-  socket.on("/room/update", (text: string) =>
+  socket.on(SocketEvents.ROOM_UPDATE, (text: string) =>
     roomUpdate(io, socket, room_id, text)
   );
 
-  socket.on("/room/save", (text: string) => saveText(room_id, text));
+  socket.on(SocketEvents.ROOM_SAVE, (text: string) => saveText(room_id, text));
 
-  socket.on("/room/load", () => loadTextFromDb(io, socket, room_id));
+  socket.on(SocketEvents.ROOM_LOAD, () => loadTextFromDb(io, socket, room_id));
 }
 
 export const roomRouter = (io: Server) => {
@@ -221,7 +228,7 @@ export const roomRouter = (io: Server) => {
   io.on("connection", (socket: Socket) => {
     console.log("Room.ts: User connected:", socket.id);
 
-    socket.on("/room/join", (room_id: string, user_id: string) => {
+    socket.on(SocketEvents.ROOM_JOIN, (room_id: string, user_id: string) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
       joinRoom(room_id, user_id);
