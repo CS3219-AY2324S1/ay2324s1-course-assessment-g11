@@ -18,9 +18,11 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <main>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthContextProvider>
       </main>
     </>
   )

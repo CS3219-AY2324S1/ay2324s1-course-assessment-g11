@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Code Collaboration Room</title>
+  </head>
+  <body>
+    <h1>Text Collaboration Room</h1>
+
+    <textarea id="textEditor" rows="10" cols="50"></textarea>
+    <button id="saveButton">Save</button>
+    <button id="loadButton">Load</button>
+    <button id="disconnectButton">Disconnect</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const params = new URL(document.location).searchParams;
+      const room = params.get("room") ?? 1;
+      const user = params.get("user") ?? "user";
+      const api = params.get("api") ?? "socket";
+
+      const socket = io("http://localhost:5003/");
+
+      if (api === "rest") {
+        joinRoomByRestApi(room, user);
+      } else {
+        joinRoomBySocket(socket, room, user);
+      }
+
+      /** Using REST API -- not recommended **/
+      // Sets the server connection to accept the next incoming connection to room 1.
+      // Fine as long as all calls to GET API proceeds with immediate socket connection.
+      function joinRoomByRestApi(room, user) {
+        var apiUrl =
+          "http://localhost:5003/api/collaboration-service/room/join";
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ room_id: room, user_id: user }),
+          cache: "default",
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+      }
+
+      function saveRoomByRestApi(room, text) {
+        var apiUrl =
+          "http://localhost:5003/api/collaboration-service/room/save";
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ room_id: room, text: text }),
+          cache: "default",
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+      }
+
+      /** Recommended: Using Socket.io EventEmitters as API **/
+      function joinRoomBySocket(socket, room, user) {
+        socket.emit("/room/join", room, user);
+      }
+
+      function saveRoomBySocket(socket, text) {
+        socket.emit("/room/save", text);
+      }
+
+      // Socket EventListeners and EventEmitters
+      const textEditor = document.getElementById("textEditor");
+      const saveButton = document.getElementById("saveButton");
+      const loadButton = document.getElementById("loadButton");
+
+      window.onload = () => {
+        socket.on("/room/update", ({ text }) => {
+          textEditor.value = text;
+          console.log("/room/update");
+        });
+
+        textEditor.addEventListener("change", () => {
+          const text = textEditor.value;
+          console.log(text);
+          socket.emit("/room/update", text);
+        });
+
+        saveButton.addEventListener("click", () => {
+          const text = textEditor.value;
+          console.log("to save: " + text);
+
+          if (api === "rest") {
+            saveRoomByRestApi(room, text);
+          } else {
+            saveRoomBySocket(socket, text);
+          }
+        });
+
+        loadButton.addEventListener("click", () => {
+          console.log("to load");
+          socket.emit("/room/load");
+        });
+
+        disconnectButton.addEventListener("click", () => {
+          console.log("to disconnect");
+          socket.disconnect();
+        });
+      };
+    </script>
+  </body>
+</html>
