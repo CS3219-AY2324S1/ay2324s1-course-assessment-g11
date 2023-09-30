@@ -10,9 +10,6 @@ export const useLogout = () => {
   const logout = async () => {
     try {
       const currentUser = auth.currentUser;
-      await fetch(gatewayEventAddress + "userLoggedOut/" + currentUser.uid, {
-        method: "POST"
-      });
       await signOut(auth);
       dispatch({ type: "LOGOUT" });
       
