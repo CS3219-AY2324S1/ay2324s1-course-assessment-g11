@@ -15,13 +15,7 @@ export const useLogout = () => {
       });
       await signOut(auth);
       dispatch({ type: "LOGOUT" });
-
-      /*
-        TODO: Implement connection to the Gateway to send out a UserLoggedOut event on a message queue
-          This event propagates to certain microservices like the collaboration service and match service.
-          If user logged out while in a room, the user is booted from that room.
-          If user logged out while finding a match, the match attempt is aborted.
-      */
+      
       console.log("user logged out")
     } catch (error) {
       console.log(error.message);

@@ -10,15 +10,6 @@ export const useDeleteOwnAccount = () => {
     try {
       const currentUser = auth.currentUser;
 
-      /*
-        TODO: Implement connection to the Gateway to send out a UserDeleted event on a message queue
-          This event propagates to all the microservices to prompt them to delete all data with the
-          recently deleted UID
-      */
-      await fetch(gatewayEventAddress + "userDeleted/" + currentUser.uid, {
-        method: "DELETE"
-      });
-
       // This will delete the user from the Firebase Authentication database
       await currentUser.delete();
       dispatch({ type: "LOGOUT" });
