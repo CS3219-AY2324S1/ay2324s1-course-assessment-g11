@@ -23,7 +23,7 @@ io.on("connection", (socket) => {
 
   socket.on("lookingForMatch", async (userId: number) => {
     // Handle user looking for a match
-    // You can call your matching logic here and emit events when a match is found
+    // todo: call your matching logic here and emit events when a match is found
   });
 });
 
