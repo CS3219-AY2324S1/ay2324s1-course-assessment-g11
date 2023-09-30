@@ -35,7 +35,9 @@ export default function Room() {
           <TabsContent value="description" className="h-[79vh]">
             <Description question={question} participants={["Charisma", "Chun Wei"]} className="h-full"/>
           </TabsContent>
-          <TabsContent value="solution">Solution</TabsContent>
+          <TabsContent value="solution">
+            {question.solution}
+          </TabsContent>
         </Tabs>
         <div className="flex-1">
           <CodeEditor />
