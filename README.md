@@ -32,7 +32,8 @@ your services / frontend.
 │   ├── /user-service (express application)
 │   ├── /matching-service (express application)
 │   ├── /question-service (express application)
-│   └── /collaboration-service (express application)
+│   ├── /collaboration-service (express application)
+│   └── /gateway (express application)
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment

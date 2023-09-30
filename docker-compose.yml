@@ -58,6 +58,18 @@ services:
     secrets:
       - firebase_admin_service_account
 
+  gateway:
+    build:
+      context: .
+      dockerfile: deployment/dockerfiles/Dockerfile.gateway
+    ports:
+      - "4000:4000"
+    environment:
+      PORT: 4000
+      FIREBASE_SERVICE_ACCOUNT: /run/secrets/firebase_admin_service_account
+    secrets:
+      - firebase_admin_service_account
+
   frontend:
     build:
       context: .
