@@ -5,15 +5,18 @@ type CodeEditorProps = {
   language?: string
   height?: string
   defaultValue?: string
+  className?: string
 }
 
-export default function CodeEditor({ theme = 'vs-dark', language = 'python', height = '90vh', defaultValue = '#Write your solution here' }: CodeEditorProps) {
+export default function CodeEditor({ theme = 'vs-dark', language = 'python', height = '90vh', defaultValue = '#Write your solution here', className }: CodeEditorProps) {
   return (
-    <Editor
-      height={height}
-      defaultLanguage={language}
-      defaultValue={defaultValue}
-      theme={theme}
-    />
+    <div className={className}>
+      <Editor
+        height={height}
+        defaultLanguage={language}
+        defaultValue={defaultValue}
+        theme={theme}
+      />
+    </div>
   )
 }
