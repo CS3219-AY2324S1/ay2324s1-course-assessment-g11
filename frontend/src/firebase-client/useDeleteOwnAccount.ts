@@ -10,6 +10,9 @@ export const useDeleteOwnAccount = () => {
     try {
       const currentUser = auth.currentUser;
 
+      await fetch(gatewayEventAddress + "userDeleted/" + currentUser.uid, {
+        method: "DELETE"
+      });
       // This will delete the user from the Firebase Authentication database
       await currentUser.delete();
       dispatch({ type: "LOGOUT" });

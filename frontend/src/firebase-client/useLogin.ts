@@ -26,6 +26,19 @@ export const useLogin = () => {
       console.log(user.uid, user.displayName, user.photoURL);
       setIsPending(false);
 
+      const response = await fetch(gatewayEventAddress + "userLoggedIn", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(
+          {
+            uid: user.uid,
+            displayName: user.displayName,
+            photoUrl: user.photoURL
+          }
+        )
+      })
     } catch (error) {
       console.log(error);
       setError(error.message);
