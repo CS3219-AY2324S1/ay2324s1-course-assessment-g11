@@ -39,9 +39,9 @@ export function TypographyBodyHeavy({ children }: { children: React.ReactNode })
   )
 }
 
-export function TypographySmall({ children }: { children: React.ReactNode }) {
+export function TypographySmall({ children, className }: { children: React.ReactNode, className?: string }) {
   return (
-    <small className="text-sm font-normal leading-tight">
+    <small className={`text-sm font-normal leading-tight ${className}`}>
       {children}
     </small>
   )

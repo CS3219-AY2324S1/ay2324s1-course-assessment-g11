@@ -8,7 +8,7 @@ type CodeEditorProps = {
   className?: string
 }
 
-export default function CodeEditor({ theme = 'vs-dark', language = 'python', height = '90vh', defaultValue = '#Write your solution here', className }: CodeEditorProps) {
+export default function CodeEditor({ theme = 'vs-dark', language = 'python', height = '60vh', defaultValue = '#Write your solution here', className }: CodeEditorProps) {
   return (
     <div className={className}>
       <Editor
