@@ -65,6 +65,7 @@ export default function Interviews() {
         </TypographyH2>
         <div>
           <TypographySmall>Choose question difficulty</TypographySmall>
+          {/* TODO: will refactor this to a component with .map() later */}
           <div className="mt-2 mb-4 flex gap-2 bg-popover w-min rounded-lg">
             <Button className="w-32" variant={difficulty == "easy" ? "outline" : "secondary"} value="easy" onClick={(e) => setDifficulty(e.currentTarget.value)}>Easy</Button>
             <Button className="w-32" variant={difficulty == "medium" ? "outline" : "secondary"} value="medium" onClick={(e) => setDifficulty(e.currentTarget.value)}>Medium</Button>
