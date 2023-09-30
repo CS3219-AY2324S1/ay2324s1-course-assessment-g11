@@ -49,12 +49,16 @@ export const findMatch = async (req: Request, res: Response) => {
         const now = new Date();
         await prisma.user.update({
           where: { id: userId },
-          data: { lastConnected: now },
+          data: {
+            lastConnected: now,
+          },
         });
 
         await prisma.user.update({
           where: { id: matchedUser.id },
-          data: { lastConnected: now },
+          data: {
+            lastConnected: now,
+          },
         });
 
         // Emit match found event to both users
