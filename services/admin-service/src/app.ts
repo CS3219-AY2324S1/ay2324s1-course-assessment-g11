@@ -4,7 +4,7 @@ const app: Express = express();
 
 const port : number = parseInt(process.env.PORT || "5005");
 
-import router from './api/index';
+import router from './routes/index';
 
 app.use('/', router);
 
