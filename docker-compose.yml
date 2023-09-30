@@ -7,17 +7,6 @@ secrets:
     file: ./secrets/firebase_admin_service_account.json
 
 services:
-  postgres-db:
-    image: postgres
-    ports:
-      - "5431:5432"
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: peerprepdb
-      POSTGRES_PASSWORD: /run/secrets/postgres_password
-    secrets:
-      - postgres_password
-
   user-service:
     build:
       context: .
