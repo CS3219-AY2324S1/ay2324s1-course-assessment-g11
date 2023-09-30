@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Check, ChevronsUpDown, Undo, Redo, Settings } from "lucide-react"
+import { Check, ChevronsUpDown, Undo, Redo, Settings, Play } from "lucide-react"
 import Editor from '@monaco-editor/react';
 
 import { cn } from "@/lib/utils"
@@ -16,6 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { Card } from "../ui/card";
+import { TypographyBody, TypographyBodyHeavy } from "../ui/typography";
 
 type CodeEditorProps = {
   theme?: string
@@ -111,6 +113,18 @@ export default function CodeEditor({
         defaultValue={defaultValue}
         theme={theme}
       />
+      <Card className="flex-1 p-2 mt-2">
+        <div className="h-[9vh] p-2">
+        <TypographyBodyHeavy>Console</TypographyBodyHeavy>
+        </div>
+        <div className="flex justify-end gap-2">
+        <Button variant="outline">
+          <Play className="mr-1"/>
+          Run
+        </Button>
+        <Button variant="default">Leave Room</Button>
+        </div>
+      </Card>
     </div>
   )
 }

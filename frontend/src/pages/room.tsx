@@ -21,7 +21,7 @@ export default function Room() {
   }
   
   return (
-    <div className='h-[calc(100vh-80px)] p-12'>
+    <div className='h-[calc(100vh-80px)] px-12 py-6'>
       <div className="flex h-full">
         <Tabs defaultValue="description" className="flex-1">
           <TabsList>
@@ -32,7 +32,7 @@ export default function Room() {
               <TypographyBody>Solution</TypographyBody>
             </TabsTrigger>
           </TabsList>
-          <TabsContent value="description" className="h-full">
+          <TabsContent value="description" className="h-[79vh]">
             <Description question={question} participants={["Charisma", "Chun Wei"]} className="h-full"/>
           </TabsContent>
           <TabsContent value="solution">Solution</TabsContent>
