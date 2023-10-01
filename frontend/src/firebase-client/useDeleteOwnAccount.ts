@@ -2,16 +2,20 @@
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
-import {gatewayEventAddress} from "@/firebase-client/gateway-address";
+import {userApiPathAddress} from "@/firebase-client/gateway-address";
 
 export const useDeleteOwnAccount = () => {
   const { dispatch } = useContext(AuthContext);
   const deleteOwnAccount = async () => {
     try {
       const currentUser = auth.currentUser;
+      const idToken = await currentUser.getIdToken(true);
 
-      await fetch(gatewayEventAddress + "userDeleted/" + currentUser.uid, {
-        method: "DELETE"
+      await fetch(userApiPathAddress + currentUser.uid, {
+        method: "DELETE",
+        headers: {
+          "User-Id-Token": idToken
+        }
       });
       // This will delete the user from the Firebase Authentication database
       await currentUser.delete();
