@@ -1,7 +1,8 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
-import Layout from '../components/layout'
+import Layout from '../components/common/layout'
 import { Noto_Sans } from 'next/font/google'
+import AuthContextProvider from "@/contexts/AuthContext";
 
 const notoSans = Noto_Sans({
   weight: ['400', '500', '600', '700', '800', '900'],
@@ -17,9 +18,11 @@ export default function App({ Component, pageProps }: AppProps) {
         }
       `}</style>
       <main>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <AuthContextProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </AuthContextProvider>
       </main>
     </>
   )

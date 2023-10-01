@@ -10,15 +10,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// model User {
-//   id    Int     @id @default(autoincrement())
-//   email String  @unique
-//   name  String?
-// }
-
+// todo rename for colalboration service
 model User {
   id                Int      @id @default(autoincrement())
   isLookingForMatch Boolean
   matchedUserId     Int?     @unique
   lastConnected     DateTime?
+}
+model AppUser {
+  uid    String  @id
+  displayName  String?
+  photoUrl String?
+  matchDifficulty Int?
+  matchProgrammingLanguage String?
 }
