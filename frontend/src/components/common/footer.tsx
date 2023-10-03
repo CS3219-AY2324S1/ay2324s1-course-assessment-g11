@@ -1,4 +1,4 @@
-import { TypographyLink } from "./ui/typography";
+import { TypographyLink } from "../ui/typography";
 
 export default function Footer() {
   return (
