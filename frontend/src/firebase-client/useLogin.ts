@@ -2,7 +2,7 @@ import { GithubAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext, useState } from "react";
-import {gatewayEventAddress} from "@/firebase-client/gateway-address";
+import {userApiPathAddress} from "@/firebase-client/gateway-address";
 
 export const useLogin = () => {
   const [error, setError] = useState(false);
@@ -26,6 +26,22 @@ export const useLogin = () => {
       console.log(user.uid, user.displayName, user.photoURL);
       setIsPending(false);
 
+      const idToken = await user.getIdToken(true);
+
+      const response = await fetch(userApiPathAddress, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json',
+          'User-Id-Token': idToken
+        },
+        body: JSON.stringify(
+          {
+            uid: user.uid,
+            displayName: user.displayName,
+            photoUrl: user.photoURL
+          }
+        )
+      })
     } catch (error) {
       console.log(error);
       setError(error.message);

@@ -33,6 +33,10 @@ Explanation:
 * `rateLimit` - currently unused. May be removed if not needed
 * `proxy` - an object for routing the request to the user service. The underlying dependency used is `http-proxy-middleware`
 
+### Required headers
+The required headers are as follows:
+* `User-Id-Token` - the id token obtained by calling [`getIdToken()` on the current Firebase user](https://firebase.google.com/docs/reference/js/v8/firebase.User#getidtoken)
+
 ## Events API
 Besides proxying requests, the gateway service also serves as the emitter for events from the frontend.
 
