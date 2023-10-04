@@ -49,6 +49,9 @@ jobs:
     - name: Run unit tests
       run: |
         yarn workspace user-service test
+        yarn workspace admin-service test:ci
 
     - name: Run system tests
-      run: yarn workspace user-service systemtest:ci
+      run: |
+        yarn workspace user-service systemtest:ci
+        yarn workspace admin-service systemtest:ci
