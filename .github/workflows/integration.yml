@@ -40,6 +40,12 @@ jobs:
     - name: Install dependencies with immutable lockfile
       run: yarn install --immutable
 
+    - name: Run linting
+      run: |
+        yarn workspace user-service lint
+        yarn workspace admin-service lint
+        yarn workspace gateway lint
+
     - name: Run unit tests
       run: |
         yarn workspace user-service test
