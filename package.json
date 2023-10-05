@@ -9,6 +9,10 @@
       "**/@prisma/client"
     ]
   },
+  "scripts": {
+    "docker:build": "docker build --no-cache -t peerprep-base -f Dockerfile . && docker-compose build --no-cache",
+    "docker:devup": "docker-compose up"
+  },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
     "@babel/core": "^7.22.19",
@@ -22,6 +26,7 @@
     "shx": "^0.3.4"
   },
   "dependencies": {
-    "@prisma/client": "^5.3.1"
+    "@prisma/client": "^5.3.1",
+    "dotenv-cli": "^7.3.0"
   }
 }

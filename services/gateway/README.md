@@ -54,4 +54,4 @@ The Gateway requires a `FIREBASE_SERVICE_ACCOUNT` environment variable.
 ## Local testing of the Gateway
 Steps:
 1) Add an `.env` file at the project root with the above-mentioned variable
-2) At the project root, run `yarn workspace gateway start`
+2) At the project root, run `yarn workspace gateway start:dev`

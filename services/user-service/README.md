@@ -35,7 +35,7 @@ docker exec -it some-postgres psql -u {insert username here} -D {insert database
 
 1) To start the user-service, from the root of the entire project, run the command:
 ```
-yarn workspace user-service start
+yarn workspace user-service start:dev
 ```
 
 1) The user-service will run on port 5001. You can test the API using Postman

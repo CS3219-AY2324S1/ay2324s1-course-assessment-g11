@@ -20,7 +20,7 @@ Note:
 ## How to run the service locally
 The command to run at the root of the entire project is as follows:
 ```
-yarn workspace admin-service start
+yarn workspace admin-service start:dev
 ```
 
 This will read in a file named `.env` for environment variables. Therefore, your `.env` file needs this variable set:
