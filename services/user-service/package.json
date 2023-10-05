@@ -18,8 +18,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.18.2",
-    "morgan": "~1.9.1",
-    "socket.io-client": "^4.7.2"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.4",

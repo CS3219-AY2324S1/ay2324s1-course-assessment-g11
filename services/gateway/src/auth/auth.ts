@@ -10,7 +10,7 @@ export const setupIsLoggedIn = (app : Express, routes : any[]) => {
     app.use(r.url, function(req : express.Request, res : express.Response, next : express.NextFunction) {
       const idToken = req.get(userIdTokenHeader);
       if (!idToken) {
-        res.redirect(redirectLink)
+        res.redirect(redirectLink);
       } else {
         promiseVerifyIsLoggedIn(idToken as string).then((isLoggedIn) => {
           if (isLoggedIn) {
@@ -29,10 +29,10 @@ export const setupIsLoggedIn = (app : Express, routes : any[]) => {
 
 export const setupUserIdMatch = (app : Express, routes : any[]) => {
   routes.forEach(r => {
-    r.user_match_required.forEach((method : string) => {
+    r.user_match_required_methods.forEach((method : string) => {
       applyMiddleware(r.url + "/:uid", method, app,
         function(req : express.Request, res : express.Response, next : express.NextFunction) {
-        const idToken = req.get(userIdTokenHeader);
+          const idToken = req.get(userIdTokenHeader);
         const paramUid = req.params.uid;
         if (!idToken || !paramUid) {
           res.redirect(redirectLink)
@@ -56,7 +56,7 @@ export const setupUserIdMatch = (app : Express, routes : any[]) => {
 export const setupAdmin = (app : Express, routes : any[]) => {
   // If admin access is required, check that the firebase ID token has an admin claim
   routes.forEach(r => {
-    r.admin_required.forEach((method : string) => {
+    r.admin_required_methods.forEach((method : string) => {
       applyMiddleware(r.url, method, app,
         function(req : express.Request, res : express.Response, next : express.NextFunction) {
         // Pass in the user as a header of the request
