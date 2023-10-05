@@ -3,16 +3,22 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
+    "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "build": "tsc",
-    "start": "yarn run build && node ./bin/www",
-    "dev": "yarn run build && nodemon ./bin/www"
+    "test": "vitest run -c ./test/vitest.config.unit.ts",
+    "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarn systemtest:ci",
+    "systemtest:ci": "yarn systemtest:docker:up && yarn systemtest:prisma:migrate:deploy && yarn systemtest:vitest && yarn systemtest:docker:down",
+    "systemtest:docker:up": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml up -d",
+    "systemtest:prisma:migrate:deploy": "yarn prisma migrate deploy && prisma generate",
+    "systemtest:vitest": "vitest run -c ./systemtest/vitest.config.system.ts",
+    "systemtest:docker:down": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml down"
   },
   "dependencies": {
-    "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.18.2",
-    "morgan": "~1.9.1",
-    "pg": "^8.11.3"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.4",
@@ -20,8 +26,13 @@
     "@types/express": "^4.17.17",
     "@types/morgan": "^1.9.5",
     "@types/node": "^20.6.2",
-    "@types/pg": "^8.10.2",
+    "@types/supertest": "^2.0.12",
+    "dotenv-cli": "^7.3.0",
+    "supertest": "^6.3.3",
+    "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.4",
+    "vitest-mock-extended": "^1.2.1"
   }
 }
