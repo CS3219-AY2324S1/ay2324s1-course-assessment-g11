@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { EditIcon, PlayIcon, ViewIcon } from "lucide-react";
+import { EditIcon, PlayIcon, ArrowUpDown, MoreHorizontal } from "lucide-react";
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 
@@ -15,7 +15,19 @@ export type Question = {
 export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "title",
-    header: "Title",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="pl-0"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Title
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      )
+    },
   },
   {
     accessorKey: "difficulty",
