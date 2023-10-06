@@ -1,5 +1,5 @@
 node_modules
 .env
 .idea/
-secrets/
 .env.firebase_emulators_test
+secrets/

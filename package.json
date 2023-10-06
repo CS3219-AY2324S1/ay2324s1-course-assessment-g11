@@ -23,7 +23,10 @@
     "firebase-tools": "^12.6.1",
     "nodemon": "^3.0.1",
     "prisma": "^5.3.1",
-    "shx": "^0.3.4"
+    "shx": "^0.3.4",
+    "swagger-autogen": "^2.23.6",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-express-ts": "^1.1.0"
   },
   "dependencies": {
     "@prisma/client": "^5.3.1",
