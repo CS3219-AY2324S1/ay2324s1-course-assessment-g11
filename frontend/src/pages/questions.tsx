@@ -18,6 +18,11 @@ const questions: Question[] = [
     title: 'Add Two Numbers',
     difficulty: 'medium',
     tags: ['Linked List', 'Math'],
+  },
+  {
+    title: 'Longest Substring Without Repeating Characters',
+    difficulty: 'hard',
+    tags: ['Hash Table', 'Two Pointers', 'String', 'Sliding Window'],
   }
 ]
 

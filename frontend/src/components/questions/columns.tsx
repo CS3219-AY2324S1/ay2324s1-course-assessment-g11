@@ -35,7 +35,7 @@ export const columns: ColumnDef<Question>[] = [
     cell: ({ row }) => {
       const tags = row.getValue("tags") as string[];
       return (
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           {tags.map((tag) => (
             <Badge variant="outline" className="" key={tag}>
               <TypographySmall>{tag}</TypographySmall>
