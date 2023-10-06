@@ -1,6 +1,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
+import { Button } from "../ui/button";
+import { EditIcon, PlayIcon, ViewIcon } from "lucide-react";
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 
@@ -41,6 +43,23 @@ export const columns: ColumnDef<Question>[] = [
           ))}
         </div>
       );
+    },
+  },
+  {
+    id: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      return (
+        <div className="flex gap-2 justify-between">
+          <Button variant="secondary" size="icon" className="h-8 w-8">
+            <EditIcon size={20} />
+          </Button>
+          <Button variant="outline" size="sm" className="h-8 gap-2">
+            Practice
+            <PlayIcon size={20} />
+          </Button>
+        </div>
+      )
     },
   },
 ]

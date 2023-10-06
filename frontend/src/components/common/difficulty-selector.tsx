@@ -21,16 +21,20 @@ export default function DifficultySelector({ onChange, showAny, defaultValue }: 
   }
 
   return (
-    difficulties.map((difficulty) => (
-      <Button
-        key={difficulty.value}
-        className="w-32"
-        variant={defaultValue == difficulty.value ? "outline" : "secondary"}
-        value={difficulty.value}
-        onClick={(e) => onChange(e.currentTarget.value as Difficulty)}
-      >
-        {difficulty.label}
-      </Button>
-    ))
+    <div className="mt-2 mb-6 flex gap-2 bg-popover w-min rounded-lg">
+      {
+        difficulties.map((difficulty) => (
+          <Button
+            key={difficulty.value}
+            className="w-32"
+            variant={defaultValue == difficulty.value ? "outline" : "secondary"}
+            value={difficulty.value}
+            onClick={(e) => onChange(e.currentTarget.value as Difficulty)}
+          >
+            {difficulty.label}
+          </Button>
+        ))
+      }
+    </div>
   )
 }

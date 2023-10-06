@@ -13,7 +13,7 @@ const questions: Question[] = [
     title: 'Two Sum',
     difficulty: 'easy',
     tags: ['Array', 'Hash Table'],
-  }, 
+  },
   {
     title: 'Add Two Numbers',
     difficulty: 'medium',
@@ -35,20 +35,18 @@ export default function Questions() {
         Practice our questions to ace your coding interview!
       </TypographyBodyHeavy>
 
-      <div className='flex-col flex gap-4 my-12'>
+      <div className='flex-col flex gap-4 py-20'>
         <TypographyH2 className="text-primary">
           Quick Practice
         </TypographyH2>
         <div>
           <TypographySmall>Choose question difficulty</TypographySmall>
-          <div className="mt-2 mb-6 flex gap-2 bg-popover w-min rounded-lg">
-            <DifficultySelector onChange={(value) => setDifficulty(value)} showAny={true} defaultValue={difficulty} />
-          </div>
+          <DifficultySelector onChange={(value) => setDifficulty(value)} showAny={true} defaultValue={difficulty} />
         </div>
         <Link href="/room"><Button variant={"outline"}>Give me a random question!</Button></Link>
       </div>
 
-      <div className='flex-col flex gap-4 my-12'>
+      <div className='flex-col flex gap-4 py-12'>
         <TypographyH2 className="text-primary">
           All Questions
         </TypographyH2>
