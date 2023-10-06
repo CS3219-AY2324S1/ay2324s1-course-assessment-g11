@@ -2,7 +2,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { EditIcon, PlayIcon, ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 
@@ -28,6 +28,7 @@ export const columns: ColumnDef<Question>[] = [
         </Button>
       )
     },
+    enableHiding: false,
   },
   {
     accessorKey: "difficulty",
@@ -73,6 +74,7 @@ export const columns: ColumnDef<Question>[] = [
         </div>
       )
     },
+    enableHiding: false,
   },
 ]
 
