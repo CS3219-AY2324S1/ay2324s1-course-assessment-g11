@@ -3,8 +3,23 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { useState } from 'react';
 import DifficultySelector from '@/components/common/difficulty-selector';
+import { columns, Question } from '@/components/questions/columns';
+import { DataTable } from '@/components/questions/data-table';
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
+
+const questions: Question[] = [
+  {
+    title: 'Two Sum',
+    difficulty: 'easy',
+    tags: ['Array', 'Hash Table'],
+  }, 
+  {
+    title: 'Add Two Numbers',
+    difficulty: 'medium',
+    tags: ['Linked List', 'Math'],
+  }
+]
 
 export default function Questions() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -37,7 +52,7 @@ export default function Questions() {
         <TypographyH2 className="text-primary">
           All Questions
         </TypographyH2>
-
+        <DataTable columns={columns} data={questions} />
       </div>
     </div>
   )
