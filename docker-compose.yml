@@ -10,7 +10,7 @@ services:
       - "5001:5001"
     environment:
       PORT: 5001
-      DATABASE_URL: ${DATABASE_URL}
+      DATABASE_URL: ${DOCKER_DATABASE_URL}
 
   matching-service:
     build:
