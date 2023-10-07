@@ -15,4 +15,4 @@ RUN yarn prisma generate
 RUN yarn install --cwd /app
 
 # Run service
-CMD [ "yarn", "workspace", "admin-service", "start" ]
+CMD [ "yarn", "workspace", "admin-service", "dev" ]

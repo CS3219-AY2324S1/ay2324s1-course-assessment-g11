@@ -47,7 +47,7 @@ The Gateway requires the following environment variables:
 | `.env.development`        | Project root | `ENVIRONMENT_TYPE` | Set this to `local-dev` for `localhost` testing. In other environments like Docker and Kubernetes, this file is not read. |
 
 
-## Local testing of the Gateway
+## Local development and testing of the Gateway
 Steps:
 1) Add an `.env` file at the project root with the above-mentioned variable as well as an `.env.development` file at the project root.
-2) At the project root, run `yarn workspace gateway start:dev`
+2) At the project root, run `yarn workspace gateway dev:local`
