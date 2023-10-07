@@ -12,7 +12,7 @@ yarn global add dotenv-cli # This is needed at the root of the project
 dotenv -e .env {insert the command here}
 ```
 
-## How to run locally:
+## How to run and develop locally:
 
 1) Start the database with the below command:
 
@@ -35,7 +35,7 @@ docker exec -it some-postgres psql -u {insert username here} -D {insert database
 
 1) To start the user-service, from the root of the entire project, run the command:
 ```
-yarn workspace user-service start
+yarn workspace user-service dev:local
 ```
 
 1) The user-service will run on port 5001. You can test the API using Postman

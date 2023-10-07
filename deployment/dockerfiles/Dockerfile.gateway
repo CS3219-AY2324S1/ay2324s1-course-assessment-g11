@@ -6,7 +6,7 @@ WORKDIR /app/services/gateway
 
 # Copy root level package.json, yarn.lock, and the entire services directory
 COPY package.json yarn.lock /app/
-COPY services/admin-service /app/services/gateway
+COPY services/gateway /app/services/gateway
 COPY prisma ./prisma/
 
 RUN yarn prisma generate
@@ -15,4 +15,4 @@ RUN yarn prisma generate
 RUN yarn install --cwd /app
 
 # Run service
-CMD [ "yarn", "workspace", "gateway", "start" ]
+CMD [ "yarn", "workspace", "gateway", "dev" ]
