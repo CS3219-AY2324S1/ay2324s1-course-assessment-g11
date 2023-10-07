@@ -1,31 +1,40 @@
-import * as React from "react"
-import { Check, ChevronsUpDown, Undo, Redo, Settings, Play } from "lucide-react"
-import Editor from '@monaco-editor/react';
+import * as React from "react";
+import {
+  Check,
+  ChevronsUpDown,
+  Undo,
+  Redo,
+  Settings,
+  Play,
+} from "lucide-react";
+import Editor from "@monaco-editor/react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-} from "@/components/ui/command"
+} from "@/components/ui/command";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
+} from "@/components/ui/popover";
 import { Card } from "../ui/card";
 import { TypographyBody, TypographyBodyHeavy } from "../ui/typography";
 
 type CodeEditorProps = {
-  theme?: string
-  language?: string
-  height?: string
-  defaultValue?: string
-  className?: string
-}
+  theme?: string;
+  language?: string;
+  height?: string;
+  defaultValue?: string;
+  className?: string;
+  text: string;
+  onChange: (text: string | undefined) => void;
+};
 
 const frameworks = [
   {
@@ -48,15 +57,26 @@ const frameworks = [
     value: "astro",
     label: "Astro",
   },
-]
+];
 
 export default function CodeEditor({
-  theme = 'vs-dark',
-  language = 'python',
-  height = '60vh',
-  defaultValue = '#Write your solution here', className }: CodeEditorProps) {
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  theme = "vs-dark",
+  language = "python",
+  height = "60vh",
+  defaultValue = "#Write your solution here",
+  className,
+  text,
+  onChange,
+}: CodeEditorProps) {
+  const [open, setOpen] = React.useState(false);
+  const [value, setValue] = React.useState("");
+
+  const editorOnChange = React.useCallback(
+    (value: string | undefined) => {
+      onChange(value);
+    },
+    [onChange, text]
+  );
 
   return (
     <div className={className}>
@@ -70,7 +90,8 @@ export default function CodeEditor({
               className="w-[240px] justify-between"
             >
               {value
-                ? frameworks.find((framework) => framework.value === value)?.label
+                ? frameworks.find((framework) => framework.value === value)
+                    ?.label
                 : "Select framework..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </Button>
@@ -84,8 +105,8 @@ export default function CodeEditor({
                   <CommandItem
                     key={framework.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue)
-                      setOpen(false)
+                      setValue(currentValue === value ? "" : currentValue);
+                      setOpen(false);
                     }}
                   >
                     <Check
@@ -102,29 +123,37 @@ export default function CodeEditor({
           </PopoverContent>
         </Popover>
         <div className="flex flex-row gap-2 justify-end">
-          <Button variant="secondary" size="icon"><Undo /></Button>
-          <Button variant="secondary" size="icon"><Redo /></Button>
-          <Button variant="secondary" size="icon"><Settings /></Button>
+          <Button variant="secondary" size="icon">
+            <Undo />
+          </Button>
+          <Button variant="secondary" size="icon">
+            <Redo />
+          </Button>
+          <Button variant="secondary" size="icon">
+            <Settings />
+          </Button>
         </div>
       </div>
       <Editor
         height={height}
         defaultLanguage={language}
         defaultValue={defaultValue}
+        value={text}
         theme={theme}
+        onChange={editorOnChange}
       />
       <Card className="flex-1 p-2 mt-2">
         <div className="h-[9vh] p-2">
-        <TypographyBodyHeavy>Console</TypographyBodyHeavy>
+          <TypographyBodyHeavy>Console</TypographyBodyHeavy>
         </div>
         <div className="flex justify-end gap-2">
-        <Button variant="outline">
-          <Play className="mr-1"/>
-          Run
-        </Button>
-        <Button variant="default">Leave Room</Button>
+          <Button variant="outline">
+            <Play className="mr-1" />
+            Run
+          </Button>
+          <Button variant="default">Leave Room</Button>
         </div>
       </Card>
     </div>
-  )
+  );
 }

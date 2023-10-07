@@ -17,10 +17,10 @@ Note:
 * As all backend services are assumed to be run within a secure environment, the admin service itself will not verify if the API request comes from an administrator
 * For verification of whether the request originates from an administrator, the verification is done by the gateway service.
 
-## How to run the service locally
+## How to run the service locally for development
 The command to run at the root of the entire project is as follows:
 ```
-yarn workspace admin-service start
+yarn workspace admin-service dev:local
 ```
 
 This will read in a file named `.env` for environment variables. Therefore, your `.env` file needs this variable set:
