@@ -12,11 +12,23 @@ datasource db {
 
 // todo rename for colalboration service
 model User {
-  id                Int      @id @default(autoincrement())
+  id                String      @id @default(uuid())
   isLookingForMatch Boolean
-  matchedUserId     Int?     @unique
+  matchedUserId     String?     @unique
   lastConnected     DateTime?
 }
+
+model Match {
+  roomId    String      @id @default(uuid())
+  userId1    String
+  socketId1  String
+  userId2 String
+  socketId2 String
+  chosenDifficulty String
+  chosenProgrammingLanguage String
+  createdAt DateTime @default(now())
+}
+
 model AppUser {
   uid    String  @id
   displayName  String?

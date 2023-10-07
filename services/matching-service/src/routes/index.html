@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Service</title>
+</head>
+<body>
+    <input type="text" id="lang" placeholder="Enter your programming language">
+    <select name="difficulties" id="difficulties" multiple>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+    <input type="text" id="input" placeholder="Enter your name">
+    <button id="look-for-match">Look for match</button>
+    <button id="cancel-match">Cancel</button>
+    <button id="leave-match">Leave</button>
+    <br>
+    <textarea id="messages" cols="30" rows="10"></textarea>
+    <button id="send-message">Send message</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function getSelectValues(select) {
+            var result = [];
+            var options = select && select.options;
+            var opt;
+
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+                opt = options[i];
+
+                if (opt.selected) {
+                result.push(opt.value || opt.text);
+                }
+            }
+            return result;
+            }
+        const socket = io();
+        
+        const look_button = document.getElementById("look-for-match");
+        const cancel_button = document.getElementById("cancel-match");
+        cancel_button.setAttribute("disabled", true);
+        const leave_button = document.getElementById("leave-match");
+        leave_button.setAttribute("disabled", true);
+        const send_button = document.getElementById("send-message");
+
+        const lang = document.getElementById("lang");
+        const difficulties = document.getElementById("difficulties");
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
+        look_button.addEventListener("click", () => {
+            socket.emit("lookingForMatch", input.value, getSelectValues(difficulties), lang.value);
+            look_button.setAttribute("disabled", true);
+            cancel_button.removeAttribute("disabled");
+        });
+        cancel_button.addEventListener("click", () => {
+            socket.emit("cancelLooking");
+            look_button.removeAttribute("disabled");
+            cancel_button.setAttribute("disabled", true);
+        });
+        leave_button.addEventListener("click", () => {
+            socket.emit("leaveMatch");
+            look_button.removeAttribute("disabled");
+            leave_button.setAttribute("disabled", true);
+            cancel_button.setAttribute("disabled", true);
+        });
+        send_button.addEventListener("click", () => {
+            socket.emit("sendMessage", input.value, messages.value);
+        });
+
+        socket.on("matchFound", (data) => {
+            alert(data);
+            look_button.setAttribute("disabled", true);
+            cancel_button.setAttribute("disabled", true);
+            leave_button.removeAttribute("disabled");
+        });
+        socket.on("matchLeft", (data) => {
+            alert(data);
+            look_button.removeAttribute("disabled");
+            leave_button.setAttribute("disabled", true);
+        });
+        socket.on("receiveMessage", (data) => {
+            alert(data);
+        });
+        socket.on("error", alert)
+    </script>
+</body>
+</html>

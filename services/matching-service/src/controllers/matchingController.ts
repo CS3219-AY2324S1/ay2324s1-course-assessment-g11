@@ -5,7 +5,10 @@ import prisma from "../prismaClient";
 export const findMatch = async (req: Request, res: Response) => {
   const io: Server = req.app.get("io");
 
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
+  const difficulties = req.body.difficulties || ["easy", "medium", "hard"];
+  const programming_language = req.body.programming_language || "python";
+  
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
@@ -116,7 +119,7 @@ export const findMatch = async (req: Request, res: Response) => {
 };
 
 export const leaveMatch = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   const user = await prisma.user.findUnique({
     where: { id: userId },
   });
