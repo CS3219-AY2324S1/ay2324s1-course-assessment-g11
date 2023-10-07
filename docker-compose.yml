@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.user-service
+    container_name: user-service
     ports:
       - "5001:5001"
     environment:
@@ -15,6 +16,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.matching-service
+    container_name: matching-service
     ports:
       - "5002:5002"
     environment:
@@ -24,6 +26,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.collaboration-service
+    container_name: collaboration-service
     ports:
       - "5003:5003"
     environment:
@@ -33,6 +36,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.question-service
+    container_name: question-service
     ports:
       - "5004:5004"
     environment:
@@ -42,6 +46,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.admin-service
+    container_name: admin-service
     ports:
       - "5005:5005"
     environment:
@@ -52,6 +57,7 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.gateway
+    container_name: gateway
     ports:
       - "4000:4000"
     environment:
@@ -62,5 +68,6 @@ services:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.frontend
+    container_name: frontend
     ports:
       - "3000:3000"
