@@ -6,7 +6,7 @@
   "main": "src/app.ts",
   "scripts": {
     "lint": "eslint src/**/*.{ts,js}",
-    "start:dev": "dotenv -e ../../.env yarn start",
+    "start:dev": "dotenv -e ../../.env -c development -- yarn start",
     "start": "ts-node-dev src/app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

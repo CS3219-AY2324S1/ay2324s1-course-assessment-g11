@@ -4,12 +4,12 @@ import { setupLogging } from "./logging/logging";
 import { setupAdmin, setupUserIdMatch, setupIsLoggedIn } from "./auth/auth";
 import { setupProxies } from "./proxy/proxy";
 import { proxied_routes } from "./proxied_routes/proxied_routes";
-import {frontend_link} from "./frontend_link/frontend_link";
+import {frontendAddress} from "./proxied_routes/service_names";
 
 
 const app : Express = express();
 const corsOptions = {
-  origin: frontend_link,
+  origin: frontendAddress,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }
 

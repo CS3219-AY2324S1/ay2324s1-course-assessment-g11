@@ -1,5 +1,12 @@
 /**
  * File for defining the address of the gateway server.
+ *
+ * How to use:
+ *   - For localhost development, set ENVIRONMENT_TYPE environment variable to "local-dev"
+ *   - For other environments like Docker or Kubernetes, use name resolution
  */
-const gatewayAddress = "http://localhost:4000/";
+const gatewayAddress = (process.env.NEXT_PUBLIC_ENVIRONMENT_TYPE === "local-dev")
+  ? "http://localhost:4000/"
+  : "http://gateway:4000/";
+
 export const userApiPathAddress = gatewayAddress + "api/user-service/"

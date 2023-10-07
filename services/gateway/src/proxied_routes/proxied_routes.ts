@@ -1,4 +1,5 @@
 import {ProxiedRoute} from "./proxied_route_type";
+import {adminServiceAddress, userServiceAddress} from "./service_names";
 
 export const proxied_routes : ProxiedRoute[] = [
   {
@@ -11,7 +12,7 @@ export const proxied_routes : ProxiedRoute[] = [
       max: 5
     },
     proxy: {
-      target: "http://localhost:5001/",
+      target: userServiceAddress,
       changeOrigin: true,
       pathRewrite: {
         '^/api/user-service': '',
@@ -23,7 +24,7 @@ export const proxied_routes : ProxiedRoute[] = [
     admin_required_methods: ["GET, POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
-      target: "http://localhost:5005/",
+      target: adminServiceAddress,
       changeOrigin: true,
       pathRewrite: {
         '^/api/admin-service': '',

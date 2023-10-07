@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start:dev": "dotenv -e ../../.env yarn start",
+    "start:dev": "dotenv -e ../../.env -c development -- yarn start",
     "start": "ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} openapiDocGen.ts",

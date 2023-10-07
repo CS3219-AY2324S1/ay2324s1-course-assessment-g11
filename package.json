@@ -11,7 +11,7 @@
   },
   "scripts": {
     "docker:build": "docker build --no-cache -t peerprep-base -f Dockerfile . && docker-compose build --no-cache",
-    "docker:devup": "docker-compose up"
+    "docker:devup": "dotenv -e .env docker-compose up"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
