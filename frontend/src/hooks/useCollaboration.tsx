@@ -18,9 +18,13 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.emit("/room/join", roomId, userId);
 
-    socketConnection.on("/room/update", ({ text }: { text: string }) => {
-      setText(text);
-    });
+    // if is my own socket connection, don't update text
+    if (socket && socket.id !== socketConnection.id) {
+      console.log("update");
+      socketConnection.on("/room/update", ({ text }: { text: string }) => {
+        setText(text);
+      });
+    }
 
     return () => {
       socketConnection.disconnect();
@@ -36,7 +40,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     const handleTextChange = debounce(() => {
       socket.emit("/room/update", textRef.current);
-    }, 500);
+    }, 10);
 
     handleTextChange();
 

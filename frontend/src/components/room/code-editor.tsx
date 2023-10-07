@@ -33,7 +33,7 @@ type CodeEditorProps = {
   defaultValue?: string;
   className?: string;
   text: string;
-  onChange: (text: string | undefined) => void;
+  onChange: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const frameworks = [
@@ -73,6 +73,7 @@ export default function CodeEditor({
 
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
+      if (value === undefined) return;
       onChange(value);
     },
     [onChange, text]
@@ -140,7 +141,7 @@ export default function CodeEditor({
         defaultValue={defaultValue}
         value={text}
         theme={theme}
-        onChange={editorOnChange}
+        onChange={(e) => editorOnChange(e)}
       />
       <Card className="flex-1 p-2 mt-2">
         <div className="h-[9vh] p-2">
