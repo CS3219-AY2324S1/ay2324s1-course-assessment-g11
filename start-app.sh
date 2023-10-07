@@ -6,8 +6,8 @@
 docker build -t peerprep-base -f Dockerfile .
 
 # Step 2: Build the docker-compose services
-dotenv -e .env docker-compose build
+docker-compose build
 
 # Step 3: Run the entire application
-docker-compose up
+dotenv -e .env docker-compose up
 
