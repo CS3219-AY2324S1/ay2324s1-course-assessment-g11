@@ -19,7 +19,7 @@ export default function Room() {
   if (!router.isReady) return null; // <-- Check if router is ready
 
   const roomId = router.query.id as string;
-  const userId = "user";
+  const userId = "user1";
 
   const { text, setText } = useCollaboration({
     roomId: roomId as string,
