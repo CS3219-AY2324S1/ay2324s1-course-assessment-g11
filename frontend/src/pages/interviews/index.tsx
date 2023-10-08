@@ -19,6 +19,9 @@ import {
   ChevronsUpDown,
 } from "lucide-react";
 import { useState } from 'react';
+import DifficultySelector from '@/components/common/difficulty-selector';
+
+type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 
 const frameworks = [
   {
@@ -46,7 +49,7 @@ const frameworks = [
 export default function Interviews() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
-  const [difficulty, setDifficulty] = useState("medium");
+  const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   return (
     <div className='min-h-screen p-12 mx-auto max-w-7xl'>
@@ -65,13 +68,7 @@ export default function Interviews() {
         </TypographyH2>
         <div>
           <TypographySmall>Choose question difficulty</TypographySmall>
-          {/* TODO: will refactor this to a component with .map() later */}
-          <div className="mt-2 mb-4 flex gap-2 bg-popover w-min rounded-lg">
-            <Button className="w-32" variant={difficulty == "easy" ? "outline" : "secondary"} value="easy" onClick={(e) => setDifficulty(e.currentTarget.value)}>Easy</Button>
-            <Button className="w-32" variant={difficulty == "medium" ? "outline" : "secondary"} value="medium" onClick={(e) => setDifficulty(e.currentTarget.value)}>Medium</Button>
-            <Button className="w-32" variant={difficulty == "hard" ? "outline" : "secondary"} value="hard" onClick={(e) => setDifficulty(e.currentTarget.value)}>Hard</Button>
-            <Button className="w-32" variant={difficulty == "any" ? "outline" : "secondary"} value="any" onClick={(e) => setDifficulty(e.currentTarget.value)}>Any</Button>
-          </div>
+          <DifficultySelector onChange={(value) => setDifficulty(value)} showAny={true} defaultValue={difficulty} />
         </div>
 
         <div>
