@@ -14,7 +14,7 @@ export default function Room() {
   const router = useRouter();
   const questionTitle = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // to be used later for loading states
   const [answer, setAnswer] = useState("");
 
   const { user: currentUser, authIsReady } = useContext(AuthContext);
