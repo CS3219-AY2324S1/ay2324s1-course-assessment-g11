@@ -12,7 +12,7 @@ COPY prisma ./prisma/
 RUN yarn prisma generate
 
 # Install dependencies using Yarn Workspaces
-RUN yarn install --cwd /app
+RUN yarn install --frozen-lockfile --cwd /app
 
 # Run service
 CMD [ "yarn", "workspace", "matching-service", "dev" ]

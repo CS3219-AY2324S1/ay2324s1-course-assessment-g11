@@ -8,7 +8,7 @@ WORKDIR /app/frontend
 COPY frontend .
 
 # Install dependencies using Yarn Workspaces
-RUN yarn install --cwd /app
+RUN yarn install --frozen-lockfile --cwd /app
 
 # Start command for the frontend
 CMD [ "yarn", "workspace", "frontend", "dev" ]
