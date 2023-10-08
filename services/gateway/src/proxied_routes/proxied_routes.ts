@@ -38,9 +38,6 @@ export const proxied_routes : ProxiedRoute[] = [
     proxy: {
       target: questionServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        '^/api/question-service': '',
-      },
     }
   }
 ]
