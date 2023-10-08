@@ -8,11 +8,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useContext, useEffect, useState } from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
-import { columns, Question } from "@/components/questions/columns";
+import { columns } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
-import { Difficulty } from "../../../types/QuestionTypes";
+import { Difficulty, Question } from "../../../types/QuestionTypes";
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
+import { PlusIcon } from "lucide-react";
 
 export default function Questions() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
@@ -57,13 +58,22 @@ export default function Questions() {
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
-      <TypographyH1 className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-min mb-1">
-        Questions
-      </TypographyH1>
-
-      <TypographyBodyHeavy>
-        Practice our questions to ace your coding interview!
-      </TypographyBodyHeavy>
+      <div className='flex justify-between items-center'>
+        <div>
+          <TypographyH1 className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-min mb-1">
+            Questions
+          </TypographyH1>
+          <TypographyBodyHeavy>
+            Practice our questions to ace your coding interview!
+          </TypographyBodyHeavy>
+        </div>
+        <Link href="/questions/new">
+          <Button className='gap-2'>
+            <PlusIcon />
+            Contribute question
+          </Button>
+        </Link>
+      </div>
 
       <div className="flex-col flex gap-4 py-20">
         <TypographyH2 className="text-primary">Quick Practice</TypographyH2>

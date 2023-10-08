@@ -1,11 +1,10 @@
 import CodeEditor from "@/components/room/code-editor";
 import Description from "@/components/room/description";
-import { useQuestion } from "@/hooks/useQuestion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { Question } from "../../../types/QuestionTypes";
+import { Question } from "../../../../types/QuestionTypes";
 import { auth } from "@/firebase-client/firebase_config";
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -46,7 +45,7 @@ export default function Room() {
           setQuestion({
             title: data.title,
             difficulty: data.difficulty,
-            tags: data.topics,
+            topics: data.topics,
             description: data.content,
             solution: data.solutionCode,
             defaultCode: data.defaultCode,

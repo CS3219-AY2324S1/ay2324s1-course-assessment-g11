@@ -32,7 +32,7 @@ export default function Description({
         <Button variant="secondary">Swap Question</Button>
       </div>
       <div className="flex gap-2">
-        {question.tags.map((tag) => (
+        {question.topics.map((tag) => (
           <Badge variant="outline" className="" key={tag}>
             <TypographySmall>{tag}</TypographySmall>
           </Badge>

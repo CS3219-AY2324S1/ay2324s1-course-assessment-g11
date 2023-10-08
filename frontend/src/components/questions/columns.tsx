@@ -3,9 +3,9 @@ import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
-import { Difficulty, QuestionColumns } from "../../../types/QuestionTypes";
+import { Difficulty, Question } from "../../../types/QuestionTypes";
 
-export const columns: ColumnDef<QuestionColumns>[] = [
+export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -38,15 +38,15 @@ export const columns: ColumnDef<QuestionColumns>[] = [
     },
   },
   {
-    accessorKey: "tags",
+    accessorKey: "topics",
     header: "Topics",
     cell: ({ row }) => {
-      const tags = row.getValue("tags") as string[];
+      const topics = row.getValue("topics") as string[];
       return (
         <div className="flex gap-2 flex-wrap">
-          {tags.map((tag) => (
-            <Badge variant="outline" className="" key={tag}>
-              <TypographySmall>{tag}</TypographySmall>
+          {topics.map((topic) => (
+            <Badge variant="outline" className="" key={topic}>
+              <TypographySmall>{topic}</TypographySmall>
             </Badge>
           ))}
         </div>

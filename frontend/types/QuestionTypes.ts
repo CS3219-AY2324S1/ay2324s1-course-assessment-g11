@@ -5,7 +5,7 @@ export type ProgrammingLanguages = "javascript" | "python" | "java" | "c++";
 export type Question = {
   title: string;
   difficulty: string;
-  tags: string[];
+  topics: string[];
   description: string;
   solution: string;
   defaultCode: {
@@ -14,11 +14,4 @@ export type Question = {
     java?: string;
     "c++"?: string;
   };
-};
-
-export type QuestionColumns = {
-  id: string;
-  title: string;
-  difficulty: Difficulty;
-  tags: string[];
 };

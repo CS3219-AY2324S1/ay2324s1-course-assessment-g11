@@ -20,7 +20,7 @@ export default function Room() {
   const question: Question = {
     title: "Two Sum",
     difficulty: "Easy",
-    tags: ["Array", "Hash Table"],
+    topics: ["Array", "Hash Table"],
     description:
       "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
     solution:
