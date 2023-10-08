@@ -9,10 +9,10 @@ export type Question = {
   description: string;
   solution: string;
   defaultCode: {
-    javascript: string;
-    python: string;
-    java: string;
-    "c++": string;
+    javascript?: string;
+    python?: string;
+    java?: string;
+    "c++"?: string;
   };
 };
 

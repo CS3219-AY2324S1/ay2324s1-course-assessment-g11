@@ -3,6 +3,8 @@ import Description from "@/components/room/description";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 
+// can be removed later
+
 type Question = {
   title: string;
   difficulty: string;
