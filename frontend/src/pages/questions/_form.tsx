@@ -24,16 +24,22 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface QuestionsFormProps {
   form: any;
   onSubmit: any;
+  type?: 'add' | 'edit';
 }
 
-export default function QuestionsForm({ form, onSubmit }: QuestionsFormProps) {
+export default function QuestionsForm({ form, onSubmit, type = 'add' }: QuestionsFormProps) {
   const [hasSolution, setHasSolution] = useState(false);
 
+  useEffect(() => {
+    if (form.getValues().code != "") {
+      setHasSolution(true);
+    }
+  }, [form.getValues().code]);
 
   const topics = [
     {
@@ -65,6 +71,14 @@ export default function QuestionsForm({ form, onSubmit }: QuestionsFormProps) {
       label: "Express.js",
     }
   ];
+
+  const toggleSolution = (hasSolution: boolean) => {
+    setHasSolution(hasSolution)
+    if (!hasSolution) {
+      form.setValue('language', '')
+      form.setValue('code', '')
+    }
+  }
 
   return (
     <Form {...form}>
@@ -138,7 +152,7 @@ export default function QuestionsForm({ form, onSubmit }: QuestionsFormProps) {
           <FormControl>
             <Switch
               checked={hasSolution}
-              onCheckedChange={setHasSolution}
+              onCheckedChange={toggleSolution}
             />
           </FormControl>
         </FormItem>
@@ -187,7 +201,17 @@ export default function QuestionsForm({ form, onSubmit }: QuestionsFormProps) {
             )}
           />
         )}
-        <Button type="submit">Add Question</Button>
+        {type == 'add'
+          ? (
+            <Button type="submit">Add Question</Button>
+          )
+          : (
+            <div className="flex gap-x-6">
+              <Button type="submit">Save Changes</Button>
+              <Button variant="outline" className="border-destructive text-destructive">Delete Question</Button>
+            </div>
+          )}
+
       </form>
     </Form>
   );
