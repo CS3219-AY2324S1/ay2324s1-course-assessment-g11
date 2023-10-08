@@ -9,6 +9,11 @@
       "**/@prisma/client"
     ]
   },
+  "scripts": {
+    "docker:build": "docker build --no-cache -t peerprep-base -f Dockerfile . && docker-compose build --no-cache",
+    "docker:devup": "dotenv -e .env docker-compose up",
+    "docker:devdown": "docker-compose down"
+  },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
     "@babel/core": "^7.22.19",
@@ -19,9 +24,13 @@
     "firebase-tools": "^12.6.1",
     "nodemon": "^3.0.1",
     "prisma": "^5.3.1",
-    "shx": "^0.3.4"
+    "shx": "^0.3.4",
+    "swagger-autogen": "^2.23.6",
+    "swagger-ui-express": "^5.0.0",
+    "swagger-express-ts": "^1.1.0"
   },
   "dependencies": {
-    "@prisma/client": "^5.3.1"
+    "@prisma/client": "^5.3.1",
+    "dotenv-cli": "^7.3.0"
   }
 }

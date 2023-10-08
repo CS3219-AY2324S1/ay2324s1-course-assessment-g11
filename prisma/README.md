@@ -52,6 +52,14 @@ If you want to use Prisma Migrate to handle database migrations:
    const users = await prisma.user.findMany();
    ```
 
+### Visualizing Database Schema
+
+You may view the data with
+
+```bash
+npx prisma studio
+```
+
 ### Considerations
 
 - **Frontend Usage**: It's not recommended to use Prisma directly on the frontend. Instead, create API endpoints in your backend services for frontend access. Let the services manage direct database interactions using Prisma.

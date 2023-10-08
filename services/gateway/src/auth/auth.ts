@@ -1,8 +1,8 @@
 import { promiseVerifyIsLoggedIn, promiseVerifyIsCorrectUser, promiseVerifyIsAdmin } from './firebase';
 import express, {Express} from "express";
-import {frontend_link} from "../frontend_link/frontend_link";
+import {frontendAddress} from "../proxied_routes/service_names";
 
-const redirectLink = frontend_link;
+const redirectLink = frontendAddress;
 const userIdTokenHeader = "User-Id-Token";
 
 export const setupIsLoggedIn = (app : Express, routes : any[]) => {
