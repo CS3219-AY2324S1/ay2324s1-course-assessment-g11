@@ -11,36 +11,46 @@ import DifficultySelector from "@/components/common/difficulty-selector";
 import { columns, Question } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty } from "../../../types/QuestionTypes";
+import {auth} from "@/firebase-client/firebase_config";
 
 export default function Questions() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const currentUser = auth.currentUser;
+
 
   useEffect(() => {
-    const url = "http://localhost:5002/api/question-service/list";
-
-    fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.questions) {
-          setQuestions(
-            data.questions.map((question: any) => ({
-              title: question.title,
-              difficulty: question.difficulty,
-              tags: question.topics,
-            }))
-          );
-        }
-      })
-      .catch((error) => {
-        console.error("There was an error fetching the questions", error);
+    if (currentUser) {
+      const url = "http://localhost:4000/api/question-service/list";
+      currentUser.getIdToken(true).then((idToken) => {
+        fetch(url, {
+          method: "GET",
+          mode: 'cors',
+          headers: {
+            "Content-Type": "application/json",
+            "User-Id-Token": idToken,
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data && data.questions) {
+              setQuestions(
+                data.questions.map((question: any) => ({
+                  title: question.title,
+                  difficulty: question.difficulty,
+                  tags: question.topics,
+                }))
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("There was an error fetching the questions", error);
+          });
       });
+    } else {
+      console.log("You are most likely not logged in")
+    }
   }, []);
 
   return (

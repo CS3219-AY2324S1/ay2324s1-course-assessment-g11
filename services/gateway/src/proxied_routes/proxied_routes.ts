@@ -1,5 +1,5 @@
 import {ProxiedRoute} from "./proxied_route_type";
-import {adminServiceAddress, userServiceAddress} from "./service_names";
+import {adminServiceAddress, questionServiceAddress, userServiceAddress} from "./service_names";
 
 export const proxied_routes : ProxiedRoute[] = [
   {
@@ -28,6 +28,18 @@ export const proxied_routes : ProxiedRoute[] = [
       changeOrigin: true,
       pathRewrite: {
         '^/api/admin-service': '',
+      },
+    },
+  },
+  {
+    url: '/api/question-service',
+    admin_required_methods: ["POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: questionServiceAddress,
+      changeOrigin: true,
+      pathRewrite: {
+        '^/api/question-service': '',
       },
     }
   }

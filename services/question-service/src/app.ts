@@ -11,7 +11,7 @@ import { router as indexRouter } from "./routes";
 
 const app: Express = express();
 const server: HTTPServer = http.createServer(app);
-const PORT: number = parseInt(process.env.PORT || "5002");
+const PORT: number = parseInt(process.env.PORT || "5004");
 
 /* Middlewares */
 app.use(cors());

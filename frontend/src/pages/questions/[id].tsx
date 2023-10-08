@@ -6,6 +6,7 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
+import {auth} from "@/firebase-client/firebase_config";
 
 export default function Room() {
   const router = useRouter();
@@ -17,33 +18,44 @@ export default function Room() {
   useEffect(() => {
     if (!router.isReady) return;
     const fetchQuestion = async () => {
-      const url = `http://localhost:5002/api/question-service/question/${questionTitle}`;
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const idToken = await currentUser.getIdToken(true);
+        const url = `http://localhost:4000/api/question-service/question/${questionTitle}`;
 
-      console.log(url);
+        console.log(url);
 
-      try {
-        const response = await fetch(url, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        try {
+          const response = await fetch(url, {
+            method: "GET",
+            mode: 'cors',
+            headers: {
+              "Content-Type": "application/json",
+              "User-Id-Token": idToken
+            },
+          });
 
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          const data = await response.json();
+          console.log(data);
+          setQuestion({
+            title: data.title,
+            difficulty: data.difficulty,
+            tags: data.topics,
+            description: data.content,
+            solution: data.solutionCode,
+            defaultCode: data.defaultCode,
+          });
+        } catch (error) {
+          console.error("There was an error fetching the questions", error);
+        } finally {
+          setLoading(false);
         }
-
-        const data = await response.json();
-        console.log(data);
-        setQuestion({
-          title: data.title,
-          difficulty: data.difficulty,
-          tags: data.topics,
-          description: data.content,
-          solution: data.solutionCode,
-          defaultCode: data.defaultCode,
-        });
-      } catch (error) {
-        console.error("There was an error fetching the questions", error);
-      } finally {
+      } else {
+        console.log('You are not logged in');
         setLoading(false);
       }
     };
