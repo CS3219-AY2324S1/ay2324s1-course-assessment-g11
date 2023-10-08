@@ -61,7 +61,7 @@
         // const username = document.getElementById("username");
         const messages = document.getElementById("messages");
         look_button.addEventListener("click", () => {
-            socket.emit("lookingForMatch", username, getSelectValues(difficulties), lang.value);
+            socket.emit("lookingForMatch",getSelectValues(difficulties), lang.value);
             look_button.setAttribute("disabled", true);
             cancel_button.removeAttribute("disabled");
         });
@@ -77,7 +77,7 @@
             cancel_button.setAttribute("disabled", true);
         });
         send_button.addEventListener("click", () => {
-            socket.emit("sendMessage", username, messages.value);
+            socket.emit("sendMessage", messages.value);
         });
 
         socket.on("matchFound", (data) => {
