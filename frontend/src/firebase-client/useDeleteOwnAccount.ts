@@ -9,18 +9,22 @@ export const useDeleteOwnAccount = () => {
   const deleteOwnAccount = async () => {
     try {
       const currentUser = auth.currentUser;
-      const idToken = await currentUser.getIdToken(true);
+      if (currentUser) {
+        const idToken = await currentUser.getIdToken(true);
 
-      await fetch(userApiPathAddress + currentUser.uid, {
-        method: "DELETE",
-        headers: {
-          "User-Id-Token": idToken
-        }
-      });
-      // This will delete the user from the Firebase Authentication database
-      await currentUser.delete();
-      dispatch({ type: "LOGOUT" });
-      console.log("user logged out and deleted")
+        await fetch(userApiPathAddress + currentUser.uid, {
+          method: "DELETE",
+          headers: {
+            "User-Id-Token": idToken
+          }
+        });
+        // This will delete the user from the Firebase Authentication database
+        await currentUser.delete();
+        dispatch({ type: "LOGOUT" });
+        console.log("user logged out and deleted");
+      } else {
+        console.log("You are not logged in.");
+      }
     } catch (error) {
       console.log(error.message);
     }

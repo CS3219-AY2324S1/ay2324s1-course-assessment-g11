@@ -1,78 +1,76 @@
 version: "3"
 
-secrets:
-  postgres_password:
-    file: ./secrets/postgres_password.txt
-  firebase_admin_service_account:
-    file: ./secrets/firebase_admin_service_account.json
-
 services:
   user-service:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.user-service
+    container_name: user-service
     ports:
       - "5001:5001"
     environment:
       PORT: 5001
-      POSTGRES_USER: postgres
-      POSTGRES_DB: peerprepdb
-      POSTGRES_PASSWORD: /run/secrets/postgres_password
+      DATABASE_URL: ${DATABASE_URL}
 
   matching-service:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.matching-service
+    container_name: matching-service
     ports:
       - "5002:5002"
     environment:
       PORT: 5002
+      DATABASE_URL: ${DATABASE_URL}
 
   collaboration-service:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.collaboration-service
+    container_name: collaboration-service
     ports:
       - "5003:5003"
     environment:
       PORT: 5003
+      DATABASE_URL: ${DATABASE_URL}
 
   question-service:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.question-service
+    container_name: question-service
     ports:
       - "5004:5004"
     environment:
       PORT: 5004
+      MONGO_ATLAS_URL: ${MONGO_ATLAS_URL}
 
   admin-service:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.admin-service
+    container_name: admin-service
     ports:
       - "5005:5005"
     environment:
       PORT: 5005
-      FIREBASE_SERVICE_ACCOUNT: /run/secrets/firebase_admin_service_account
-    secrets:
-      - firebase_admin_service_account
+      FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
 
   gateway:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.gateway
+    container_name: gateway
     ports:
       - "4000:4000"
     environment:
       PORT: 4000
-      FIREBASE_SERVICE_ACCOUNT: /run/secrets/firebase_admin_service_account
-    secrets:
-      - firebase_admin_service_account
+      FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
 
   frontend:
     build:
       context: .
       dockerfile: deployment/dockerfiles/Dockerfile.frontend
+    container_name: frontend
     ports:
       - "3000:3000"
