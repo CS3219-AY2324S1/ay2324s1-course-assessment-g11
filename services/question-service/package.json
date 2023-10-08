@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "build": "yarn run swagger-autogen && tsc",
-    "start": "yarn run swagger-autogen && ts-node src/app.ts",
-    "dev": "yarn run swagger-autogen && nodemon src/app.ts",
-    "start:prod": "yarn build && node ./dist/app.js",
+    "start": "yarn run swagger-autogen && dotenv -e ../../.env ts-node src/app.ts",
+    "dev": "yarn run swagger-autogen && dotenv -e ../../.env nodemon src/app.ts",
+    "start:prod": "yarn build && dotenv -e ../../.env node ./dist/app.js",
     "swagger-autogen": "ts-node swagger-doc-gen.ts"
   },
   "dependencies": {
