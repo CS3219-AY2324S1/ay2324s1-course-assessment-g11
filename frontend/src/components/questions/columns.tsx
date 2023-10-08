@@ -3,6 +3,7 @@ import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
+import Link from "next/link";
 
 type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 
@@ -62,11 +63,14 @@ export const columns: ColumnDef<Question>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const id = row.id as string;
       return (
         <div className="flex gap-2 justify-between">
+          <Link href={`/questions/${id}/edit`}>
           <Button variant="secondary" size="icon" className="h-8 w-8">
             <EditIcon size={20} />
           </Button>
+          </Link>
           <Button variant="outline" size="sm" className="h-8 gap-2">
             Practice
             <PlayIcon size={20} />
