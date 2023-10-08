@@ -4,11 +4,11 @@ import { useQuestion } from "@/hooks/useQuestion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
-import {auth} from "@/firebase-client/firebase_config";
-import {questionApiPathAddress} from "@/firebase-client/gateway-address";
-import {AuthContext} from "@/contexts/AuthContext";
+import { auth } from "@/firebase-client/firebase_config";
+import { questionApiPathAddress } from "@/firebase-client/gateway-address";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Room() {
   const router = useRouter();
@@ -17,7 +17,7 @@ export default function Room() {
   const [loading, setLoading] = useState(true);
   const [answer, setAnswer] = useState("");
 
-  const { currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -30,10 +30,10 @@ export default function Room() {
         try {
           const response = await fetch(url, {
             method: "GET",
-            mode: 'cors',
+            mode: "cors",
             headers: {
               "Content-Type": "application/json",
-              "User-Id-Token": idToken
+              "User-Id-Token": idToken,
             },
           });
 
@@ -57,13 +57,13 @@ export default function Room() {
           setLoading(false);
         }
       } else {
-        console.log('You are not logged in');
+        console.log("You are not logged in");
         setLoading(false);
       }
     };
 
     fetchQuestion();
-  }, [questionTitle]);
+  }, [questionTitle, authIsReady]);
 
   if (!router.isReady || question === null) return null;
 
