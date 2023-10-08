@@ -10,7 +10,7 @@ services:
       - "5001:5001"
     environment:
       PORT: 5001
-      DATABASE_URL: ${DOCKER_DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL}
 
   matching-service:
     build:
@@ -21,6 +21,7 @@ services:
       - "5002:5002"
     environment:
       PORT: 5002
+      DATABASE_URL: ${DATABASE_URL}
 
   collaboration-service:
     build:
@@ -31,6 +32,7 @@ services:
       - "5003:5003"
     environment:
       PORT: 5003
+      DATABASE_URL: ${DATABASE_URL}
 
   question-service:
     build:
@@ -41,6 +43,7 @@ services:
       - "5004:5004"
     environment:
       PORT: 5004
+      MONGO_ATLAS_URL: ${MONGO_ATLAS_URL}
 
   admin-service:
     build:

@@ -29,6 +29,7 @@
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
     "firebase": "^10.4.0",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.279.0",
     "monaco-editor": "^0.43.0",
     "next": "13.4.19",
@@ -43,5 +44,9 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
     "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.199",
+    "@types/socket.io-client": "^3.0.0"
   }
 }
