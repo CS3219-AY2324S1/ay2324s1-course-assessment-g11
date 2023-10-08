@@ -63,7 +63,6 @@ export const columns: ColumnDef<Question>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      console.log(row)
       const id = row.id as string;
       return (
         <div className="flex gap-2 justify-between">
