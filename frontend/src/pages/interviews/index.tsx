@@ -121,7 +121,7 @@ export default function Interviews() {
         </div>
       </div>
 
-      <Link href="/room"><Button variant={"default"}>Practice with a peer!</Button></Link>
+      <Link href="interviews/1/find-match"><Button variant={"default"}>Practice with a peer!</Button></Link>
     </div>
   )
 }
