@@ -4,9 +4,11 @@ import { useQuestion } from "@/hooks/useQuestion";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import { Question } from "../../../types/QuestionTypes";
 import {auth} from "@/firebase-client/firebase_config";
+import {questionApiPathAddress} from "@/firebase-client/gateway-address";
+import {AuthContext} from "@/contexts/AuthContext";
 
 export default function Room() {
   const router = useRouter();
@@ -15,13 +17,13 @@ export default function Room() {
   const [loading, setLoading] = useState(true);
   const [answer, setAnswer] = useState("");
 
+  const { currentUser, authIsReady } = useContext(AuthContext);
+
   useEffect(() => {
-    if (!router.isReady) return;
     const fetchQuestion = async () => {
-      const currentUser = auth.currentUser;
       if (currentUser) {
         const idToken = await currentUser.getIdToken(true);
-        const url = `http://localhost:4000/api/question-service/question/${questionTitle}`;
+        const url = `${questionApiPathAddress}question/${questionTitle}`;
 
         console.log(url);
 

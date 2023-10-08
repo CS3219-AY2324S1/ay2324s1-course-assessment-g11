@@ -9,4 +9,5 @@ const gatewayAddress = (process.env.NODE_ENV === "development")
   ? "http://localhost:4000/"
   : "http://gateway:4000/";
 
-export const userApiPathAddress = gatewayAddress + "api/user-service/"
+export const userApiPathAddress = gatewayAddress + "api/user-service/";
+export const questionApiPathAddress = gatewayAddress + "api/question-service/";

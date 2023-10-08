@@ -6,23 +6,24 @@ import {
 } from "@/components/ui/typography";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import {useContext, useEffect, useState} from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { columns, Question } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty } from "../../../types/QuestionTypes";
-import {auth} from "@/firebase-client/firebase_config";
+import {questionApiPathAddress} from "@/firebase-client/gateway-address";
+import {AuthContext} from "@/contexts/AuthContext";
 
 export default function Questions() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const [questions, setQuestions] = useState<Question[]>([]);
-  const currentUser = auth.currentUser;
+  const { currentUser, authIsReady } = useContext(AuthContext);
 
 
   useEffect(() => {
     if (currentUser) {
-      const url = "http://localhost:4000/api/question-service/list";
+      const url = `${questionApiPathAddress}list`;
       currentUser.getIdToken(true).then((idToken) => {
         fetch(url, {
           method: "GET",
