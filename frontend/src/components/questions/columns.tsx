@@ -1,18 +1,11 @@
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table";
 import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
+import { Difficulty, QuestionColumns } from "../../../types/QuestionTypes";
 
-type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
-
-export type Question = {
-  title: string;
-  difficulty: Difficulty;
-  tags: string[];
-}
-
-export const columns: ColumnDef<Question>[] = [
+export const columns: ColumnDef<QuestionColumns>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -26,7 +19,7 @@ export const columns: ColumnDef<Question>[] = [
           Title
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     enableHiding: false,
   },
@@ -37,7 +30,9 @@ export const columns: ColumnDef<Question>[] = [
       const difficulty = row.getValue("difficulty") as Difficulty;
       return (
         <Badge variant="secondary" className="h-min">
-          <TypographySmall className={`${getDifficultyColor(difficulty)}`}>{difficulty}</TypographySmall>
+          <TypographySmall className={`${getDifficultyColor(difficulty)}`}>
+            {difficulty}
+          </TypographySmall>
         </Badge>
       );
     },
@@ -62,21 +57,31 @@ export const columns: ColumnDef<Question>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const questionId = row.getValue("title") as string;
       return (
         <div className="flex gap-2 justify-between">
           <Button variant="secondary" size="icon" className="h-8 w-8">
             <EditIcon size={20} />
           </Button>
-          <Button variant="outline" size="sm" className="h-8 gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => {
+              window.location.href = `/questions/${questionId
+                .split(" ")
+                .join("-")}`;
+            }}
+          >
             Practice
             <PlayIcon size={20} />
           </Button>
         </div>
-      )
+      );
     },
     enableHiding: false,
   },
-]
+];
 
 const getDifficultyColor = (difficulty: Difficulty) => {
   switch (difficulty) {
@@ -89,4 +94,4 @@ const getDifficultyColor = (difficulty: Difficulty) => {
     default:
       return "text-gray-500";
   }
-}
+};

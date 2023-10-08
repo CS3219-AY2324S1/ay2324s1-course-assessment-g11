@@ -4,19 +4,10 @@ import useCollaboration from "@/hooks/useCollaboration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-
-type Question = {
-  title: string;
-  difficulty: string;
-  tags: string[];
-  description: string;
-  solution: string;
-};
+import { Question } from "../../../types/QuestionTypes";
 
 export default function Room() {
   const router = useRouter();
-
-  if (!router.isReady) return null; // <-- Check if router is ready
 
   const roomId = router.query.id as string;
   const userId = "user1";
@@ -34,7 +25,10 @@ export default function Room() {
       "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
     solution:
       "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
+    defaultCode: "var twoSum = function(nums, target) {\n\n};",
   };
+
+  if (!router.isReady) return null;
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
