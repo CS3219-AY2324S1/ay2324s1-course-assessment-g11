@@ -8,5 +8,5 @@ WORKDIR /app
 COPY package.json yarn.lock ./
 
 # Install dependencies using Yarn
-RUN yarn install
+RUN yarn install --frozen-lockfile
 RUN yarn prisma generate
