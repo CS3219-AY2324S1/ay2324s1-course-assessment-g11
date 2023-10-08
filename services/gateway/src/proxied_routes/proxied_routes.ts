@@ -1,5 +1,11 @@
 import {ProxiedRoute} from "./proxied_route_type";
-import {adminServiceAddress, questionServiceAddress, userServiceAddress} from "./service_names";
+import {
+  adminServiceAddress,
+  collaborationServiceAddress,
+  matchingServiceAddress,
+  questionServiceAddress,
+  userServiceAddress
+} from "./service_names";
 
 export const proxied_routes : ProxiedRoute[] = [
   {
@@ -30,6 +36,33 @@ export const proxied_routes : ProxiedRoute[] = [
         '^/api/admin-service': '',
       },
     },
+  },
+  {
+    url: '/api/question-service',
+    admin_required_methods: ["POST, PUT, DELETE"], // Only admins can create, update or delete questions
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: questionServiceAddress,
+      changeOrigin: true,
+    }
+  },
+  {
+    url: '/api/matching-service',
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: matchingServiceAddress,
+      changeOrigin: true,
+    }
+  },
+  {
+    url: '/api/collaboration-service',
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: collaborationServiceAddress,
+      changeOrigin: true,
+    }
   },
   {
     url: '/api/question-service',
