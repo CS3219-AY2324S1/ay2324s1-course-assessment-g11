@@ -6,28 +6,28 @@ import {
 } from "@/components/ui/typography";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {useContext, useEffect, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { columns, Question } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty } from "../../../types/QuestionTypes";
-import {questionApiPathAddress} from "@/firebase-client/gateway-address";
-import {AuthContext} from "@/contexts/AuthContext";
+import { questionApiPathAddress } from "@/firebase-client/gateway-address";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Questions() {
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const [questions, setQuestions] = useState<Question[]>([]);
-  const { currentUser, authIsReady } = useContext(AuthContext);
-
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   useEffect(() => {
     if (currentUser) {
       const url = `${questionApiPathAddress}list`;
+      console.log(currentUser, authIsReady);
       currentUser.getIdToken(true).then((idToken) => {
         fetch(url, {
           method: "GET",
-          mode: 'cors',
+          mode: "cors",
           headers: {
             "Content-Type": "application/json",
             "User-Id-Token": idToken,
@@ -36,6 +36,7 @@ export default function Questions() {
           .then((response) => response.json())
           .then((data) => {
             if (data && data.questions) {
+              console.log(data);
               setQuestions(
                 data.questions.map((question: any) => ({
                   title: question.title,
@@ -50,9 +51,9 @@ export default function Questions() {
           });
       });
     } else {
-      console.log("You are most likely not logged in")
+      console.log("You are most likely not logged in");
     }
-  }, []);
+  }, [currentUser, authIsReady]);
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
