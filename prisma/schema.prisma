@@ -21,9 +21,7 @@ model User {
 model Match {
   roomId    String      @id @default(uuid())
   userId1    String
-  socketId1  String
   userId2 String
-  socketId2 String
   chosenDifficulty String
   chosenProgrammingLanguage String
   createdAt DateTime @default(now())
