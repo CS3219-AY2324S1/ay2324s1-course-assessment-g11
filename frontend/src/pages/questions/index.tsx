@@ -42,7 +42,7 @@ export default function Questions() {
                 data.questions.map((question: any) => ({
                   title: question.title,
                   difficulty: question.difficulty,
-                  tags: question.topics,
+                  topics: question.topics,
                 }))
               );
             }
@@ -58,7 +58,7 @@ export default function Questions() {
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
-      <div className='flex justify-between items-center'>
+      <div className="flex justify-between items-center">
         <div>
           <TypographyH1 className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-min mb-1">
             Questions
@@ -68,7 +68,7 @@ export default function Questions() {
           </TypographyBodyHeavy>
         </div>
         <Link href="/questions/new">
-          <Button className='gap-2'>
+          <Button className="gap-2">
             <PlusIcon />
             Contribute question
           </Button>

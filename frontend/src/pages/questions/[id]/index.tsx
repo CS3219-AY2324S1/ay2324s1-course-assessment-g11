@@ -62,7 +62,7 @@ export default function Room() {
     };
 
     fetchQuestion();
-  }, [questionTitle, authIsReady]);
+  }, [questionTitle, authIsReady, currentUser]);
 
   if (!router.isReady || question === null) return null;
 
