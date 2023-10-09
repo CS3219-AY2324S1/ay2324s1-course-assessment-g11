@@ -1,111 +1,45 @@
 import express from "express";
+import logger from "morgan";
 import { Server } from "socket.io";
 import matchingRoutes from "./routes/matchingRoutes";
-import prisma from "./prismaClient";
+import { handleConnection, handleDisconnect, handleLooking } from "./controllers/matchingController";
+import { handleCancelLooking } from "./controllers/matchingController";
+import { handleLeaveMatch } from "./controllers/matchingController";
+import { handleSendMessage } from "./controllers/matchingController";
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5002;
 
 app.use(express.json());
+app.use(logger("dev"));
 app.use("/api/matching-service", matchingRoutes);
 
 const httpServer = require("http").createServer(app);
-const io = new Server(httpServer);
+export const io = new Server(httpServer);
 
 app.set("io", io);
 
-const usersQueue: number[] = [];
-
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  let { userId, userMatchReq, timer } = handleConnection(socket);
 
-  socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
-    // Remove user from queue if they disconnect
-    const index = usersQueue.indexOf(parseInt(socket.id));
-    if (index > -1) {
-      usersQueue.splice(index, 1);
-    }
-  });
+  socket.on("disconnect", handleDisconnect(socket, timer, userId, userMatchReq));
 
-  socket.on("lookingForMatch", async (userId: number) => {
-    console.log(`User ${userId} is looking for a match`);
+  socket.on("lookingForMatch", handleLooking(socket, userId, userMatchReq, timer));
 
-    // Add user to the queue
-    usersQueue.push(userId);
+  socket.on("cancelLooking", handleCancelLooking(userId, timer, userMatchReq))
 
-    // Attempt to find a match for the user
-    const matchId = usersQueue.find((id) => id !== userId);
-    if (matchId) {
-      console.log(`Match found for user ${userId} with user ${matchId}`);
+  socket.on("leaveMatch", handleLeaveMatch(userId, socket));
 
-      // Inform both users of the match
-      socket.emit("matchFound", userId, matchId);
-      io.to(matchId.toString()).emit("matchFound", matchId, userId);
+  socket.on("sendMessage", handleSendMessage(userId, socket));
 
-      // Update the database with the matched users (pseudo-code)
-      await prisma.user.update({
-        where: { id: userId },
-        data: { matchedUserId: matchId },
-      });
-
-      await prisma.user.update({
-        where: { id: matchId },
-        data: { matchedUserId: userId },
-      });
-
-      // Remove the matched users from the queue
-      usersQueue.splice(usersQueue.indexOf(userId), 1);
-      usersQueue.splice(usersQueue.indexOf(matchId), 1);
-    } else {
-      console.log(`No match found for user ${userId} yet.`);
-    }
-  });
-
-  socket.on("leaveMatch", async (userId: number) => {
-    console.log(`User ${userId} has left the match`);
-
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-
-    if (user?.matchedUserId) {
-      // Notify the matched user
-      io.to(user.matchedUserId.toString()).emit("matchLeft", userId);
-
-      // Update database to remove matchedUserId for both users
-      await prisma.user.update({
-        where: { id: userId },
-        data: { matchedUserId: null },
-      });
-      await prisma.user.update({
-        where: { id: user.matchedUserId },
-        data: { matchedUserId: null },
-      });
-    }
-  });
-
-  socket.on("sendMessage", async (userId: number, message: string) => {
-    console.log(`User ${userId} sent a message: ${message}`);
-
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-
-    if (user?.matchedUserId) {
-      // Forward the message to the matched user
-      io.to(user.matchedUserId.toString()).emit(
-        "receiveMessage",
-        userId,
-        message
-      );
-    } else {
-      // Error handling if the user tries to send a message without a match
-      socket.emit("error", "You are not currently matched with anyone.");
-    }
-  });
-
-  socket.on("matchFound", async (userId: number, matchedUserId: number) => {
+  socket.on("matchFound", async (userId: string, matchedUserId: string) => {
     // todo - in the FE handle this
   });
+
+
 });
 
 httpServer.listen(port, () => {
   console.log(`Matching service is running at http://localhost:${port}`);
 });
+
