@@ -284,7 +284,7 @@ router.delete("/question/:id", async (req, res, next) => {
   }
 });
 
-router.get("/random-question", async (req, res, next) => {
+router.post("/random-question", async (req, res, next) => {
   /**
    * #swagger.description = 'Get a random question.'
    * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }

@@ -11,50 +11,49 @@ import DifficultySelector from "@/components/common/difficulty-selector";
 import { columns } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty, Question } from "../../../types/QuestionTypes";
-import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 import { PlusIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useQuestions } from "@/hooks/useQuestions";
 
 export default function Questions() {
+  const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
   const { user: currentUser, authIsReady } = useContext(AuthContext);
+
+  const { fetchQuestions, fetchRandomQuestion } = useQuestions();
 
   useEffect(() => {
     if (currentUser) {
-      const url = `${questionApiPathAddress}list`;
-      console.log(currentUser, authIsReady);
-      currentUser.getIdToken(true).then((idToken) => {
-        fetch(url, {
-          method: "GET",
-          mode: "cors",
-          headers: {
-            "Content-Type": "application/json",
-            "User-Id-Token": idToken,
-          },
+      fetchQuestions()
+        .then((questions) => {
+          setQuestions(questions);
+          loading && setLoading(false);
         })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data && data.questions) {
-              console.log(data);
-              setQuestions(
-                data.questions.map((question: any) => ({
-                  title: question.title,
-                  difficulty: question.difficulty,
-                  topics: question.topics,
-                }))
-              );
-            }
-          })
-          .catch((error) => {
-            console.error("There was an error fetching the questions", error);
-          });
-      });
+        .catch((error) => {
+          console.error("There was an error fetching the questions", error);
+        });
     } else {
       console.log("You are most likely not logged in");
     }
-  }, [currentUser, authIsReady]);
+  }, [currentUser, authIsReady, fetchQuestions, loading]);
+
+  const onClickRandomQuestion = async () => {
+    try {
+      const question: [Question] = await fetchRandomQuestion(difficulty);
+      console.log(question);
+      if (question && question[0].title) {
+        router.push(`/questions/${question[0].title.split(" ").join("-")}`);
+      } else {
+        console.error("Received undefined question or question without title.");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
@@ -85,14 +84,16 @@ export default function Questions() {
             defaultValue={difficulty}
           />
         </div>
-        <Link href="/room">
-          <Button variant={"outline"}>Give me a random question!</Button>
+        <Link href="">
+          <Button variant={"outline"} onClick={onClickRandomQuestion}>
+            Give me a random question!
+          </Button>
         </Link>
       </div>
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
-        <DataTable columns={columns} data={questions} />
+        <DataTable columns={columns} data={questions} loading={loading} />
       </div>
     </div>
   );

@@ -368,7 +368,7 @@
       }
     },
     "/api/question-service/random-question": {
-      "get": {
+      "post": {
         "description": "Get a random question.",
         "parameters": [
           {
@@ -400,6 +400,23 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "difficulty": {
+                    "example": "any"
+                  },
+                  "topics": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
