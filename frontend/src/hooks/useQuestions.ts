@@ -20,7 +20,7 @@ export const useQuestions = () => {
     topics: string[] = []
   ) => {
     if (authIsReady) {
-      return fetchRandomQuestionApi(difficulty, topics, currentUser);
+      return fetchRandomQuestionApi(difficulty, currentUser, topics);
     }
   };
 

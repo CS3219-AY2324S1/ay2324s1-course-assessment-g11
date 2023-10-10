@@ -109,7 +109,9 @@ export function DataTable<TData, TValue>({
       <div className="rounded-md border">
         {loading ? (
           // todo make loading look good
-          <div>loading</div>
+          <div className="h-64 flex items-center justify-center">
+            Loading...
+          </div>
         ) : (
           <Table>
             <TableHeader>

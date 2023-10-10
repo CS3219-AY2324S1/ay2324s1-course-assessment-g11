@@ -3,11 +3,11 @@ import { Difficulty } from "../../../types/QuestionTypes";
 
 export const fetchRandomQuestion = async (
   difficulty: Difficulty,
+  user: any,
   topics: string[] = [],
-  user: any
 ) => {
   try {
-    const url = `${questionApiPathAddress}/random-question`;
+    const url = `${questionApiPathAddress}random-question`;
     const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
@@ -45,7 +45,7 @@ export const fetchQuestions = async (user: any) => {
     });
 
     const data = await response.json();
-    if (data && data.questions) {
+    if (data?.questions) {
       const questions = data.questions.map((question: any) => ({
         title: question.title,
         difficulty: question.difficulty,
