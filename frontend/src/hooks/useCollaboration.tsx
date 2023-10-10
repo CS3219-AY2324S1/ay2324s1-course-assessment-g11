@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { io , Socket} from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
-import { TextOperationSet, createTextOpFromTexts } from "../../../utils/shared-ot";
+import {
+  TextOperationSet,
+  createTextOpFromTexts,
+} from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
 
 type UseCollaborationProps = {
@@ -23,6 +26,8 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   const [text, setText] = useState<string>("#Write your solution here");
   const textRef = useRef<string>(text);
   const prevTextRef = useRef<string>(text);
+  const awaitingAck = useRef<boolean>(false); // ack from sending update
+  const awaitingSync = useRef<boolean>(false); // synced with server
 
   useEffect(() => {
     const socketConnection = io("http://localhost:5003/");
@@ -30,20 +35,20 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
 
-    // if is my own socket connection, don't update text
-    // if (socket && socket.id !== socketConnection.id) {
-    //   console.log("update");
-    //   socketConnection.on(SocketEvents.ROOM_UPDATE, ({ version, text }: { version: number, text: string }) => {
-    //     console.log("Update vers to " + version);
-    //     vers = version;
-    //     setText(text);
-    //   });
-    // } else {
-      socketConnection.on(SocketEvents.ROOM_UPDATE, ({ version, text }: { version: number, text: string }) => {
+    socketConnection.on(
+      SocketEvents.ROOM_UPDATE,
+      ({ version, text }: { version: number; text: string }) => {
         console.log("Update vers to " + version);
         vers = version;
+
+        if (awaitingAck.current) return;
+
+        textRef.current = text;
+        prevTextRef.current = text;
         setText(text);
-      });
+        awaitingSync.current = false;
+      }
+    );
 
     return () => {
       socketConnection.disconnect();
@@ -59,29 +64,30 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     if (prevTextRef.current === textRef.current) return;
 
-    const handleTextChange = debounce(() => {
-      console.log(prevTextRef.current);
-      console.log(textRef.current);
-      console.log(vers)
-      const textOp: TextOp = createTextOpFromTexts(prevTextRef.current, textRef.current);
+    if (awaitingAck.current || awaitingSync.current) return;
 
-      
-      prevTextRef.current = textRef.current;
-      
+    awaitingAck.current = true;
 
-      console.log(textOp);
+    console.log("prevtext: " + prevTextRef.current);
+    console.log("currenttext: " + textRef.current);
+    console.log("version: " + vers);
+    const textOp: TextOp = createTextOpFromTexts(
+      prevTextRef.current,
+      textRef.current
+    );
 
-      const textOperationSet: TextOperationSet = {
-        version: vers,
-        operations: textOp,
-      }
+    prevTextRef.current = textRef.current;
 
-      socket.emit(SocketEvents.ROOM_UPDATE, textOperationSet);
-    }, 5000);
+    console.log(textOp);
 
-    handleTextChange();
+    const textOperationSet: TextOperationSet = {
+      version: vers,
+      operations: textOp,
+    };
 
-    return () => handleTextChange.cancel();
+    socket.emit(SocketEvents.ROOM_UPDATE, textOperationSet, () => {
+      awaitingAck.current = false;
+    });
   }, [text, socket]);
 
   return { text, setText };

@@ -179,10 +179,14 @@ function userDisconnect(socket: Socket): void {
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
-  socket.on(SocketEvents.ROOM_UPDATE, (textOpSet: TextOperationSet) => {
-    const text = handleTextOp(textOpSet, room_id);
-    roomUpdate(io, socket, room_id, text);
-  });
+  socket.on(
+    SocketEvents.ROOM_UPDATE,
+    (textOpSet: TextOperationSet, ackCallback) => {
+      const text = handleTextOp(textOpSet, room_id);
+      roomUpdate(io, socket, room_id, text);
+      ackCallback();
+    }
+  );
 
   socket.on(SocketEvents.ROOM_SAVE, (text: string) => saveText(room_id, text));
 
