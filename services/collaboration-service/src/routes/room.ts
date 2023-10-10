@@ -1,5 +1,11 @@
 import express, { Request, Response } from "express";
+import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
+import {
+  OpHistoryMap,
+  TextOperationSet,
+  getTransformedOperations,
+} from "../ot";
 
 interface Room {
   users: Array<string>;
@@ -22,6 +28,7 @@ enum SocketEvents {
 
 const sessions: Record<string, Room> = {};
 const socketMap: Record<string, SocketDetails> = {};
+const opMap: OpHistoryMap = new OpHistoryMap();
 
 // Data Access Layer
 function mapSocketToRoomAndUser(
@@ -33,6 +40,13 @@ function mapSocketToRoomAndUser(
     room_id: room_id,
     user_id: user_id,
   };
+}
+
+function getText(room_id: string): string {
+  if (!sessions[room_id]) {
+    return "";
+  }
+  return sessions[room_id].text;
 }
 
 function updateStatus(socket_id: string) {
@@ -116,8 +130,31 @@ function roomUpdate(
   text: string
 ): void {
   console.log(room_id + "  " + socket.id + " text changed:", text);
-  io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { text });
+  const version = opMap.getLatest(room_id)?.version ?? 1;
+  io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { version, text });
   saveRoom(room_id, text);
+}
+
+function handleTextOp(textOpSet: TextOperationSet, room_id: string): string {
+  console.log(textOpSet);
+  console.log(opMap.getLatest(room_id)?.version);
+  if (opMap.checkIfLatestVersion(room_id, textOpSet.version)) {
+    textOpSet.version++;
+    opMap.add(room_id, textOpSet);
+    return type.apply(getText(room_id), textOpSet.operations);
+  } else {
+    const latestOp = textOpSet.operations;
+    const mergedOp = opMap.getLatest(room_id)!.operations; // all operations from version to latest
+    const [transformedLatestOp, transformedMergedOp] = getTransformedOperations(
+      latestOp,
+      mergedOp
+    );
+    opMap.add(room_id, {
+      version: textOpSet.version + 1,
+      operations: transformedLatestOp,
+    });
+    return type.apply(getText(room_id), transformedLatestOp);
+  }
 }
 
 function roomUpdateFromDb(io: Server, socket: Socket, room_id: string): void {
@@ -141,9 +178,10 @@ function userDisconnect(socket: Socket): void {
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
-  socket.on(SocketEvents.ROOM_UPDATE, (text: string) =>
-    roomUpdate(io, socket, room_id, text)
-  );
+  socket.on(SocketEvents.ROOM_UPDATE, (textOpSet: TextOperationSet) => {
+    const text = handleTextOp(textOpSet, room_id);
+    roomUpdate(io, socket, room_id, text);
+  });
 
   socket.on(SocketEvents.ROOM_SAVE, (text: string) => saveText(room_id, text));
 
