@@ -153,6 +153,7 @@ function handleTextOp(textOpSet: TextOperationSet, room_id: string): string {
       version: textOpSet.version + 1,
       operations: transformedLatestOp,
     });
+    console.log(transformedLatestOp);
     return type.apply(getText(room_id), transformedLatestOp);
   }
 }
