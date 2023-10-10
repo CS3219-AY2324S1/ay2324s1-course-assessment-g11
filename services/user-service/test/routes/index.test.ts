@@ -15,7 +15,10 @@ const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", m
   matchProgrammingLanguage: "Python" };
 
 describe('/index', () => {
-
+  /**
+   * Note: Since this test is for testing the index.ts file, the /api/user-service is not prepended
+   * to the routes.
+   */
   beforeEach(() => {
     vi.restoreAllMocks();
   })

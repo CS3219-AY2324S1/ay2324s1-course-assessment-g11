@@ -14,9 +14,6 @@ export const proxied_routes : ProxiedRoute[] = [
     proxy: {
       target: userServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        '^/api/user-service': '',
-      },
     }
   },
   {
@@ -26,9 +23,6 @@ export const proxied_routes : ProxiedRoute[] = [
     proxy: {
       target: adminServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        '^/api/admin-service': '',
-      },
     }
   }
 ]
