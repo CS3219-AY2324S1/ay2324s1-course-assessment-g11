@@ -1,12 +1,9 @@
+import { diff_match_patch } from "diff-match-patch";
+import { type, insert, remove, TextOp } from "ot-text-unicode";
+
 interface OpHistory {
   version: number;
-  operations: Array<Operation>;
-}
-
-interface Operation {
-  type: "insert" | "delete";
-  position: number;
-  value: string;
+  operations: TextOp;
 }
 
 class CircularArray<T> {
@@ -59,6 +56,17 @@ class OpHistoryMap {
     return this.map[room_id].getLatest();
   }
 
+  public checkIfLatestVersion(room_id: string, version: number): boolean {
+    if (!this.map[room_id]) {
+      return true;
+    }
+    const latest = this.map[room_id].getLatest();
+    if (!latest) {
+      return true;
+    }
+    return latest.version === version;
+  }
+
   public search(room_id: string, version: number): OpHistory | null {
     if (!this.map[room_id]) {
       return null;
@@ -69,9 +77,81 @@ class OpHistoryMap {
   }
 }
 
-function transformOperations(
-  operations_x: Array<Operation>,
-  operations_y: Array<Operation>
-) {
-  // TODO
+const dmp = new diff_match_patch();
+
+function createTextOpFromTexts(text1: string, text2: string): TextOp {
+  const diffs = dmp.diff_main(text1, text2);
+  //dmp.diff_cleanupSemantic(diffs);
+
+  var textop: TextOp = [];
+
+  var skipn: number = 0;
+
+  for (const [operation, text] of diffs) {
+    if (operation === 0) {
+      skipn += text.length;
+    } else if (operation === -1) {
+      textop = [...textop, ...remove(skipn, text)];
+      skipn = 0;
+    } else {
+      textop = [...textop, ...insert(skipn, text)];
+      skipn = 0;
+    }
+  }
+  return textop;
 }
+
+const text1 = "hello world";
+// console.log(type.apply(text1, remove(6, 1)));
+// console.log(
+//   type.apply(type.apply(text1, remove(6, "w")), insert(9, "asdadasdk"))
+// );
+// console.log(
+//   type.apply(text1, (remove(6, "w") as TextOp).concat(insert(3, "asdadasdk")))
+// );
+const text2 = "good day hi everyone and the world";
+const text3 = "good morning to the world and all who are in it";
+const expected = "hi everyone good morning to the world and all who are in it"; /// or some gibberish similiar to this
+// const textOp = createTextOpFromTexts(text1, text2);
+// console.log(textOp);
+// console.log(type.apply(text1, textOp));
+
+const history_db = new OpHistoryMap();
+
+history_db.add("room1", {
+  version: 0.1,
+  operations: insert(0, text1),
+});
+
+/// Text 3 sent on version 0.1
+history_db.search("room1", 0.1);
+
+const text1to2op = createTextOpFromTexts(text1, text2);
+console.log(text1to2op);
+
+history_db.add("room1", {
+  version: 0.2,
+  operations: text1to2op,
+});
+
+const text1to3op = createTextOpFromTexts(text1, text3);
+console.log(text1to3op);
+
+const newOp = type.transform(text1to3op, text1to2op, "left");
+console.log(newOp);
+console.log(type.apply(text2, newOp));
+
+// console.log(
+//   type.transform(
+//     (remove(0, "w") as TextOp).concat(insert(3, "asdadasdk")),
+//     (insert(1, "hello") as TextOp).concat(remove(3, "ak")),
+//     "left"
+//   )
+// );
+
+const newOp2 = type.transform(text1to2op, text1to3op, "right");
+console.log(newOp2);
+console.log(type.apply(text3, newOp2));
+
+// favour text1to3op over text1to2op on side param
+// outcome is same
