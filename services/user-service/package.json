@@ -3,8 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "dotenv -e ../../.env ts-node-dev src/app.ts",
+    "dev:local": "dotenv -e ../../.env -c development -- yarn dev",
+    "dev": "ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
+    "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} openapiDocGen.ts",
     "build": "tsc",
     "test": "vitest run -c ./test/vitest.config.unit.ts",
     "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarn systemtest:ci",
@@ -18,8 +20,7 @@
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "^4.18.2",
-    "morgan": "~1.9.1",
-    "socket.io-client": "^4.7.2"
+    "morgan": "~1.9.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.4",

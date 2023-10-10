@@ -6,7 +6,7 @@ const port : number = parseInt(process.env.PORT || "5005");
 
 import router from './routes/index';
 
-app.use('/', router);
+app.use('/api/admin-service', router);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

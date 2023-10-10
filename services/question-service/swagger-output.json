@@ -227,7 +227,7 @@
         }
       },
       "put": {
-        "description": "",
+        "description": "Update a question.",
         "parameters": [
           {
             "name": "id",
@@ -235,6 +235,76 @@
             "required": true,
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "description": "Title of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content",
+            "description": "Content of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "description": "Array of topics of the question.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "difficulty",
+            "description": "Difficulty of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "testCasesInputs",
+            "description": "Array of test case inputs.",
+            "items": {
+              "type": "string"
+            },
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "testCasesOutputs",
+            "description": "Array of test case outputs.",
+            "items": {
+              "type": "string"
+            },
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "defaultCode",
+            "description": "Object of default code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "solution",
+            "description": "Object of solution code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
             }
           }
         ],

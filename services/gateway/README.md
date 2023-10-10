@@ -15,7 +15,7 @@ The below code shows a sample route that is being proxied from the frontend to t
       max: 5
     },
     proxy: {
-      target: "http://localhost:5001/",
+      target: adminServiceAddress,
       changeOrigin: true,
       pathRewrite: {
         [`^/users`]: '',
@@ -33,21 +33,21 @@ Explanation:
 * `rateLimit` - currently unused. May be removed if not needed
 * `proxy` - an object for routing the request to the user service. The underlying dependency used is `http-proxy-middleware`
 
-## Events API
-Besides proxying requests, the gateway service also serves as the emitter for events from the frontend.
+### Required headers
+The required headers are as follows:
+* `User-Id-Token` - the id token obtained by calling [`getIdToken()` on the current Firebase user](https://firebase.google.com/docs/reference/js/v8/firebase.User#getidtoken)
 
-### Example
- 
-1) The gateway is initialised first. All other backend services connect to the gateway upon startup to join rooms.
-2) Suppose that a user logs into the app on the frontend
-3) The log in functionality will make a HTTP call to the gateway at the `/events/userLoggedIn` route
-4) This route will emit an event to the room
-5) The backend service that is subscribed to the room can consume the event
 
 ## Required environment variables
-The Gateway requires a `FIREBASE_SERVICE_ACCOUNT` environment variable.
+The Gateway requires the following environment variables:
 
-## Local testing of the Gateway
+| Environment variable file | File location | Environment Variable Name | Explanation                                                                                                               |
+|---------------------------| --- | --- |---------------------------------------------------------------------------------------------------------------------------|
+| `.env`                    | Project root | `FIREBASE_SERVICE_ACCOUNT` | The service account corresponding to the app on Firebase. This is needed for API calls.                                   |
+| `.env.development`        | Project root | `ENVIRONMENT_TYPE` | Set this to `local-dev` for `localhost` testing. In other environments like Docker and Kubernetes, this file is not read. |
+
+
+## Local development and testing of the Gateway
 Steps:
-1) Add an `.env` file at the project root with the above-mentioned variable
-2) At the project root, run `yarn workspace gateway start`
+1) Add an `.env` file at the project root with the above-mentioned variable as well as an `.env.development` file at the project root.
+2) At the project root, run `yarn workspace gateway dev:local`

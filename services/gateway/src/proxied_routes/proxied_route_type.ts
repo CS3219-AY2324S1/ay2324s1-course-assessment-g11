@@ -1,16 +1,12 @@
+import {Options} from "http-proxy-middleware";
+
 export type ProxiedRoute = {
   url: string;
   admin_required_methods: string[];
   user_match_required_methods: string[];
-  rateLimit: {
+  rateLimit?: {
     windowMs: number;
     max: number;
   },
-  proxy: {
-    target: string;
-    changeOrigin: boolean;
-    pathRewrite: {
-      [`^/users`]: string;
-    }
-  }
+  proxy: Options
 }
