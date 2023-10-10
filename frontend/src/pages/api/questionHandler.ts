@@ -7,7 +7,7 @@ export const fetchRandomQuestion = async (
   user: any
 ) => {
   try {
-    const url = `${questionApiPathAddress}/random-question`;
+    const url = `${questionApiPathAddress}random-question`;
     const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
