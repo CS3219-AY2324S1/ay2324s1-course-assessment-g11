@@ -19,7 +19,7 @@ export default function Description({
   participants,
 }: DescriptionProps) {
   return (
-    <Card className={`m-2 ml-0 px-6 h-full ${className}`}>
+    <Card className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}>
       <div className="flex flex-row items-center justify-between py-2">
         <div className="flex gap-4 items-center justify-center">
           <TypographyH2>{question.title}</TypographyH2>
@@ -38,10 +38,12 @@ export default function Description({
           </Badge>
         ))}
       </div>
-      <div className="py-2">
-        <TypographySmall>{question.description}</TypographySmall>
+      <div className="py-6">
+        <TypographySmall>
+          <div dangerouslySetInnerHTML={{ __html: question.description }} className="max-w-2xl overflow-x-auto"></div>
+        </TypographySmall>
       </div>
-      <div className="flex gap-4 absolute bottom-10">
+      {/* <div className="flex gap-4 absolute bottom-10">
         {participants?.map((participant) => (
           <div
             className="flex items-center justify-start gap-4"
@@ -63,7 +65,7 @@ export default function Description({
             </div>
           </div>
         ))}
-      </div>
+      </div> */}
     </Card>
   );
 }
