@@ -10,7 +10,7 @@ const testAdminUid = 'TestAdminUid';
 // Set this to be between 10 and 19 inclusive
 const numberOfListedUsers = 19;
 
-describe('Admin service /index', () => {
+describe('Admin service /api/admin-service/index', () => {
 
   describe('Sample workflow for adding admin user', () => {
     afterAll(async () => {
@@ -36,7 +36,7 @@ describe('Admin service /index', () => {
     });
 
     it('Step 1: Add admin rights to admin user', async () => {
-      const response = await request(app).put(`/setAdmin/${testAdminUid}`).send();
+      const response = await request(app).put(`/api/admin-service/setAdmin/${testAdminUid}`).send();
 
       const userClaims = await firebaseAuth.getUser(testAdminUid).then((userRecord) => {
         return userRecord.customClaims;
@@ -52,7 +52,7 @@ describe('Admin service /index', () => {
     });
 
     it('Step 2: Remove admin rights from admin user', async () => {
-      const response = await request(app).put(`/removeAdmin/${testAdminUid}`).send();
+      const response = await request(app).put(`/api/admin-service/removeAdmin/${testAdminUid}`).send();
 
       const userClaims = await firebaseAuth.getUser(testAdminUid).then((userRecord) => {
         return userRecord.customClaims;
@@ -68,13 +68,13 @@ describe('Admin service /index', () => {
 
   describe('Adding and removing admin to/from non-existent user', () => {
     it('Add admin rights to non-existent user', async () => {
-      const response = await request(app).put(`/setAdmin/${testAdminUid}`).send();
+      const response = await request(app).put(`/api/admin-service/setAdmin/${testAdminUid}`).send();
 
       expect(response.status).toStrictEqual(404);
     });
 
     it('Step 2: Remove admin rights from non-existent user', async () => {
-      const response = await request(app).put(`/removeAdmin/${testAdminUid}`).send();
+      const response = await request(app).put(`/api/admin-service/removeAdmin/${testAdminUid}`).send();
 
       expect(response.status).toStrictEqual(404);
     });
@@ -108,7 +108,7 @@ describe('Admin service /index', () => {
     });
 
     it(`List ${numberOfListedUsers} users in the database`, async () => {
-      const firstResponse = await request(app).get(`/listUsers`).send()
+      const firstResponse = await request(app).get(`/api/admin-service/listUsers`).send()
       expect(firstResponse.status).toStrictEqual(200);
 
       const firstResponseBody = firstResponse.body;
@@ -118,7 +118,7 @@ describe('Admin service /index', () => {
       expect(firstUserList.length).toStrictEqual(10);
       expect(nextPageToken).toBeTruthy(); // next page token is a string
 
-      const secondResponse = await request(app).get(`/listUsers`).set('Next-Page-Token', nextPageToken).send();
+      const secondResponse = await request(app).get(`/api/admin-service/listUsers`).set('Next-Page-Token', nextPageToken).send();
       expect(secondResponse.status).toStrictEqual(200);
 
       const secondResponseBody = secondResponse.body;

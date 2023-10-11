@@ -111,7 +111,7 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
         />
         <FormField
           control={form.control}
-          name="tags"
+          name="topics"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Select Frameworks</FormLabel>

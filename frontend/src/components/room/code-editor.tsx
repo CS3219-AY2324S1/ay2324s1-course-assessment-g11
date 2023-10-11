@@ -76,7 +76,7 @@ export default function CodeEditor({
       if (value === undefined) return;
       onChange(value);
     },
-    [onChange, text]
+    [onChange]
   );
 
   return (

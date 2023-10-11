@@ -1,17 +1,9 @@
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef } from "@tanstack/react-table";
 import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
-import Link from "next/link";
-
-type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
-
-export type Question = {
-  title: string;
-  difficulty: Difficulty;
-  tags: string[];
-}
+import { Difficulty, Question } from "../../../types/QuestionTypes";
 
 export const columns: ColumnDef<Question>[] = [
   {
@@ -27,7 +19,7 @@ export const columns: ColumnDef<Question>[] = [
           Title
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     enableHiding: false,
   },
@@ -38,21 +30,23 @@ export const columns: ColumnDef<Question>[] = [
       const difficulty = row.getValue("difficulty") as Difficulty;
       return (
         <Badge variant="secondary" className="h-min">
-          <TypographySmall className={`${getDifficultyColor(difficulty)}`}>{difficulty}</TypographySmall>
+          <TypographySmall className={`${getDifficultyColor(difficulty)}`}>
+            {difficulty}
+          </TypographySmall>
         </Badge>
       );
     },
   },
   {
-    accessorKey: "tags",
+    accessorKey: "topics",
     header: "Topics",
     cell: ({ row }) => {
-      const tags = row.getValue("tags") as string[];
+      const topics = row.getValue("topics") as string[];
       return (
         <div className="flex gap-2 flex-wrap">
-          {tags.map((tag) => (
-            <Badge variant="outline" className="" key={tag}>
-              <TypographySmall>{tag}</TypographySmall>
+          {topics.map((topic) => (
+            <Badge variant="outline" className="" key={topic}>
+              <TypographySmall>{topic}</TypographySmall>
             </Badge>
           ))}
         </div>
@@ -63,24 +57,31 @@ export const columns: ColumnDef<Question>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const id = row.id as string;
+      const questionId = row.getValue("title") as string;
       return (
         <div className="flex gap-2 justify-between">
-          <Link href={`/questions/${id}/edit`}>
           <Button variant="secondary" size="icon" className="h-8 w-8">
             <EditIcon size={20} />
           </Button>
-          </Link>
-          <Button variant="outline" size="sm" className="h-8 gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 gap-2"
+            onClick={() => {
+              window.location.href = `/questions/${questionId
+                .split(" ")
+                .join("-")}`;
+            }}
+          >
             Practice
             <PlayIcon size={20} />
           </Button>
         </div>
-      )
+      );
     },
     enableHiding: false,
   },
-]
+];
 
 const getDifficultyColor = (difficulty: Difficulty) => {
   switch (difficulty) {
@@ -93,4 +94,4 @@ const getDifficultyColor = (difficulty: Difficulty) => {
     default:
       return "text-gray-500";
   }
-}
+};
