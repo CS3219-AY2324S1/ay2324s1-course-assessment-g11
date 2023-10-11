@@ -1,13 +1,14 @@
-import '@/styles/globals.scss'
-import type { AppProps } from 'next/app'
-import Layout from '../components/common/layout'
-import { Noto_Sans } from 'next/font/google'
+import "@/styles/globals.scss";
+import type { AppProps } from "next/app";
+import Layout from "../components/common/layout";
+import { Noto_Sans } from "next/font/google";
 import AuthContextProvider from "@/contexts/AuthContext";
+import { MatchmakingProvider } from "../../providers/MatchmakingProvider";
 
 const notoSans = Noto_Sans({
-  weight: ['400', '500', '600', '700', '800', '900'],
-  preload: false
-})
+  weight: ["400", "500", "600", "700", "800", "900"],
+  preload: false,
+});
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -19,11 +20,13 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <main>
         <AuthContextProvider>
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
+          <MatchmakingProvider>
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
+          </MatchmakingProvider>
         </AuthContextProvider>
       </main>
     </>
-  )
+  );
 }

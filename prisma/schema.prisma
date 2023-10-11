@@ -7,30 +7,30 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("PRSIMA_DATABASE_URL")
 }
 
 // todo rename for colalboration service
 model User {
-  id                String      @id @default(uuid())
+  id                String    @id @default(uuid())
   isLookingForMatch Boolean
-  matchedUserId     String?     @unique
+  matchedUserId     String?   @unique
   lastConnected     DateTime?
 }
 
 model Match {
-  roomId    String      @id @default(uuid())
-  userId1    String
-  userId2 String
-  chosenDifficulty String
+  roomId                    String   @id @default(uuid())
+  userId1                   String
+  userId2                   String
+  chosenDifficulty          String
   chosenProgrammingLanguage String
-  createdAt DateTime @default(now())
+  createdAt                 DateTime @default(now())
 }
 
 model AppUser {
-  uid    String  @id
-  displayName  String?
-  photoUrl String?
-  matchDifficulty Int?
+  uid                      String  @id
+  displayName              String?
+  photoUrl                 String?
+  matchDifficulty          Int?
   matchProgrammingLanguage String?
 }

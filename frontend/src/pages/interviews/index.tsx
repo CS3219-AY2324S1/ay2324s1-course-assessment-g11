@@ -1,6 +1,5 @@
-import { TypographyBodyHeavy, TypographyH1, TypographyH2, TypographySmall } from '@/components/ui/typography'
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import DifficultySelector from "@/components/common/difficulty-selector";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -13,15 +12,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
 import {
-  Check,
-  ChevronsUpDown,
-} from "lucide-react";
-import { useState } from 'react';
-import DifficultySelector from '@/components/common/difficulty-selector';
+  TypographyBodyHeavy,
+  TypographyH1,
+  TypographyH2,
+  TypographySmall,
+} from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useMatchmaking } from "../../../providers/MatchmakingProvider";
 
-type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
+type Difficulty = "easy" | "medium" | "hard" | "any";
 
 const frameworks = [
   {
@@ -51,9 +54,21 @@ export default function Interviews() {
   const [value, setValue] = useState("");
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
-  return (
-    <div className='min-h-screen p-12 mx-auto max-w-7xl'>
+  const router = useRouter();
+  const { joinQueue } = useMatchmaking();
 
+  const onClickSearch = () => {
+    try {
+      joinQueue([difficulty], "python");
+      console.log("Joined queue");
+      router.push("/interviews/find-match");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div className="min-h-screen p-12 mx-auto max-w-7xl">
       <TypographyH1 className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary w-min mb-1">
         Interviews
       </TypographyH1>
@@ -62,13 +77,15 @@ export default function Interviews() {
         Try out mock interviews with your peers!
       </TypographyBodyHeavy>
 
-      <div className='flex-col flex gap-4 mt-12'>
-        <TypographyH2 className="text-primary">
-          Quick Match
-        </TypographyH2>
+      <div className="flex-col flex gap-4 mt-12">
+        <TypographyH2 className="text-primary">Quick Match</TypographyH2>
         <div>
           <TypographySmall>Choose question difficulty</TypographySmall>
-          <DifficultySelector onChange={(value) => setDifficulty(value)} showAny={true} defaultValue={difficulty} />
+          <DifficultySelector
+            onChange={(value) => setDifficulty(value)}
+            showAny={true}
+            defaultValue={difficulty}
+          />
         </div>
 
         <div>
@@ -84,7 +101,7 @@ export default function Interviews() {
                 >
                   {value
                     ? frameworks.find((framework) => framework.value === value)
-                      ?.label
+                        ?.label
                     : "Select framework..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
@@ -121,7 +138,9 @@ export default function Interviews() {
         </div>
       </div>
 
-      <Link href="interviews/1/find-match"><Button variant={"default"}>Practice with a peer!</Button></Link>
+      <Button onClick={onClickSearch} variant={"default"}>
+        Practice with a peer!
+      </Button>
     </div>
-  )
+  );
 }
