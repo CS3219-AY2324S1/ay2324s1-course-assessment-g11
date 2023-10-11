@@ -40,38 +40,7 @@
 
       const socket = io("http://localhost:5003/");
 
-      if (api === "rest") {
-        joinRoomByRestApi(room, user);
-      } else {
-        joinRoomBySocket(socket, room, user);
-      }
-
-      /** Using REST API -- not recommended **/
-      // Sets the server connection to accept the next incoming connection to room 1.
-      // Fine as long as all calls to GET API proceeds with immediate socket connection.
-      function joinRoomByRestApi(room, user) {
-        var apiUrl =
-          "http://localhost:5003/api/collaboration-service/room/join";
-
-        fetch(apiUrl, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ room_id: room, user_id: user }),
-          cache: "default",
-        })
-          .then((response) => {
-            return response.json();
-          })
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((err) => {
-            console.error("Error:", err);
-          });
-      }
+      joinRoomBySocket(socket, room, user);
 
       function saveRoomByRestApi(room, text) {
         var apiUrl =
