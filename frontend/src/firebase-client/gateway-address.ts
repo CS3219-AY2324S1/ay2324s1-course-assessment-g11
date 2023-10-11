@@ -2,8 +2,8 @@
  * File for defining the address of the gateway server.
  *
  * How to use:
- *   - For localhost development, set ENVIRONMENT_TYPE environment variable to "local-dev"
- *   - For other environments like Docker or Kubernetes, use name resolution
+ *   - For development environment, use localhost
+ *   - For production environment, use DNS
  */
 const gatewayAddress = (process.env.NODE_ENV === "development")
   ? "http://localhost:4000/"
