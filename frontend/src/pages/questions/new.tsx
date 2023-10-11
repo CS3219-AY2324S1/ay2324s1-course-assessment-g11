@@ -11,7 +11,7 @@ import QuestionsForm from "./_form";
 const formSchema = z.object({
   title: z.string().min(2).max(100),
   difficulty: z.enum(['easy', 'medium', 'hard']),
-  tags: z.array(z.string().min(2).max(100)),
+  topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(1000),
   language: z.enum(['javascript', 'python', 'java', 'c++']),
   code: z.string().min(0).max(10000) || undefined,
@@ -23,7 +23,7 @@ export default function NewQuestion() {
     defaultValues: {
       title: "",
       difficulty: "easy",
-      tags: [],
+      topics: [],
       description: "",
       language: "python",
       code: "",

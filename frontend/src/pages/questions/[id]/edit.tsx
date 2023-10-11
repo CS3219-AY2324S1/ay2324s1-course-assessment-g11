@@ -11,7 +11,7 @@ import QuestionsForm from "../_form";
 const formSchema = z.object({
   title: z.string().min(2).max(100),
   difficulty: z.enum(['easy', 'medium', 'hard']),
-  tags: z.array(z.string().min(2).max(100)),
+  topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(1000),
   language: z.enum(['javascript', 'python', 'java', 'c++']),
   code: z.string().min(0).max(10000) || undefined,
@@ -23,7 +23,7 @@ export default function NewQuestion() {
     defaultValues: {
       title: "Two Sum",
       difficulty: "easy",
-      tags: ["Array", "Hash Table"],
+      topics: ["Array", "Hash Table"],
       description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.",
       language: "python",
       code: "def twoSum(self, nums: List[int], target: int) -> List[int]:\n    for i in range(len(nums)):\n        for j in range(i + 1, len(nums)):\n            if nums[i] + nums[j] == target:\n                return [i, j]\n    return []",
