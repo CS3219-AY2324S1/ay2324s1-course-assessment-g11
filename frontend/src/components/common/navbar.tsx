@@ -4,8 +4,16 @@ import Image from "next/image";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
-import { TypographyBody } from "../ui/typography";
 import { useRouter } from "next/router";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
+import { ChevronDown } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 enum TabsOptions {
   INTERVIEWS = "interviews",
@@ -34,7 +42,7 @@ export default function Navbar() {
 
   return (
     <header>
-      <div className="flex py-4 bg-card justify-between items-center px-12">
+      <div className="flex h-20 bg-card justify-between items-center px-12">
         <div className="flex gap-20 justify-center items-center">
           <Link href="/"><Image src="/CodeParty.svg" alt="CodeParty logo" width={125} height={25} /></Link>
           {currentUser && <div className="h-12 flex justify-center items-center">
@@ -58,6 +66,23 @@ export default function Navbar() {
           <Link href="/interviews"><Button variant={"outline"}>Log In</Button></Link>
           <Button>Sign Up</Button>
         </div>}
+        {currentUser &&
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="flex justify-center items-center gap-2 h-14">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={currentUser.photoURL || ''} className="rounded-full" />
+                </Avatar>
+                <ChevronDown className="w-6 h-6" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Profile</DropdownMenuLabel>
+              <DropdownMenuLabel>Settings</DropdownMenuLabel>
+              <DropdownMenuLabel>Log Out</DropdownMenuLabel>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        }
       </div>
     </header>
   )
