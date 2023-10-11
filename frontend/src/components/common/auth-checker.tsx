@@ -32,3 +32,4 @@ export default function AuthChecker({ children }: AuthCheckerProps) {
 
   return (currentUser && children)
 }
+

@@ -14,6 +14,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useLogout } from "@/firebase-client/useLogout";
+import { useLogin } from "@/firebase-client/useLogin";
 
 enum TabsOptions {
   INTERVIEWS = "interviews",
@@ -26,7 +28,10 @@ export default function Navbar() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState<TabsOptions>(TabsOptions.NULL);
 
+  const { login } = useLogin();
+  const { logout } = useLogout();
   const router = useRouter();
+
   const currentPage = router.pathname;
 
   useEffect(() => {
@@ -63,8 +68,8 @@ export default function Navbar() {
           </div>}
         </div>
         {!currentUser && <div className="grid grid-cols-2 gap-4">
-          <Link href="/interviews"><Button variant={"outline"}>Log In</Button></Link>
-          <Button>Sign Up</Button>
+          <Button variant={"outline"} onClick={login}>Log In</Button>
+          <Button onClick={login}>Sign Up</Button>
         </div>}
         {currentUser &&
           <DropdownMenu>
@@ -77,9 +82,15 @@ export default function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Profile</DropdownMenuLabel>
-              <DropdownMenuLabel>Settings</DropdownMenuLabel>
-              <DropdownMenuLabel>Log Out</DropdownMenuLabel>
+              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/profile")}>
+                Profile
+              </DropdownMenuLabel>
+              <DropdownMenuLabel className="hover:bg-card">
+                Settings
+              </DropdownMenuLabel>
+              <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
+                Log Out
+              </DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
         }
