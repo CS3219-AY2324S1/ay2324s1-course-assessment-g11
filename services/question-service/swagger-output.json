@@ -135,7 +135,7 @@
         }
       }
     },
-    "/api/question-service/questions": {
+    "/api/question-service/list": {
       "get": {
         "description": "Get questions based on topics or difficulty, with offset based pagination.",
         "parameters": [
@@ -201,12 +201,12 @@
         }
       }
     },
-    "/api/question-service/question/{id}": {
+    "/api/question-service/question/{name}": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "id",
+            "name": "name",
             "in": "path",
             "required": true,
             "schema": {
@@ -225,7 +225,9 @@
             "description": "Internal Server Error"
           }
         }
-      },
+      }
+    },
+    "/api/question-service/question/{id}": {
       "put": {
         "description": "Update a question.",
         "parameters": [
@@ -366,7 +368,7 @@
       }
     },
     "/api/question-service/random-question": {
-      "get": {
+      "post": {
         "description": "Get a random question.",
         "parameters": [
           {
@@ -398,6 +400,23 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "difficulty": {
+                    "example": "any"
+                  },
+                  "topics": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }

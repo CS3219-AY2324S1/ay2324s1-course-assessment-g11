@@ -10,6 +10,7 @@
     "swagger-autogen": "ts-node swagger-doc-gen.ts"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.3.1",
