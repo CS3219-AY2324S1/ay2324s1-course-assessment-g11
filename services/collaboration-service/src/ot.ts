@@ -6,6 +6,10 @@ export interface TextOperationSet {
   operations: TextOp;
 }
 
+export interface TextOperationSetWithCursor extends TextOperationSet {
+  cursor?: number;
+}
+
 class CircularArray<T> {
   private array: Array<T>;
   private last: number; // index of last element
@@ -113,6 +117,10 @@ export function getTransformedOperations(latestOp: TextOp, mergedOp: TextOp) {
     type.transform(latestOp, mergedOp, "left"),
     type.transform(mergedOp, latestOp, "right"),
   ];
+}
+
+export function transformPosition(cursor: number, op: TextOp): number {
+  return type.transformPosition(cursor, op);
 }
 
 function test() {

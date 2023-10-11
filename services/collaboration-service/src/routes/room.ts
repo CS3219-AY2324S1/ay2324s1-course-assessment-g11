@@ -17,7 +17,9 @@ import {
 import {
   OpHistoryMap,
   TextOperationSet,
+  TextOperationSetWithCursor,
   getTransformedOperations,
+  transformPosition,
 } from "../ot";
 
 interface SocketDetails {
@@ -76,21 +78,37 @@ function roomUpdate(
   updateRoomText(room_id, text);
 }
 
+function roomUpdateWithCursor(
+  io: Server,
+  socket: Socket,
+  room_id: string,
+  text: string,
+  cursor: number
+): void {
+  console.log(
+    room_id + "  " + socket.id + " text changed:",
+    text,
+    " cursor:" + cursor
+  );
+  const version = opMap.getLatest(room_id)?.version ?? 1;
+  io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { version, text, cursor });
+  updateRoomText(room_id, text);
+}
+
 async function handleTextOp(
-  textOpSet: TextOperationSet,
+  textOpSet: TextOperationSetWithCursor,
   room_id: string
-): Promise<string> {
+): Promise<{ text: string; cursor: number }> {
   console.log(textOpSet);
   console.log(opMap.getLatest(room_id)?.version);
+  var resultTextOps = textOpSet.operations;
+
   if (opMap.checkIfLatestVersion(room_id, textOpSet.version)) {
     textOpSet.version++;
     opMap.add(room_id, textOpSet);
-    return getRoomText(room_id).then((text) => {
-      return type.apply(text, textOpSet.operations);
-    });
   } else {
     const latestOp = textOpSet.operations;
-    const mergedOp = opMap.getLatest(room_id)!.operations; // all operations from version to latest
+    const mergedOp = opMap.getLatest(room_id)!.operations; // TODO all operations from version to latest
     const [transformedLatestOp, transformedMergedOp] = getTransformedOperations(
       latestOp,
       mergedOp
@@ -100,10 +118,17 @@ async function handleTextOp(
       operations: transformedLatestOp,
     });
     console.log(transformedLatestOp);
-    return getRoomText(room_id).then((text) => {
-      return type.apply(text, transformedLatestOp);
-    });
+    resultTextOps = transformedLatestOp;
   }
+
+  return getRoomText(room_id).then((text) => {
+    return {
+      text: type.apply(text, resultTextOps),
+      cursor: textOpSet.cursor
+        ? transformPosition(textOpSet.cursor, resultTextOps)
+        : -1,
+    };
+  });
 }
 
 async function roomUpdateWithTextFromDb(
@@ -137,9 +162,13 @@ function userDisconnect(socket: Socket): void {
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   socket.on(
     SocketEvents.ROOM_UPDATE,
-    async (textOpSet: TextOperationSet, ackCallback) => {
-      await handleTextOp(textOpSet, room_id).then((text) => {
-        roomUpdate(io, socket, room_id, text);
+    async (textOpSet: TextOperationSetWithCursor, ackCallback) => {
+      await handleTextOp(textOpSet, room_id).then(({ text, cursor }) => {
+        if (cursor > -1) {
+          roomUpdateWithCursor(io, socket, room_id, text, cursor);
+        } else {
+          roomUpdate(io, socket, room_id, text);
+        }
         ackCallback();
       });
     }
