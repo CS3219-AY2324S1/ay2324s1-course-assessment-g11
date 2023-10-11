@@ -1,18 +1,24 @@
 import express, { Request, Response } from "express";
 import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
+import { Room } from "@prisma/client";
+import {
+  createOrUpdateRoomWithUser,
+  removeUserFromRoom,
+  updateRoomText,
+  updateRoomStatus,
+  getRoomText,
+  saveRoomText,
+  isRoomExists,
+  getRoom,
+  getSavedRoomText,
+} from "../db/prisma-db";
+
 import {
   OpHistoryMap,
   TextOperationSet,
   getTransformedOperations,
 } from "../ot";
-
-interface Room {
-  users: Array<string>;
-  status: "active" | "inactive";
-  text: string;
-  saved_text?: string;
-}
 
 interface SocketDetails {
   room_id: string;
@@ -26,7 +32,6 @@ enum SocketEvents {
   ROOM_LOAD = "api/collaboration-service/room/load",
 }
 
-const sessions: Record<string, Room> = {};
 const socketMap: Record<string, SocketDetails> = {};
 const opMap: OpHistoryMap = new OpHistoryMap();
 
@@ -42,67 +47,12 @@ function mapSocketToRoomAndUser(
   };
 }
 
-function getText(room_id: string): string {
-  if (!sessions[room_id]) {
-    return "";
-  }
-  return sessions[room_id].text;
-}
-
 function updateStatus(socket_id: string) {
   if (!socketMap[socket_id]) {
     return;
   }
   const { room_id } = socketMap[socket_id];
-  const session = sessions[room_id];
-  if (!session) {
-    return;
-  }
-
-  if (session.users.length === 0) {
-    session.status = "inactive";
-  } else {
-    session.status = "active";
-  }
-}
-
-function joinRoom(room_id: string, user_id: string): void {
-  if (!sessions[room_id]) {
-    sessions[room_id] = {
-      users: [user_id],
-      status: "active",
-      text: "",
-    };
-  } else {
-    sessions[room_id].users.push(user_id);
-    sessions[room_id].status = "active";
-  }
-}
-
-function saveRoom(room_id: string, text: string): void {
-  if (!sessions[room_id]) {
-    sessions[room_id] = {
-      users: [],
-      status: "active",
-      text: text,
-    };
-  } else {
-    sessions[room_id].text = text;
-  }
-}
-
-function saveText(room_id: string, text: string): void {
-  if (!sessions[room_id]) {
-    sessions[room_id] = {
-      users: [],
-      status: "active",
-      text: text,
-      saved_text: text,
-    };
-  } else {
-    sessions[room_id].text = text;
-    sessions[room_id].saved_text = text;
-  }
+  updateRoomStatus(room_id);
 }
 
 function disconnectUserFromDb(socket_id: string): void {
@@ -110,16 +60,7 @@ function disconnectUserFromDb(socket_id: string): void {
     return;
   }
   const { room_id, user_id } = socketMap[socket_id];
-  const session = sessions[room_id];
-
-  if (!session) {
-    return;
-  } else {
-    const index = session.users.indexOf(user_id);
-    if (index > -1) {
-      sessions[room_id].users.splice(index, 1);
-    }
-  }
+  removeUserFromRoom(room_id, user_id);
 }
 
 // Socket callbacks
@@ -132,16 +73,21 @@ function roomUpdate(
   console.log(room_id + "  " + socket.id + " text changed:", text);
   const version = opMap.getLatest(room_id)?.version ?? 1;
   io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { version, text });
-  saveRoom(room_id, text);
+  updateRoomText(room_id, text);
 }
 
-function handleTextOp(textOpSet: TextOperationSet, room_id: string): string {
+async function handleTextOp(
+  textOpSet: TextOperationSet,
+  room_id: string
+): Promise<string> {
   console.log(textOpSet);
   console.log(opMap.getLatest(room_id)?.version);
   if (opMap.checkIfLatestVersion(room_id, textOpSet.version)) {
     textOpSet.version++;
     opMap.add(room_id, textOpSet);
-    return type.apply(getText(room_id), textOpSet.operations);
+    return getRoomText(room_id).then((text) => {
+      return type.apply(text, textOpSet.operations);
+    });
   } else {
     const latestOp = textOpSet.operations;
     const mergedOp = opMap.getLatest(room_id)!.operations; // all operations from version to latest
@@ -154,22 +100,32 @@ function handleTextOp(textOpSet: TextOperationSet, room_id: string): string {
       operations: transformedLatestOp,
     });
     console.log(transformedLatestOp);
-    return type.apply(getText(room_id), transformedLatestOp);
+    return getRoomText(room_id).then((text) => {
+      return type.apply(text, transformedLatestOp);
+    });
   }
 }
 
-function roomUpdateFromDb(io: Server, socket: Socket, room_id: string): void {
-  if (sessions[room_id]) {
-    const text = sessions[room_id].text;
+async function roomUpdateWithTextFromDb(
+  io: Server,
+  socket: Socket,
+  room_id: string
+): Promise<void> {
+  await getRoomText(room_id).then((text) => {
     roomUpdate(io, socket, room_id, text);
-  }
+  });
 }
 
-function loadTextFromDb(io: Server, socket: Socket, room_id: string): void {
-  if (sessions[room_id] && sessions[room_id].saved_text) {
-    const text = sessions[room_id].saved_text!;
-    roomUpdate(io, socket, room_id, text);
-  }
+async function loadTextFromDb(
+  io: Server,
+  socket: Socket,
+  room_id: string
+): Promise<void> {
+  await getSavedRoomText(room_id).then((text) => {
+    if (text) {
+      roomUpdate(io, socket, room_id, text);
+    }
+  });
 }
 
 function userDisconnect(socket: Socket): void {
@@ -181,14 +137,17 @@ function userDisconnect(socket: Socket): void {
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   socket.on(
     SocketEvents.ROOM_UPDATE,
-    (textOpSet: TextOperationSet, ackCallback) => {
-      const text = handleTextOp(textOpSet, room_id);
-      roomUpdate(io, socket, room_id, text);
-      ackCallback();
+    async (textOpSet: TextOperationSet, ackCallback) => {
+      await handleTextOp(textOpSet, room_id).then((text) => {
+        roomUpdate(io, socket, room_id, text);
+        ackCallback();
+      });
     }
   );
 
-  socket.on(SocketEvents.ROOM_SAVE, (text: string) => saveText(room_id, text));
+  socket.on(SocketEvents.ROOM_SAVE, (text: string) =>
+    saveRoomText(room_id, text)
+  );
 
   socket.on(SocketEvents.ROOM_LOAD, () => loadTextFromDb(io, socket, room_id));
 }
@@ -196,74 +155,38 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
-  // API to get room details
   router.get("/:room_id", (req: Request, res: Response) => {
     const room_id = req.params.room_id as string;
 
-    if (!sessions[room_id]) {
-      return res.status(404).json({ error: "Session not found" });
+    if (!isRoomExists(room_id)) {
+      return res.status(404).json({ error: "Room not found" });
     }
 
     return res.status(200).json({
-      message: "Session exists",
+      message: "Room exists",
       room_id: room_id,
-      info: sessions[room_id],
+      info: getRoom(room_id),
     });
   });
 
-  // API to join a room
-  router.post("/join", (req: Request, res: Response) => {
-    const room_id = req.body.room_id as string;
-    const user_id = req.body.user_id as string;
-
-    if (!room_id) {
-      return res.status(400).json({ error: "Invalid input parameters" });
-    }
-
-    try {
-      joinRoom(room_id, user_id);
-
-      res.status(201).json({
-        message: "Session created successfully",
-        room_id: room_id,
-        info: sessions[room_id],
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Error saving session" });
-    }
-
-    io.once("connection", (socket: Socket) => {
-      console.log("Room.ts: User connected:", socket.id);
-
-      socket.join(room_id);
-      mapSocketToRoomAndUser(socket.id, room_id, user_id);
-      console.log(socket.id + " joined room:", room_id);
-      roomUpdateFromDb(io, socket, room_id);
-
-      initSocketListeners(io, socket, room_id);
-    });
-  });
-
-  // API to save text
   router.post("/save", (req: Request, res: Response) => {
     try {
       const room_id = req.body.room_id as string;
       const text = req.body.text as string;
 
-      if (!(room_id in sessions)) {
+      if (!isRoomExists(room_id)) {
         return res.status(400).json({ error: "Invalid roomId provided" });
       }
 
-      saveText(room_id, text);
+      saveRoomText(room_id, text);
 
       res.status(201).json({
-        message: "Session saved successfully",
-        info: sessions[room_id],
+        message: "Room saved successfully",
+        info: getRoom(room_id),
       });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ message: "Error saving session" });
+      res.status(500).json({ message: "Error saving room" });
     }
   });
 
@@ -274,9 +197,9 @@ export const roomRouter = (io: Server) => {
     socket.on(SocketEvents.ROOM_JOIN, (room_id: string, user_id: string) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
-      joinRoom(room_id, user_id);
+      createOrUpdateRoomWithUser(room_id, user_id);
       mapSocketToRoomAndUser(socket.id, room_id, user_id);
-      roomUpdateFromDb(io, socket, room_id);
+      roomUpdateWithTextFromDb(io, socket, room_id);
 
       initSocketListeners(io, socket, room_id);
     });
