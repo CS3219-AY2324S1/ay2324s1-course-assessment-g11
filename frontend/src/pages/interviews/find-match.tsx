@@ -4,8 +4,8 @@ import { TypographyBody, TypographyH2 } from "@/components/ui/typography";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import { useMatchmaking } from "../../../providers/MatchmakingProvider";
 import InterviewsLayout from "@/components/interviews/InterviewsLayout";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function FindMatch() {
   const router = useRouter();

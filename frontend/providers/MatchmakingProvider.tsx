@@ -9,9 +9,8 @@ import { io, Socket } from "socket.io-client";
 import { Match } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthContext";
 
-const SERVER_URL = "http://localhost:5002"; // Replace with your server's URL
+const SERVER_URL = "http://localhost:5002";
 
-// Define the context
 interface MatchmakingContextValue {
   socket: Socket | null;
   match: Match | null;
@@ -42,7 +41,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   const generateRandomNumber = () => {
-    // return a random number either 0 or 1 as a string
+    // Return a random number either 0 or 1 as a string
     return Math.floor(Math.random() * 2).toString();
   };
 
@@ -147,11 +146,3 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     </MatchmakingContext.Provider>
   );
 };
-
-export function useMatchmaking() {
-  const context = useContext(MatchmakingContext);
-  if (!context) {
-    throw new Error("useMatchmaking must be used within a MatchmakingProvider");
-  }
-  return context;
-}

@@ -18,11 +18,11 @@ import {
   TypographyH2,
   TypographySmall,
 } from "@/components/ui/typography";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useMatchmaking } from "../../../providers/MatchmakingProvider";
 
 type Difficulty = "easy" | "medium" | "hard" | "any";
 
