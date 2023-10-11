@@ -122,8 +122,17 @@ async function handleTextOp(
   }
 
   return getRoomText(room_id).then((text) => {
+    var resultText = text;
+
+    try {
+      resultText = type.apply(text, resultTextOps);
+    } catch (error) {
+      // gracefully skip transforming
+      console.log(error);
+    }
+
     return {
-      text: type.apply(text, resultTextOps),
+      text: resultText,
       cursor: textOpSet.cursor
         ? transformPosition(textOpSet.cursor, resultTextOps)
         : -1,
