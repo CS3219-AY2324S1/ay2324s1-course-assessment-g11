@@ -108,7 +108,10 @@ async function handleTextOp(
     opMap.add(room_id, textOpSet);
   } else {
     const latestOp = textOpSet.operations;
-    const mergedOp = opMap.getLatest(room_id)!.operations; // TODO all operations from version to latest
+    const mergedOp = opMap.getCombinedTextOpFromVersionToLatest(
+      room_id,
+      textOpSet.version + 1
+    );
     const [transformedLatestOp, transformedMergedOp] = getTransformedOperations(
       latestOp,
       mergedOp

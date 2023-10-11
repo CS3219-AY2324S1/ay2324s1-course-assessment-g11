@@ -38,6 +38,45 @@ class CircularArray<T> {
     return null;
   }
 
+  public reduceFromMatchedPredicateToLatest(
+    predicate: (value: T) => boolean,
+    callbackFn: (previousValue: T, currentValue: T) => T,
+    initialValue: T
+  ): T;
+  public reduceFromMatchedPredicateToLatest(
+    predicate: (value: T) => boolean,
+    callbackFn: (
+      previousValue: T,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => T,
+    initialValue: T
+  ): T {
+    for (let i = 0; i < this.array.length; i++) {
+      const index = (this.last - i + this.array.length) % this.array.length;
+      if (predicate(this.array[index])) {
+        const startIndex = index;
+        const endIndex = this.last;
+        if (startIndex <= endIndex) {
+          return this.array
+            .slice(startIndex, endIndex + 1)
+            .reduce(callbackFn, initialValue);
+        } else {
+          return this.array
+            .slice(startIndex)
+            .concat(this.array.slice(0, endIndex + 1))
+            .reduce(callbackFn, initialValue);
+        }
+      }
+    }
+    const start = (this.last + 1) % this.array.length;
+    return this.array
+      .slice(start)
+      .concat(this.array.slice(0, this.last + 1))
+      .reduce(callbackFn, initialValue);
+  }
+
   public get length(): number {
     return this.array.length;
   }
@@ -58,6 +97,32 @@ export class OpHistoryMap {
       return null;
     }
     return this.map[room_id].getLatest();
+  }
+
+  public getCombinedTextOpFromVersionToLatest(
+    room_id: string,
+    version: number
+  ): TextOp {
+    const room = this.map[room_id];
+    const latestVersion = room.getLatest().version;
+
+    if (version - 1 === latestVersion) {
+      return room.getLatest()!.operations;
+    }
+
+    // Combine operations from the given version to the latest version
+    return room.reduceFromMatchedPredicateToLatest(
+      (opHistory) => {
+        return version === opHistory.version;
+      },
+      (x, y) => {
+        return {
+          operations: type.compose(x.operations, y.operations),
+          version: y.version,
+        };
+      },
+      { operations: [], version: 0 }
+    ).operations;
   }
 
   public checkIfLatestVersion(room_id: string, version: number): boolean {
@@ -179,6 +244,29 @@ function test() {
 
   // favour text1to3op over text1to2op on side param
   // outcome is same
+
+  console.log("------------------");
+
+  //Compose
+  const x = createTextOpFromTexts("Hi", "hai");
+  const y = createTextOpFromTexts("hai", "hbaye");
+  console.log(x);
+  console.log(y);
+  const z = type.compose(x, y);
+  console.log(z);
+  console.log(type.apply("Hi", z));
+
+  const z2 = type.compose(y, x);
+  console.log(z2);
+  console.log(type.apply("Hi", z2));
+
+  console.log("------------------");
+
+  console.log(text1to2op);
+  console.log(text1to3op);
+  const newOp3 = type.compose(text1to2op, text1to3op);
+  console.log(newOp3);
+  console.log(type.apply(text1, newOp3));
 }
 
 if (require.main === module) {
