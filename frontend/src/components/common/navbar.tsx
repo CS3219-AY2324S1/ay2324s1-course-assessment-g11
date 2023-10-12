@@ -9,7 +9,6 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
@@ -84,7 +83,7 @@ export default function Navbar() {
               <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/profile")}>
                 Profile
               </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card">
+              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
                 Settings
               </DropdownMenuLabel>
               <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
