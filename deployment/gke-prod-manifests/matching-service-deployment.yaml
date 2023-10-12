@@ -19,11 +19,11 @@ spec:
     spec:
       containers:
         - env:
-            - name: DATABASE_URL
+            - name: PRISMA_DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: database-url
-                  key: database-url
+                  name: prisma-database-url
+                  key: prisma-database-url
             - name: PORT
               value: "5002"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/matching-service:latest

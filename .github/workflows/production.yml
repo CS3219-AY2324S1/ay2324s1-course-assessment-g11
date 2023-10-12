@@ -15,7 +15,7 @@ env:
   GKE_CLUSTER: codeparty-g11-prod    # Add your cluster name here.
   GKE_REGION: asia-southeast1   # Add your cluster zone here.
   FIREBASE_SERVICE_ACCOUNT_PROD: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
-  DATABASE_URL_PROD: ${{ secrets.DATABASE_URL_PROD }}
+  PRISMA_DATABASE_URL_PROD: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
   MONGO_ATLAS_URL_PROD: ${{ secrets.MONGO_ATLAS_URL_PROD }}
 
 jobs:
@@ -62,8 +62,8 @@ jobs:
         run: |-
           kubectl create secret generic firebase-service-account \
             --from-literal=firebase-service-account=$FIREBASE_SERVICE_ACCOUNT_PROD
-          kubectl create secret generic database-url \
-            --from-literal=database-url=$DATABASE_URL_PROD
+          kubectl create secret generic prisma-database-url \
+            --from-literal=prisma-database-url=$PRISMA_DATABASE_URL_PROD
           kubectl create secret generic mongo-atlas-url \
             --from-literal=mongo-atlas-url =$MONGO_ATLAS_URL_PROD
 
