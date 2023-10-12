@@ -10,7 +10,7 @@ on:
       - prod 
 
 env:
-  PROJECT_ID: peerprep-group11-dev
+  PROJECT_ID: peerprep-group11-prod
   ARTIFACT_REPOSITORY_NAME: codeparty-prod-images
   GKE_CLUSTER: codeparty-g11-prod    # Add your cluster name here.
   GKE_REGION: asia-southeast1   # Add your cluster zone here.
@@ -31,8 +31,8 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
-          workload_identity_provider: projects/912506881405/locations/global/workloadIdentityPools/github-actions/providers/github-actions-oidc
-          service_account: 'github-actions-service@peerprep-group11-dev.iam.gserviceaccount.com'
+          workload_identity_provider: projects/345207492413/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-oidc
+          service_account: 'github-actions-service@peerprep-group11-prod.iam.gserviceaccount.com'
 
       # Setup gcloud CLI
       - name: Setup Google Cloud SDK

@@ -11,5 +11,3 @@ for s in ${service_array[@]}; do
     --file prod-dockerfiles/Dockerfile.${service_array[s]}-prod .
   docker push asia-southeast1-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY_NAME/${service_array[s]}:latest
 done
-
-
