@@ -1,7 +1,7 @@
 # User Service
 
 ## Pre-requisites:
-You need to set the environment variable `DATABASE_URL` in `prisma/schema.prisma`. 
+You need to set the environment variable `PRISMA_DATABASE_URL` in `prisma/schema.prisma`. 
 
 If you do so with an `.env` file, you need to generate the prisma client/migrate prisma as follows:
 
