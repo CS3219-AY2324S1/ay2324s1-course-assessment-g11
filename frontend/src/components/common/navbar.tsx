@@ -42,8 +42,46 @@ export default function Navbar() {
     }
   }, [currentPage]);
 
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const [activeTab, setActiveTab] = useState<TabsOptions>(TabsOptions.NULL);
+
+  const { login } = useLogin();
+  const { logout } = useLogout();
+  const router = useRouter();
+
+  const currentPage = router.pathname;
+
+  useEffect(() => {
+    if (currentPage === "/interviews") {
+      setActiveTab(TabsOptions.INTERVIEWS);
+    } else if (currentPage === "/questions") {
+      setActiveTab(TabsOptions.QUESTIONS);
+    } else {
+      setActiveTab(TabsOptions.NULL);
+    }
+  }, [currentPage]);
+
   return (
     <header>
+      <div className="flex h-20 bg-card justify-between items-center px-12">
+        <div className="flex gap-20 justify-center items-center">
+          <Link href="/"><Image src="/CodeParty.svg" alt="CodeParty logo" width={125} height={25} /></Link>
+          {currentUser && <div className="h-12 flex justify-center items-center">
+            <Tabs value={activeTab}>
+              <TabsList>
+                <Link href="/interviews">
+                  <TabsTrigger value="interviews" className="h-20 w-36 hover:bg-accent duration-100">
+                    Interviews
+                  </TabsTrigger>
+                </Link>
+                <Link href="/questions">
+                  <TabsTrigger value="questions" className="h-20 w-36 hover:bg-accent duration-100">
+                    Questions
+                  </TabsTrigger>
+                </Link>
+              </TabsList>
+            </Tabs>
+          </div>}
       <div className="flex h-20 bg-card justify-between items-center px-12">
         <div className="flex gap-20 justify-center items-center">
           <Link href="/"><Image src="/CodeParty.svg" alt="CodeParty logo" width={125} height={25} /></Link>
