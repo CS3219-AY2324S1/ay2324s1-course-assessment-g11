@@ -18,6 +18,11 @@ spec:
         io.kompose.service: frontend
     spec:
       containers:
+        - env:
+            - name: GATEWAY_ADDRESS
+              value: "http://gateway:4000/"
+            - name: FIREBASE_CONFIG_FILEPATH
+              value: "./firebase_config_prod.json"
         - image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/frontend:latest
           name: frontend
           ports:
