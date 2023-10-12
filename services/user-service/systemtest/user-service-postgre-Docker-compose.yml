@@ -8,4 +8,4 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: peerprepdb-user-service-systemtest
-      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_PASSWORD: ${PRISMA_DATABASE_PASSWORD}
