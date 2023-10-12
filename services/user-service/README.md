@@ -72,8 +72,8 @@ What this command does:
 
 You need to pass in the following environment variables through the above-mentioned `.env`-type file:
 ```
-DATABASE_URL="postgresql://postgres:${password}@localhost:5430/peerprepdb-user-service-systemtest?schema=public"
-DATABASE_PASSWORD="${The password you want to pass in. This must match the password in the above variable}"
+PRISMA_DATABASE_URL="postgresql://postgres:${password}@localhost:5430/peerprepdb-user-service-systemtest?schema=public"
+PRISMA_DATABASE_PASSWORD="${The password you want to pass in. This must match the password in the above variable}"
 ```
 
 If you want to run this in a CI workflow, run:
