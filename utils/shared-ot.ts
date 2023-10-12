@@ -6,6 +6,10 @@ export interface TextOperationSet {
   operations: TextOp;
 }
 
+export interface TextOperationSetWithCursor extends TextOperationSet {
+  cursor?: number;
+}
+
 export function createTextOpFromTexts(
   prevText: string,
   currentText: string

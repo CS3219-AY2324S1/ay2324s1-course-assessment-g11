@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
 import {
-  TextOperationSet,
+  TextOperationSetWithCursor,
   createTextOpFromTexts,
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
@@ -24,7 +24,11 @@ var vers = 0;
 const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [text, setText] = useState<string>("#Write your solution here");
+  const [cursor, setCursor] = useState<number>(
+    "#Write your solution here".length
+  );
   const textRef = useRef<string>(text);
+  const cursorRef = useRef<number>(cursor);
   const prevTextRef = useRef<string>(text);
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
@@ -37,7 +41,15 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.on(
       SocketEvents.ROOM_UPDATE,
-      ({ version, text }: { version: number; text: string }) => {
+      ({
+        version,
+        text,
+        cursor,
+      }: {
+        version: number;
+        text: string;
+        cursor: number | undefined | null;
+      }) => {
         console.log("Update vers to " + version);
         vers = version;
 
@@ -46,6 +58,11 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
         textRef.current = text;
         prevTextRef.current = text;
         setText(text);
+        if (cursor && cursor > -1) {
+          console.log("Update cursor to " + cursor);
+          cursorRef.current = cursor;
+          setCursor(cursor);
+        }
         awaitingSync.current = false;
       }
     );
@@ -58,6 +75,10 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   useEffect(() => {
     textRef.current = text;
   }, [text]);
+
+  useEffect(() => {
+    cursorRef.current = cursor;
+  }, [cursor]);
 
   useEffect(() => {
     if (!socket) return;
@@ -80,9 +101,10 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     console.log(textOp);
 
-    const textOperationSet: TextOperationSet = {
+    const textOperationSet: TextOperationSetWithCursor = {
       version: vers,
       operations: textOp,
+      cursor: cursorRef.current,
     };
 
     socket.emit(SocketEvents.ROOM_UPDATE, textOperationSet, () => {
@@ -90,7 +112,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
     });
   }, [text, socket]);
 
-  return { text, setText };
+  return { text, setText, cursor, setCursor };
 };
 
 export default useCollaboration;

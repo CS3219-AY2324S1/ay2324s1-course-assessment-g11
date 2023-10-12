@@ -12,7 +12,7 @@ export default function Room() {
   const roomId = router.query.id as string;
   const userId = "user1";
 
-  const { text, setText } = useCollaboration({
+  const { text, setText, cursor, setCursor } = useCollaboration({
     roomId: roomId as string,
     userId,
   });
@@ -52,7 +52,12 @@ export default function Room() {
           <TabsContent value="solution">{question.solution}</TabsContent>
         </Tabs>
         <div className="flex-1">
-          <CodeEditor text={text} onChange={setText} />
+          <CodeEditor
+            text={text}
+            cursor={cursor}
+            onChange={setText}
+            onCursorChange={setCursor}
+          />
         </div>
       </div>
     </div>
