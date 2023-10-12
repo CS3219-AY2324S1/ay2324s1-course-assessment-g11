@@ -35,7 +35,6 @@ export default function Navbar() {
   const currentPage = router.pathname;
 
   useEffect(() => {
-    console.log(currentPage);
     if (currentPage === "/interviews") {
       setActiveTab(TabsOptions.INTERVIEWS);
     } else if (currentPage === "/questions") {
