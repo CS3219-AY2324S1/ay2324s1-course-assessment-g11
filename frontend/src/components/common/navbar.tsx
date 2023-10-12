@@ -22,7 +22,6 @@ enum TabsOptions {
   NULL = "",
 }
 
-
 export default function Navbar() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState<TabsOptions>(TabsOptions.NULL);

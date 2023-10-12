@@ -211,7 +211,6 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
               <Button variant="outline" className="border-destructive text-destructive">Delete Question</Button>
             </div>
           )}
-
       </form>
     </Form>
   );
