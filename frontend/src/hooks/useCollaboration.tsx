@@ -29,6 +29,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   );
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
+  const prevCursorRef = useRef<number>(cursor);
   const prevTextRef = useRef<string>(text);
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
@@ -50,6 +51,11 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
         text: string;
         cursor: number | undefined | null;
       }) => {
+        prevCursorRef.current = cursorRef.current;
+        console.log("prevCursor: " + prevCursorRef.current);
+
+        console.log("cursor: " + cursor);
+
         console.log("Update vers to " + version);
         vers = version;
 
@@ -62,6 +68,11 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
           console.log("Update cursor to " + cursor);
           cursorRef.current = cursor;
           setCursor(cursor);
+        } else {
+          cursorRef.current = prevCursorRef.current;
+          cursor = prevCursorRef.current;
+          console.log("Update cursor to " + prevCursorRef.current);
+          setCursor(prevCursorRef.current);
         }
         awaitingSync.current = false;
       }
