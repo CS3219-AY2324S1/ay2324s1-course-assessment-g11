@@ -91,7 +91,10 @@ function roomUpdateWithCursor(
     " cursor:" + cursor
   );
   const version = opMap.getLatest(room_id)?.version ?? 1;
-  io.to(room_id).emit(SocketEvents.ROOM_UPDATE, { version, text, cursor });
+  socket.broadcast
+    .to(room_id)
+    .emit(SocketEvents.ROOM_UPDATE, { version, text });
+  socket.emit(SocketEvents.ROOM_UPDATE, { version, text, cursor });
   updateRoomText(room_id, text);
 }
 
