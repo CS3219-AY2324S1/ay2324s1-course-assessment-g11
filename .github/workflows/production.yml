@@ -51,6 +51,11 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_REGION }}
 
+      # Apply prisma migrations to production prisma database
+      - name: Apply prisma database migrations
+        run: |-
+          yarn prisma migrate deploy
+
       # Build the Docker images and push to Google Artifact Repository
       - name: Build and push Docker images
         run: |-
