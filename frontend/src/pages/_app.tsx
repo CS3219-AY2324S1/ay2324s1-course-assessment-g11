@@ -4,6 +4,7 @@ import Layout from "../components/common/layout";
 import { Noto_Sans } from "next/font/google";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { MatchmakingProvider } from "../../providers/MatchmakingProvider";
+import AuthChecker from "@/components/common/auth-checker";
 
 const notoSans = Noto_Sans({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -20,11 +21,13 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <main>
         <AuthContextProvider>
-          <MatchmakingProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </MatchmakingProvider>
+          <AuthChecker>
+            <MatchmakingProvider>
+              <Layout>
+                <Component {...pageProps} />
+              </Layout>
+            </MatchmakingProvider>
+          </AuthChecker>
         </AuthContextProvider>
       </main>
     </>

@@ -5,7 +5,6 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../../types/QuestionTypes";
-import { auth } from "@/firebase-client/firebase_config";
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 
