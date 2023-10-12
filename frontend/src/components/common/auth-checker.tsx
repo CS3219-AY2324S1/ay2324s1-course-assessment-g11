@@ -17,7 +17,6 @@ export default function AuthChecker({ children }: AuthCheckerProps) {
 
   useEffect(() => {
     if (!currentUser && currentPage !== "/") {
-      console.log("Auth", currentPage);
       onAuthStateChanged(auth, (user) => {
         if (!user) {
           router.push("/");
