@@ -1,6 +1,13 @@
 import express, { Request, Response } from "express";
 import { Socket, Server } from "socket.io";
 
+const AccessToken = require("twilio").jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
+
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_API_KEY = process.env.TWILIO_API_KEY;
+const TWILIO_API_SECRET = process.env.TWILIO_API_SECRET;
+
 interface Room {
   users: Array<string>;
   status: "active" | "inactive";
@@ -143,6 +150,18 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   socket.on("/room/load", () => loadTextFromDb(io, socket, room_id));
 }
 
+function getTwilioAccessToken(room_id: string, user_id: string): string {
+  const videoGrant = new VideoGrant({ room: room_id });
+  const token = new AccessToken(
+    TWILIO_ACCOUNT_SID,
+    TWILIO_API_KEY,
+    TWILIO_API_SECRET
+  );
+  token.addGrant(videoGrant);
+  token.identity = user_id;
+  return token.toJwt();
+}
+
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
@@ -173,10 +192,13 @@ export const roomRouter = (io: Server) => {
     try {
       joinRoom(room_id, user_id);
 
+      const twilioAccessToken = getTwilioAccessToken(room_id, user_id);
+
       res.status(201).json({
         message: "Session created successfully",
         room_id: room_id,
         info: sessions[room_id],
+        access_token: twilioAccessToken,
       });
     } catch (error) {
       console.error(error);
