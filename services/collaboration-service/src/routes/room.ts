@@ -13,6 +13,7 @@ import {
   getRoom,
   getSavedRoomText,
   saveAttempt,
+  setRoomQuestion,
 } from "../db/prisma-db";
 
 import {
@@ -33,6 +34,7 @@ enum SocketEvents {
   ROOM_UPDATE = "api/collaboration-service/room/update",
   ROOM_SAVE = "api/collaboration-service/room/save",
   ROOM_LOAD = "api/collaboration-service/room/load",
+  QUESTION_SET = "api/collaboration-service/question/set",
 }
 
 const socketMap: Record<string, SocketDetails> = {};
@@ -195,6 +197,13 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   );
 
   socket.on(SocketEvents.ROOM_LOAD, () => loadTextFromDb(io, socket, room_id));
+
+  socket.on(SocketEvents.QUESTION_SET, (question: string) => {
+    setRoomQuestion(room_id, question).then(() => {
+      console.log("Question set:", question);
+    });
+    io.to(room_id).emit(SocketEvents.QUESTION_SET, question);
+  });
 }
 
 export const roomRouter = (io: Server) => {

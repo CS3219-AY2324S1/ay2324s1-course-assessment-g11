@@ -115,6 +115,20 @@ export async function saveAttempt(room_id: string): Promise<void> {
   });
 }
 
+export async function setRoomQuestion(
+  room_id: string,
+  question_id: string
+): Promise<void> {
+  await prisma.room.update({
+    where: {
+      room_id: room_id,
+    },
+    data: {
+      question_id: question_id,
+    },
+  });
+}
+
 export async function createOrUpdateRoomWithUser(
   room_id: string,
   user_id: string
