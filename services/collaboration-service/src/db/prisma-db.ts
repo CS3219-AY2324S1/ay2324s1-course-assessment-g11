@@ -94,7 +94,7 @@ export async function saveAttempt(room_id: string): Promise<void> {
     },
   });
 
-  const question_id = room!.question_id!;
+  const question_id = room!.question_id ?? "";
 
   await prisma.attempt.create({
     data: {
