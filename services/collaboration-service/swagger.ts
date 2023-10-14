@@ -6,7 +6,7 @@ const doc = {
     description:
       "Provides the mechanism for real-time collaboration (e.g., concurrent code editing) between the authenticated and matched users in the collaborative space",
   },
-  host: "localhost:5001",
+  host: "localhost:5003",
   schemes: ["http"],
 };
 
@@ -17,9 +17,9 @@ const endpointsFiles = ["./src/app.ts"];
    'endpointsFiles' only the root file where the route starts,
    such as index.js, app.js, routes.js, ... */
 
-swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc)
-  /*.then(
+swaggerAutogen({ openapi: "3.0.0" })(outputFile, endpointsFiles, doc);
+/*.then(
     async () => {
       await import("./src/app"); // Your project's root file
     }
-  );*/  // to run it after swagger-autogen
+  );*/ // to run it after swagger-autogen

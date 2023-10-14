@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:5001/"
+      "url": "http://localhost:5003/"
     }
   ],
   "paths": {
@@ -40,39 +40,6 @@
           },
           "404": {
             "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/api/collaboration-service/room/join": {
-      "post": {
-        "description": "",
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        },
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "room_id": {
-                    "example": "any"
-                  },
-                  "user_id": {
-                    "example": "any"
-                  }
-                }
-              }
-            }
           }
         }
       }
