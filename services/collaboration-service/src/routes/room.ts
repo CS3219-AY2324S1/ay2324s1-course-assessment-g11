@@ -12,6 +12,7 @@ import {
   isRoomExists,
   getRoom,
   getSavedRoomText,
+  saveAttempt,
 } from "../db/prisma-db";
 
 import {
@@ -190,7 +191,7 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   );
 
   socket.on(SocketEvents.ROOM_SAVE, (text: string) =>
-    saveRoomText(room_id, text)
+    saveRoomText(room_id, text).then(() => saveAttempt(room_id))
   );
 
   socket.on(SocketEvents.ROOM_LOAD, () => loadTextFromDb(io, socket, room_id));
@@ -199,7 +200,7 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
-  router.get("/:room_id", (req: Request, res: Response) => {
+  router.get("/:room_id", async (req: Request, res: Response) => {
     const room_id = req.params.room_id as string;
 
     if (!isRoomExists(room_id)) {
@@ -209,11 +210,11 @@ export const roomRouter = (io: Server) => {
     return res.status(200).json({
       message: "Room exists",
       room_id: room_id,
-      info: getRoom(room_id),
+      info: await getRoom(room_id),
     });
   });
 
-  router.post("/save", (req: Request, res: Response) => {
+  router.post("/save", async (req: Request, res: Response) => {
     try {
       const room_id = req.body.room_id as string;
       const text = req.body.text as string;
@@ -222,12 +223,14 @@ export const roomRouter = (io: Server) => {
         return res.status(400).json({ error: "Invalid roomId provided" });
       }
 
-      saveRoomText(room_id, text);
-
-      res.status(201).json({
-        message: "Room saved successfully",
-        info: getRoom(room_id),
-      });
+      await saveRoomText(room_id, text)
+        .then(async () => await saveAttempt(room_id))
+        .then(async () => {
+          res.status(201).json({
+            message: "Room saved successfully",
+            info: await getRoom(room_id),
+          });
+        });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: "Error saving room" });

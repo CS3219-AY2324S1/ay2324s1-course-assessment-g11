@@ -1,4 +1,4 @@
-import { PrismaClient, Room } from "@prisma/client";
+import { AppUser, PrismaClient, Room } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -58,15 +58,83 @@ export async function updateRoomStatus(room_id: string): Promise<void> {
 
   if (room.users.length === 0) {
     room.status = "inactive";
+    saveAttempt(room_id);
   } else {
     room.status = "active";
   }
+}
+
+export async function saveAttempt(room_id: string): Promise<void> {
+  const room = await prisma.room.findUnique({
+    where: {
+      room_id: room_id,
+    },
+  });
+
+  const attempt_id = room!.attempt_id;
+  const answer = room!.text;
+
+  if (attempt_id) {
+    await prisma.attempt.update({
+      where: {
+        id: attempt_id,
+      },
+      data: {
+        answer: answer,
+        time_saved_at: new Date(),
+      },
+    });
+  }
+
+  const users: AppUser[] = await prisma.appUser.findMany({
+    where: {
+      uid: {
+        in: room!.users,
+      },
+    },
+  });
+
+  const question_id = room!.question_id!;
+
+  await prisma.attempt.create({
+    data: {
+      users: {
+        connect: users.map((user) => ({
+          uid: user.uid as string,
+        })),
+      },
+      question_id: question_id,
+      answer: answer,
+      room_id: room_id,
+      room: {
+        connect: {
+          room_id: room_id,
+        },
+      },
+    },
+  });
 }
 
 export async function createOrUpdateRoomWithUser(
   room_id: string,
   user_id: string
 ): Promise<void> {
+  let users: string[] = [];
+  const room = await prisma.room.findUnique({
+    where: {
+      room_id: room_id,
+    },
+    select: {
+      users: true,
+    },
+  });
+  if (room) {
+    users = room.users;
+    if (users.indexOf(user_id) === -1) {
+      users.push(user_id);
+    }
+  }
+
   await prisma.room.upsert({
     where: {
       room_id: room_id,
@@ -74,7 +142,7 @@ export async function createOrUpdateRoomWithUser(
     update: {
       status: "active",
       users: {
-        push: user_id,
+        set: users,
       },
     },
     create: {
