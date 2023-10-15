@@ -39,10 +39,21 @@ your services / frontend.
 ├── /deployment
 │   ├── /docker
 │   └── /kubernetes
+├── .env (not in git)
+├── .env.firebase_emulators_test (not in git)
 └── README.md (and other root-level files & docs)
 ```
 
 ### Getting Started - Local Development:
+
+1. Ensure that you have an `.env` file at the root directory with the following variables:
+    ```bash
+    PRISMA_DATABASE_URL=<redacted>
+    MONGO_ATLAS_URL=<redacted>
+    FIREBASE_SERVICE_ACCOUNT=<redacted>
+    NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
+    ```
+Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
 
 1. **Installing secret detection hooks:** From the root directory, run:
     ```bash
@@ -133,7 +144,7 @@ docker image prune -f
 
 Next steps:
 
-1. Set the DATABASE_URL in the .env file to point to your existing database. If
+1. Set the PRISMA_DATABASE_URL in the .env file to point to your existing database. If
    your database has no tables yet, read https://pris.ly/d/getting-started
 2. Set the provider of the datasource block in schema.prisma to match your
    database: postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.

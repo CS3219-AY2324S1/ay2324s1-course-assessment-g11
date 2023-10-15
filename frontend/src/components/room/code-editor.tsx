@@ -7,7 +7,7 @@ import {
   Settings,
   Play,
 } from "lucide-react";
-import Editor from "@monaco-editor/react";
+import Editor, { OnMount } from "@monaco-editor/react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/popover";
 import { Card } from "../ui/card";
 import { TypographyBody, TypographyBodyHeavy } from "../ui/typography";
+import { editor } from "monaco-editor";
 
 type CodeEditorProps = {
   theme?: string;
@@ -33,7 +34,9 @@ type CodeEditorProps = {
   defaultValue?: string;
   className?: string;
   text: string;
+  cursor: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
+  onCursorChange: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const frameworks = [
@@ -66,17 +69,50 @@ export default function CodeEditor({
   defaultValue = "#Write your solution here",
   className,
   text,
+  cursor,
   onChange,
+  onCursorChange,
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
 
+  const [monacoInstance, setMonacoInstance] =
+    React.useState<editor.IStandaloneCodeEditor | null>(null);
+
+  const editorMount: OnMount = (editorL: editor.IStandaloneCodeEditor) => {
+    setMonacoInstance(editorL);
+  };
+
+  const setCursorPosition = React.useCallback(
+    (cursor: number) => {
+      if (!monacoInstance) return;
+
+      const position = monacoInstance.getModel()!.getPositionAt(cursor);
+      monacoInstance.setPosition(position);
+    },
+    [monacoInstance]
+  );
+
+  React.useEffect(() => {
+    if (cursor !== undefined) {
+      setCursorPosition(cursor);
+    }
+  }, [cursor, setCursorPosition]);
+
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
+      if (!monacoInstance) return;
       if (value === undefined) return;
+
+      if (monacoInstance.getPosition()) {
+        const cursor = monacoInstance
+          .getModel()!
+          .getOffsetAt(monacoInstance.getPosition()!);
+        onCursorChange(cursor);
+      }
       onChange(value);
     },
-    [onChange, text]
+    [onChange, onCursorChange, monacoInstance]
   );
 
   return (
@@ -142,6 +178,7 @@ export default function CodeEditor({
         value={text}
         theme={theme}
         onChange={(e) => editorOnChange(e)}
+        onMount={editorMount}
       />
       <Card className="flex-1 p-2 mt-2">
         <div className="h-[9vh] p-2">

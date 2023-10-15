@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev:local": "dotenv -e ../../.env -c development -- yarn dev",
-    "dev": "ts-node-dev src/app.ts",
+    "dev": "yarn swagger-autogen && ts-node-dev src/app.ts",
     "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
     "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} openapiDocGen.ts",
-    "build": "tsc",
+    "build": "yarn swagger-autogen && tsc",
+    "start": "node dist/app.js",
     "test": "vitest run -c ./test/vitest.config.unit.ts",
     "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarn systemtest:ci",
     "systemtest:ci": "yarn systemtest:docker:up && yarn systemtest:prisma:migrate:deploy && yarn systemtest:vitest && yarn systemtest:docker:down",

@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "build": "yarn run swagger-autogen && tsc",
-    "start": "yarn run swagger-autogen && dotenv -e ../../.env ts-node src/app.ts",
+    "start": "node ./dist/app.js",
     "dev": "yarn run swagger-autogen && dotenv -e ../../.env nodemon src/app.ts",
-    "start:prod": "yarn build && dotenv -e ../../.env node ./dist/app.js",
     "swagger-autogen": "ts-node swagger-doc-gen.ts"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "dotenv": "^16.3.1",

@@ -8,6 +8,8 @@
     "lint": "eslint src/**/*.{ts,js}",
     "dev:local": "dotenv -e ../../.env -c development -- yarn dev",
     "dev": "ts-node-dev src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
