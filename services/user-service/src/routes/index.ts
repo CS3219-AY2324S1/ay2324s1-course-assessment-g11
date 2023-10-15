@@ -96,10 +96,14 @@ indexRouter.get(
 );
 
 indexRouter.post(
-  "/:uid/attempt",
+  "/attempt",
   function (req: express.Request, res: express.Response) {
+    const uid = req.body.uid as string;
+    const question_id = req.body.question_id as string;
+    const answer = req.body.answer as string;
+    const solved = (req.body.solved as boolean) ?? false;
     userDatabaseFunctions
-      .createAttemptOfUser(req.params.uid, req.body)
+      .createAttemptOfUser(req.body)
       .then((result) => {
         if (result === null) {
           res.status(404).append("No-Such-User", "true").end();
