@@ -28,22 +28,40 @@ model Match {
 }
 
 model AppUser {
-  uid                      String  @id
+  uid                      String    @id
   displayName              String?
   photoUrl                 String?
   matchDifficulty          Int?
   matchProgrammingLanguage String?
+  attempts                 Attempt[]
 }
 
 model Room {
-  room_id    String         @id
-  users      String[] // Array of user_id strings
-  status     EnumRoomStatus
-  text       String
-  saved_text String?
+  room_id      String         @id
+  active_users String[] // Array of user_id strings still active
+  users        String[] // Array of user_id strings
+  status       EnumRoomStatus
+  text         String
+  saved_text   String?
+  question_id  String?
+  attempt      Attempt?       @relation(fields: [attempt_id], references: [id])
+  attempt_id   String?        @unique
 }
 
 enum EnumRoomStatus {
   active
   inactive
+}
+
+model Attempt {
+  id            String    @id @default(uuid())
+  users         AppUser[]
+  question_id   String
+  answer        String?
+  solved        Boolean   @default(false)
+  time_created  DateTime  @default(now())
+  time_saved_at DateTime  @default(now()) // when answers are updated
+  time_updated  DateTime  @updatedAt // any field change
+  room_id       String? // may be inactive
+  room          Room?
 }

@@ -21,8 +21,11 @@ spec:
         - env:
             - name: GATEWAY_ADDRESS
               value: "http://gateway:4000/"
-            - name: FIREBASE_CONFIG_FILEPATH
-              value: "./firebase_config_prod.json"
+            - name: NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-firebase-config
+                  key: frontend-firebase-config
         - image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/frontend:latest
           name: frontend
           ports:
