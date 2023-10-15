@@ -4,7 +4,7 @@ services:
   user-service:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.user-service
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.user-service
     container_name: user-service
     ports:
       - "5001:5001"
@@ -15,7 +15,7 @@ services:
   matching-service:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.matching-service
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.matching-service
     container_name: matching-service
     ports:
       - "5002:5002"
@@ -26,7 +26,7 @@ services:
   collaboration-service:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.collaboration-service
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.collaboration-service
     container_name: collaboration-service
     ports:
       - "5003:5003"
@@ -37,7 +37,7 @@ services:
   question-service:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.question-service
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.question-service
     container_name: question-service
     ports:
       - "5004:5004"
@@ -48,7 +48,7 @@ services:
   admin-service:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.admin-service
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.admin-service
     container_name: admin-service
     ports:
       - "5005:5005"
@@ -59,7 +59,7 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.gateway
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.gateway
     container_name: gateway
     ports:
       - "4000:4000"
@@ -70,7 +70,10 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: deployment/dockerfiles/Dockerfile.frontend
+      dockerfile: deployment/dev-dockerfiles/Dockerfile.frontend
     container_name: frontend
     ports:
       - "3000:3000"
+    environment:
+      GATEWAY_ADDRESS: "http://localhost:4000/"
+      NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}

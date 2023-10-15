@@ -34,3 +34,16 @@ model AppUser {
   matchDifficulty          Int?
   matchProgrammingLanguage String?
 }
+
+model Room {
+  room_id    String         @id
+  users      String[] // Array of user_id strings
+  status     EnumRoomStatus
+  text       String
+  saved_text String?
+}
+
+enum EnumRoomStatus {
+  active
+  inactive
+}
