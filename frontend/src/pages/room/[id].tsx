@@ -5,7 +5,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { Question } from "../../../types/QuestionTypes";
-import {connect} from "twilio-video";
 import VideoRoom from "../../components/room/video-room";
 
 export default function Room() {
@@ -48,9 +47,9 @@ export default function Room() {
             <Description
               question={question}
               participants={["Charisma", "Chun Wei"]}
-              className="h-full"
+              className="h-[60vh]"
             />
-            <VideoRoom room={room} />
+            <VideoRoom room={room} className="h-[19vh]" />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
         </Tabs>

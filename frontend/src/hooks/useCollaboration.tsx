@@ -45,7 +45,10 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.on("twilio-token", (token: string) => {
       twilioTokenRef.current = token;
-      connect(token, { name: roomId }).then((room) => {
+      connect(token, {
+        name: roomId, audio: true,
+        video: { width: 640, height: 480, frameRate: 24 }
+      }).then((room) => {
         console.log("Connected to Room");
         setRoom(room);
       }).catch(err => {

@@ -1,16 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Participant, RemoteParticipant, RemoteTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
 
 interface VideoRoomProps {
     room: Room | null;
 }
 
-
-
 export default function VideoRoom({ room }: VideoRoomProps ) {
     const videoRef = useRef<HTMLDivElement>(null);
+    const [isCameraOn, setIsCameraOn] = useState(true);
+    const [isMute, setIsMute] = useState(false);
 
-    const trackSubscribed = (track: RemoteVideoTrack) => videoRef.current?.appendChild(track.attach());
+    const trackSubscribed = (track: RemoteVideoTrack) => {
+        const newMediaElement = track.attach();
+        newMediaElement.classList.add("h-[17vh]");
+        videoRef.current?.appendChild(newMediaElement);
+    };
 
     const trackUnsubscribed = (track: RemoteVideoTrack) => track.detach().forEach(element => element.remove());
 
@@ -35,7 +39,25 @@ export default function VideoRoom({ room }: VideoRoomProps ) {
     const participantDisconnected = (participant: RemoteParticipant) => {
         console.log('Participant "%s" disconnected', participant.identity);
         document.getElementById(participant.sid)?.remove();
-    }
+    };
+
+    const toggleCamera = () => {
+        room?.localParticipant.videoTracks.forEach(publication => {
+            if (publication.track) {
+                publication.track.enable(!isCameraOn);
+                setIsCameraOn(!isCameraOn);
+            }
+        });
+    };
+
+    const toggleMute = () => {
+        room?.localParticipant.audioTracks.forEach(publication => {
+            if (publication.track) {
+                publication.track.enable(!isMute);
+                setIsMute(!isMute);
+            }
+        });
+    };
 
     useEffect(() => {
         if (!room) return;
@@ -46,25 +68,20 @@ export default function VideoRoom({ room }: VideoRoomProps ) {
         
         room.localParticipant.tracks.forEach(publication => {
             if (publication.track?.kind === 'video') {
-                videoRef.current?.appendChild(publication.track.attach());
+                const newMediaElement = publication.track.attach();
+                newMediaElement.classList.add("h-[17vh]");
+                videoRef.current?.appendChild(newMediaElement);
             }
         });
 
         room.participants.forEach(participant => {
             participant.tracks.forEach(publication => {
                 if (publication.isSubscribed) {
-                    const track = publication.track;
-                    if (track?.kind === 'video') {
-                        videoRef.current?.appendChild(track.attach());
-                    }
+                    trackSubscribed(publication.track as RemoteVideoTrack);
                 }
             });
 
-            participant.on('trackSubscribed', track => {
-                if (track.kind === 'video') {
-                    videoRef.current?.appendChild(track.attach());
-                }
-            });
+            participant.on('trackSubscribed', trackSubscribed);
         });
 
         return () => {
@@ -73,7 +90,11 @@ export default function VideoRoom({ room }: VideoRoomProps ) {
     }, [room]);
 
     return (
-        <div ref={videoRef} style={{ display: 'flex', flexDirection: 'row' }}></div>
+        <div>
+            <div ref={videoRef} style={{ display: 'flex', flexDirection: 'row' }} className="h-[17vh]"></div>
+            <button onClick={toggleCamera}> {isCameraOn ? 'Hide Camera' : 'Show Camera'}</button>
+            <button onClick={toggleMute}> {isMute ? "Unmute" : "Mute"}</button>
+        </div>
     );
 };
 
