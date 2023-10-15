@@ -74,6 +74,41 @@ const userDatabaseFunctions = {
       throw error;
     }
   },
+
+  async createAttemptOfUser(
+    uid: string,
+    data: { question_id: string; answer: string; solved: boolean }
+  ) {
+    try {
+      const user = await prismaClient.appUser.findUnique({
+        where: {
+          uid: uid,
+        },
+      });
+
+      if (user) {
+        const attempt = await prismaClient.attempt.create({
+          data: {
+            question_id: data.question_id,
+            answer: data.answer,
+            solved: data.solved,
+            users: {
+              connect: {
+                uid: uid,
+              },
+            },
+          },
+        });
+        return attempt;
+      } else {
+        console.error(`User with uid ${uid} not found.`);
+        return null;
+      }
+    } catch (error: any) {
+      console.error(`Error creating attempt: ${error.message}`);
+      throw error;
+    }
+  },
 };
 
 export default userDatabaseFunctions;

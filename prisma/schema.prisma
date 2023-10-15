@@ -62,6 +62,6 @@ model Attempt {
   time_created  DateTime  @default(now())
   time_saved_at DateTime  @default(now()) // when answers are updated
   time_updated  DateTime  @updatedAt // any field change
-  room_id       String // may be inactive
+  room_id       String? // may be inactive
   room          Room?
 }
