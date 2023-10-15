@@ -12,7 +12,7 @@ export default function Room() {
   const router = useRouter();
 
   const roomId = router.query.id as string;
-  const userId = "user1";
+  const userId = router.query.userId as string || "user1";
 
   const { text, setText, cursor, setCursor, room } = useCollaboration({
     roomId: roomId as string,

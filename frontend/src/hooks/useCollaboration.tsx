@@ -49,7 +49,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
         console.log("Connected to Room");
         setRoom(room);
       }).catch(err => {
-        console.log(err);
+        console.log(err, token, userId, roomId);
       });
     });
 
