@@ -17,6 +17,7 @@ enum SocketEvents {
   ROOM_UPDATE = "api/collaboration-service/room/update",
   ROOM_SAVE = "api/collaboration-service/room/save",
   ROOM_LOAD = "api/collaboration-service/room/load",
+  QUESTION_SET = "api/collaboration-service/question/set",
 }
 
 var vers = 0;
