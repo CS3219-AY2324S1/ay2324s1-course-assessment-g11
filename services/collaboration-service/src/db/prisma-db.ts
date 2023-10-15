@@ -1,4 +1,4 @@
-import { PrismaClient, Room } from "@prisma/client";
+import { AppUser, PrismaClient, Room } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -56,17 +56,118 @@ export async function updateRoomStatus(room_id: string): Promise<void> {
   });
   if (!room) return;
 
-  if (room.users.length === 0) {
+  if (room.active_users.length === 0) {
     room.status = "inactive";
+    saveAttempt(room_id);
   } else {
     room.status = "active";
   }
+  await prisma.room.update({
+    where: {
+      room_id: room_id,
+    },
+    data: {
+      status: room.status,
+    },
+  });
+}
+
+export async function saveAttempt(room_id: string): Promise<void> {
+  const room = await prisma.room.findUnique({
+    where: {
+      room_id: room_id,
+    },
+  });
+
+  const attempt_id = room!.attempt_id;
+  const answer = room!.text;
+  const question_id = room!.question_id ?? "";
+
+  const users: AppUser[] = await prisma.appUser.findMany({
+    where: {
+      uid: {
+        in: room!.users,
+      },
+    },
+  });
+
+  if (attempt_id) {
+    await prisma.attempt.update({
+      where: {
+        id: attempt_id,
+      },
+      data: {
+        users: {
+          connect: users.map((user) => ({
+            uid: user.uid as string,
+          })),
+        },
+        answer: answer,
+        time_saved_at: new Date(),
+      },
+    });
+    return;
+  }
+
+  await prisma.attempt.create({
+    data: {
+      users: {
+        connect: users.map((user) => ({
+          uid: user.uid as string,
+        })),
+      },
+      question_id: question_id,
+      answer: answer,
+      room_id: room_id,
+      room: {
+        connect: {
+          room_id: room_id,
+        },
+      },
+    },
+  });
+}
+
+export async function setRoomQuestion(
+  room_id: string,
+  question_id: string
+): Promise<void> {
+  await prisma.room.update({
+    where: {
+      room_id: room_id,
+    },
+    data: {
+      question_id: question_id,
+    },
+  });
 }
 
 export async function createOrUpdateRoomWithUser(
   room_id: string,
   user_id: string
 ): Promise<void> {
+  let users: string[] = [];
+  let active_users: string[] = [];
+  const room = await prisma.room.findUnique({
+    where: {
+      room_id: room_id,
+    },
+    select: {
+      users: true,
+      active_users: true,
+    },
+  });
+  if (room) {
+    users = room.users;
+    active_users = room.active_users;
+    if (users.indexOf(user_id) === -1) {
+      users.push(user_id);
+    }
+    if (active_users.indexOf(user_id) === -1) {
+      active_users.push(user_id);
+    }
+  }
+
   await prisma.room.upsert({
     where: {
       room_id: room_id,
@@ -74,7 +175,10 @@ export async function createOrUpdateRoomWithUser(
     update: {
       status: "active",
       users: {
-        push: user_id,
+        set: users,
+      },
+      active_users: {
+        set: active_users,
       },
     },
     create: {
@@ -82,6 +186,7 @@ export async function createOrUpdateRoomWithUser(
       text: "",
       status: "active",
       users: [user_id],
+      active_users: [user_id],
     },
   });
 }
@@ -127,18 +232,18 @@ export async function removeUserFromRoom(
 
   if (!existingRoom) return;
 
-  const userIndex = existingRoom.users.indexOf(user_id);
+  const userIndex = existingRoom.active_users.indexOf(user_id);
 
   if (userIndex > -1) {
-    existingRoom.users.splice(userIndex, 1);
+    existingRoom.active_users.splice(userIndex, 1);
 
     await prisma.room.update({
       where: {
         room_id: room_id,
       },
       data: {
-        users: {
-          set: existingRoom.users,
+        active_users: {
+          set: existingRoom.active_users,
         },
       },
     });

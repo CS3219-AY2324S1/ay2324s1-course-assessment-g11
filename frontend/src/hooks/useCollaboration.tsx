@@ -18,6 +18,7 @@ enum SocketEvents {
   ROOM_UPDATE = "api/collaboration-service/room/update",
   ROOM_SAVE = "api/collaboration-service/room/save",
   ROOM_LOAD = "api/collaboration-service/room/load",
+  QUESTION_SET = "api/collaboration-service/question/set",
 }
 
 var vers = 0;
@@ -36,12 +37,14 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
   const twilioTokenRef = useRef<string>("");
+  const questionId = "1";
 
   useEffect(() => {
     const socketConnection = io("http://localhost:5003/");
     setSocket(socketConnection);
 
     socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
+    socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
 
     socketConnection.on("twilio-token", (token: string) => {
       twilioTokenRef.current = token;
