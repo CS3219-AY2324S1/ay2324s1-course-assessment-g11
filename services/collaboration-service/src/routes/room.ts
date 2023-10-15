@@ -52,20 +52,20 @@ function mapSocketToRoomAndUser(
   };
 }
 
-function updateStatus(socket_id: string) {
+async function updateStatus(socket_id: string) {
   if (!socketMap[socket_id]) {
     return;
   }
   const { room_id } = socketMap[socket_id];
-  updateRoomStatus(room_id);
+  await updateRoomStatus(room_id);
 }
 
-function disconnectUserFromDb(socket_id: string): void {
+async function disconnectUserFromDb(socket_id: string): Promise<void> {
   if (!socketMap[socket_id]) {
     return;
   }
   const { room_id, user_id } = socketMap[socket_id];
-  removeUserFromRoom(room_id, user_id);
+  await removeUserFromRoom(room_id, user_id);
 }
 
 // Socket callbacks
@@ -171,10 +171,9 @@ async function loadTextFromDb(
   });
 }
 
-function userDisconnect(socket: Socket): void {
+async function userDisconnect(socket: Socket): Promise<void> {
   console.log("User disconnected:", socket.id);
-  disconnectUserFromDb(socket.id);
-  updateStatus(socket.id);
+  await disconnectUserFromDb(socket.id).then(() => updateStatus(socket.id));
 }
 
 function initSocketListeners(io: Server, socket: Socket, room_id: string) {
@@ -260,7 +259,7 @@ export const roomRouter = (io: Server) => {
       initSocketListeners(io, socket, room_id);
     });
 
-    socket.on("disconnect", () => userDisconnect(socket));
+    socket.on("disconnect", async () => userDisconnect(socket));
   });
 
   return router;

@@ -37,14 +37,15 @@ model AppUser {
 }
 
 model Room {
-  room_id     String         @id
-  users       String[] // Array of user_id strings
-  status      EnumRoomStatus
-  text        String
-  saved_text  String?
-  question_id String?
-  attempt     Attempt?       @relation(fields: [attempt_id], references: [id])
-  attempt_id  String?        @unique
+  room_id      String         @id
+  active_users String[] // Array of user_id strings still active
+  users        String[] // Array of user_id strings
+  status       EnumRoomStatus
+  text         String
+  saved_text   String?
+  question_id  String?
+  attempt      Attempt?       @relation(fields: [attempt_id], references: [id])
+  attempt_id   String?        @unique
 }
 
 enum EnumRoomStatus {
@@ -58,6 +59,7 @@ model Attempt {
   question_id   String
   answer        String?
   solved        Boolean   @default(false)
+  time_created  DateTime  @default(now())
   time_saved_at DateTime  @default(now()) // when answers are updated
   time_updated  DateTime  @updatedAt // any field change
   room_id       String // may be inactive
