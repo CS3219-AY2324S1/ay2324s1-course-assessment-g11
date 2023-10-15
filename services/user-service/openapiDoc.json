@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/": {
+    "/api/user-service/": {
       "post": {
         "description": "",
         "responses": {
@@ -27,7 +27,7 @@
         }
       }
     },
-    "/{uid}": {
+    "/api/user-service/{uid}": {
       "get": {
         "description": "",
         "parameters": [
@@ -91,6 +91,58 @@
         "responses": {
           "204": {
             "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user-service/{uid}/attempts": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/user-service/{uid}/attempt": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
           },
           "404": {
             "description": "Not Found"
