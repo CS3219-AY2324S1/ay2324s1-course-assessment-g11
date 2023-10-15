@@ -34,13 +34,16 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
       const params = new URL(document.location).searchParams;
-      const room = params.get("room") ?? 1;
+      const room = params.get("room") ?? "1";
       const user = params.get("user") ?? "user";
       const api = params.get("api") ?? "socket";
+      const qn = params.get("qn") ?? "1";
 
       const socket = io("http://localhost:5003/");
 
       joinRoomBySocket(socket, room, user);
+
+      socket.emit("api/collaboration-service/question/set", qn);
 
       function saveRoomByRestApi(room, text) {
         var apiUrl =
@@ -97,10 +100,14 @@
           console.log(text);
           console.log(vers);
           textOp = eval(text);
-          socket.emit("api/collaboration-service/room/update", {
-            version: vers,
-            operations: textOp,
-          });
+          socket.emit(
+            "api/collaboration-service/room/update",
+            {
+              version: vers,
+              operations: textOp,
+            },
+            () => {}
+          );
         });
 
         saveButton.addEventListener("click", () => {
