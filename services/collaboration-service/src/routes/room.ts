@@ -217,18 +217,6 @@ function getTwilioAccessToken(room_id: string, user_id: string): string {
   return token.toJwt();
 }
 
-function getTwilioAccessToken(room_id: string, user_id: string): string {
-  const videoGrant = new VideoGrant({ room: room_id });
-  const token = new AccessToken(
-    TWILIO_ACCOUNT_SID,
-    TWILIO_API_KEY,
-    TWILIO_API_SECRET
-  );
-  token.addGrant(videoGrant);
-  token.identity = user_id;
-  return token.toJwt();
-}
-
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
@@ -277,6 +265,7 @@ export const roomRouter = (io: Server) => {
       createOrUpdateRoomWithUser(room_id, user_id);
       mapSocketToRoomAndUser(socket.id, room_id, user_id);
       roomUpdateWithTextFromDb(io, socket, room_id);
+      socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id))
 
       initSocketListeners(io, socket, room_id);
     });

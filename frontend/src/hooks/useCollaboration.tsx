@@ -40,6 +40,10 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
 
+    socketConnection.emit("twilio-token", (token: string) => {
+      console.log(token);
+    });
+
     socketConnection.on(
       SocketEvents.ROOM_UPDATE,
       ({
