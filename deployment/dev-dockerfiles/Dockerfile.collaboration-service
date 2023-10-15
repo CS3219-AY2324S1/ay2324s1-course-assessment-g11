@@ -8,6 +8,7 @@ WORKDIR /app/services/collaboration-service
 COPY package.json yarn.lock /app/
 COPY services/collaboration-service /app/services/collaboration-service
 COPY prisma ./prisma/
+COPY utils /app/utils/
 
 RUN yarn prisma generate
 

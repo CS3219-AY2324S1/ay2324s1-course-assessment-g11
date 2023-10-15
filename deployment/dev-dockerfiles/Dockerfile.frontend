@@ -6,6 +6,7 @@ WORKDIR /app/frontend
 
 # Copy frontend files
 COPY frontend .
+COPY utils /app/utils/
 
 # Install dependencies using Yarn Workspaces
 RUN yarn install --frozen-lockfile --cwd /app

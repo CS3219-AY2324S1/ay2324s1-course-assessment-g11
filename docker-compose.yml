@@ -33,6 +33,9 @@ services:
     environment:
       PORT: 5003
       PRISMA_DATABASE_URL: ${DATABASE_URL}
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_API_KEY: ${TWILIO_API_KEY}
+      TWILIO_API_SECRET: ${TWILIO_API_SECRET}
 
   question-service:
     build:
