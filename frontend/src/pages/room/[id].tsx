@@ -5,6 +5,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { Question } from "../../../types/QuestionTypes";
+import {connect} from "twilio-video";
+import VideoRoom from "../../components/room/video-room";
 
 export default function Room() {
   const router = useRouter();
@@ -12,7 +14,7 @@ export default function Room() {
   const roomId = router.query.id as string;
   const userId = "user1";
 
-  const { text, setText, cursor, setCursor } = useCollaboration({
+  const { text, setText, cursor, setCursor, room } = useCollaboration({
     roomId: roomId as string,
     userId,
   });
@@ -48,6 +50,7 @@ export default function Room() {
               participants={["Charisma", "Chun Wei"]}
               className="h-full"
             />
+            <VideoRoom room={room} />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
         </Tabs>

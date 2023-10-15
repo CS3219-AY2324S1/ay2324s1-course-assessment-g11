@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
 import {
@@ -6,6 +6,7 @@ import {
   createTextOpFromTexts,
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
+import { Room, connect } from "twilio-video";
 
 type UseCollaborationProps = {
   roomId: string;
@@ -27,12 +28,14 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
   const [cursor, setCursor] = useState<number>(
     "#Write your solution here".length
   );
+  const [room, setRoom] = useState<Room | null>(null); // twilio room
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
   const prevCursorRef = useRef<number>(cursor);
   const prevTextRef = useRef<string>(text);
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
+  const twilioTokenRef = useRef<string>("");
 
   useEffect(() => {
     const socketConnection = io("http://localhost:5003/");
@@ -40,8 +43,14 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
 
-    socketConnection.emit("twilio-token", (token: string) => {
-      console.log(token);
+    socketConnection.on("twilio-token", (token: string) => {
+      twilioTokenRef.current = token;
+      connect(token, { name: roomId }).then((room) => {
+        console.log("Connected to Room");
+        setRoom(room);
+      }).catch(err => {
+        console.log(err);
+      });
     });
 
     socketConnection.on(
@@ -84,6 +93,9 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     return () => {
       socketConnection.disconnect();
+      if (room) {
+        room.disconnect();
+      }
     };
   }, [roomId, userId]);
 
@@ -127,7 +139,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
     });
   }, [text, socket]);
 
-  return { text, setText, cursor, setCursor };
+  return { text, setText, cursor, setCursor, room };
 };
 
 export default useCollaboration;

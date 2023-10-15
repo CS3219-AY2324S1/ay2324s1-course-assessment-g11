@@ -210,10 +210,11 @@ function getTwilioAccessToken(room_id: string, user_id: string): string {
   const token = new AccessToken(
     TWILIO_ACCOUNT_SID,
     TWILIO_API_KEY,
-    TWILIO_API_SECRET
+    TWILIO_API_SECRET,
+    { identity: user_id }
   );
-  token.addGrant(videoGrant);
   token.identity = user_id;
+  token.addGrant(videoGrant);
   return token.toJwt();
 }
 
