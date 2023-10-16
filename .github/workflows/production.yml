@@ -67,8 +67,9 @@ jobs:
       # Build the Docker images and push to Google Artifact Repository
       - name: Build and push Docker images
         run: |-
-          chmod u+x ./deployment/build-prod-images.sh
-          ./deployment/build-prod-images.sh
+          chmod u+x ./build-prod-images.sh
+          ./build-prod-images.sh
+        working-directory: ./deployment
 
       # Set the secrets that are used as env variables in the manifest files
       - name: Set kubectl secrets
@@ -85,6 +86,7 @@ jobs:
       # Deploy the Docker images to the GKE cluster
       - name: Deploy production application
         run: |-
-          kubectl apply -f ./deployment/gke-prod-manifests
+          kubectl apply -f ./gke-prod-manifests
           kubectl rollout status deployment
           kubectl get services -o wide
+        working-directory: ./deployment
