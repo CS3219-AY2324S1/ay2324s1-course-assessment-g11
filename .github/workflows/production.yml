@@ -55,6 +55,10 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_REGION }}
 
+      # Install the dependencies such as prisma
+      - name: Install dependencies with immutable lockfile
+        run: yarn install --frozen-lockfile
+
       # Apply prisma migrations to production prisma database
       - name: Apply prisma database migrations
         run: |-
