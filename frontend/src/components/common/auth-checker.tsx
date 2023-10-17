@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import React, { useEffect } from "react";
+import { useRouter } from "next/router";
 import { AuthContext } from "@/contexts/AuthContext";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useContext } from "react";
@@ -29,6 +29,5 @@ export default function AuthChecker({ children }: AuthCheckerProps) {
     return children;
   }
 
-  return (currentUser && children)
+  return currentUser && children;
 }
-

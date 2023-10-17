@@ -7,7 +7,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 0.0.0.0",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build:local": "dotenv -e ../.env -- next build",
+    "start:local": "dotenv -e ../.env -- next start -H 0.0.0.0"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.1",
