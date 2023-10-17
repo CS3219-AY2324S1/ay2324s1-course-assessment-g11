@@ -32,7 +32,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
+      - id: 'auth'
+        name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
           workload_identity_provider: projects/345207492413/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-oidc
@@ -42,11 +43,10 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
-      - name: Configure Docker to use gcloud
+      # Configure Docker to login to google cloud
+      - name: Configure Docker
         run: |-
-          gcloud --quiet auth configure-docker
+          echo ${{steps.auth.outputs.access_token}} | docker login -u oauth2accesstoken --password-stdin https://$GKE_REGION-docker.pkg.dev
 
       # Get the GKE credentials so that we can deploy to the cluster
       - name: Get Google Kubernetes Engine credentials for production
