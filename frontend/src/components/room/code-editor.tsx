@@ -34,9 +34,9 @@ type CodeEditorProps = {
   defaultValue?: string;
   className?: string;
   text: string;
-  cursor: number;
+  cursor?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
-  onCursorChange: React.Dispatch<React.SetStateAction<number>>;
+  onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const frameworks = [
@@ -103,6 +103,7 @@ export default function CodeEditor({
     (value: string | undefined) => {
       if (!monacoInstance) return;
       if (value === undefined) return;
+      if (onCursorChange === undefined) return;
 
       if (monacoInstance.getPosition()) {
         const cursor = monacoInstance
