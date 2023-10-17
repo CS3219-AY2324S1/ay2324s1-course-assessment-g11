@@ -7,7 +7,7 @@ service_array=("admin-service" "collaboration-service" "gateway" "matching-servi
 # Build and publish prod images with context set to be parent directory
 for s in ${service_array[@]}; do
   docker build \
-    --tag asia-southeast1-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY_NAME/${service_array[s]}:latest \
+    --tag $GKE_REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY_NAME/${service_array[s]}:latest \
     --file prod-dockerfiles/Dockerfile.${service_array[s]}-prod ..
-  docker push asia-southeast1-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY_NAME/${service_array[s]}:latest
+  docker push $GKE_REGION-docker.pkg.dev/$PROJECT_ID/$ARTIFACT_REPOSITORY_NAME/${service_array[s]}:latest
 done
