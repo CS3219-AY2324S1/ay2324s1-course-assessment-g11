@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { LocalParticipant, LocalVideoTrack, Participant, RemoteParticipant, RemoteTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
+import { LocalParticipant, LocalVideoTrack, Participant, RemoteParticipant, RemoteAudioTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
 import { Button } from '../ui/button';
 import { Mic, MicOff, Video, VideoOff } from 'lucide-react';
 
@@ -13,12 +13,8 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
         isMute: boolean, toggleMute: () => void,
         isCameraOn: boolean, toggleCamera: () => void
     }) {
-    console.log("Invoked SingleVideoTrack, %s", isLocal)
     const videoContainer = useRef<HTMLDivElement>(null);
     useEffect(() => {
-        if (!isLocal) {
-            console.log("remote track");
-        }
         const videoElement = track.attach();
         videoElement.classList.add("w-full", "h-full", "items-center", "justify-center", "flex");
         videoContainer.current?.appendChild(videoElement);
@@ -48,6 +44,21 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
     </div>);
 }
 
+function SingleAudioTrack({track}: {track: RemoteAudioTrack}) {
+    const audioContainer = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        const audioElement = track.attach();
+        audioContainer.current?.appendChild(audioElement);
+        return () => {
+            track.detach().forEach(element => element.remove());
+            audioElement.remove();
+        };
+    }, [track]);
+    return (<div
+        ref={audioContainer}
+    ></div>);
+}
+
 export default function VideoRoom({ room }: VideoRoomProps) {
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMute, setIsMute] = useState(false);
@@ -58,11 +69,11 @@ export default function VideoRoom({ room }: VideoRoomProps) {
     const handleNewParticipant = (participant: RemoteParticipant) => {
 
         participant.on('trackSubscribed', track => {
-            setParticipants(p => p)
+            setParticipants(p => [...p])
         });
 
         participant.on('trackUnsubscribed', track => {
-            setParticipants(p => p)
+            setParticipants(p => [...p])
         });
     };
 
@@ -124,13 +135,23 @@ export default function VideoRoom({ room }: VideoRoomProps) {
                 } else { return null; }
             }) : null}
             {participants.flatMap(participant => {
-                console.log(participant)
                 return Array.from(participant.videoTracks.values()).map(publication => {
                     if (publication.track?.kind === 'video') {
                         console.log("remote track")
                         // return <div key={publication.trackSid}><p>remote track</p></div>;
                         return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
-                    } else { return null; }
+                    } else {
+                        return null; 
+                    }
+                });
+            })}
+            {participants.flatMap(participant => {
+                return Array.from(participant.audioTracks.values()).map(audioPublication => {
+                    if (audioPublication.track?.kind === 'audio') {
+                        return <SingleAudioTrack track={audioPublication.track} key={participant.identity} />;
+                    } else {
+                        return null;
+                    }
                 });
             })}
         </div>
