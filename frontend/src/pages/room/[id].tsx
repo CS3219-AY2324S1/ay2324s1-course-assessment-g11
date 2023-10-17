@@ -48,7 +48,6 @@ export default function Room() {
               question={question}
               participants={["Charisma", "Chun Wei"]}
               room={room}
-              className="h-[60vh]"
             />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
@@ -62,6 +61,7 @@ export default function Room() {
           />
         </div>
       </div>
+      <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
     </div>
   );
 }

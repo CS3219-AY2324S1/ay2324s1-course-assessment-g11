@@ -18,7 +18,6 @@ type DescriptionProps = {
 export default function Description({
   question,
   className,
-  room
 }: DescriptionProps) {
   return (
     <Card className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}>
@@ -45,7 +44,6 @@ export default function Description({
           <div dangerouslySetInnerHTML={{ __html: question.description }} className="max-w-2xl overflow-x-auto"></div>
         </TypographySmall>
       </div>
-      <VideoRoom room={room} />
     </Card>
   );
 }

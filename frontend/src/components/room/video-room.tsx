@@ -5,6 +5,7 @@ import { Mic, MicOff, Video, VideoOff } from 'lucide-react';
 
 interface VideoRoomProps {
     room: Room | null;
+    className?: string;
 }
 
 function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCameraOn, toggleCamera }:
@@ -27,7 +28,7 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
         className="flex items-center justify-start gap-4"
         key={userId}
     >
-        <div className="w-64 h-36 p-2 flex flex-col items-center justify-center border border-primary rounded-lg">
+        <div className="w-64 p-2 flex flex-col items-center justify-center border border-primary rounded-lg">
             <div ref={videoContainer}></div>
             <div className="flex-1 ml-1 w-full h-8 flex items-center justify-between">
                 <p>{userId}</p>
@@ -59,7 +60,7 @@ function SingleAudioTrack({track}: {track: RemoteAudioTrack}) {
     ></div>);
 }
 
-export default function VideoRoom({ room }: VideoRoomProps) {
+const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMute, setIsMute] = useState(false);
     const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
@@ -103,7 +104,7 @@ export default function VideoRoom({ room }: VideoRoomProps) {
     const toggleMute = () => {
         room?.localParticipant.audioTracks.forEach(publication => {
             if (publication.track) {
-                publication.track.enable(!isMute);
+                publication.track.enable(isMute);
                 setIsMute(!isMute);
             }
         });
@@ -128,6 +129,7 @@ export default function VideoRoom({ room }: VideoRoomProps) {
     }, [room]);
 
     return (
+        <div className={className}>
         <div className="flex gap-4 absolute bottom-10">
             {localParticipant ? Array.from(localParticipant.videoTracks.values()).map(publication => {
                 if (publication.track.kind === 'video') {
@@ -137,8 +139,6 @@ export default function VideoRoom({ room }: VideoRoomProps) {
             {participants.flatMap(participant => {
                 return Array.from(participant.videoTracks.values()).map(publication => {
                     if (publication.track?.kind === 'video') {
-                        console.log("remote track")
-                        // return <div key={publication.trackSid}><p>remote track</p></div>;
                         return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
                     } else {
                         return null; 
@@ -154,7 +154,8 @@ export default function VideoRoom({ room }: VideoRoomProps) {
                     }
                 });
             })}
-        </div>
+        </div></div>
     );
-}
+};
 
+export default VideoRoom;
