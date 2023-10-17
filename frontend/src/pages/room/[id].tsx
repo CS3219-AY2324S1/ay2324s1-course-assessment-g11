@@ -12,10 +12,12 @@ export default function Room() {
 
   const roomId = router.query.id as string;
   const userId = router.query.userId as string || "user1";
+  const disableVideo = (router.query.disableVideo as string)?.toLowerCase() === "true";
 
   const { text, setText, cursor, setCursor, room } = useCollaboration({
     roomId: roomId as string,
     userId,
+    disableVideo,
   });
 
   const question: Question = {

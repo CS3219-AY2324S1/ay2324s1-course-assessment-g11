@@ -11,6 +11,7 @@ import { Room, connect } from "twilio-video";
 type UseCollaborationProps = {
   roomId: string;
   userId: string;
+  disableVideo?: boolean;
 };
 
 enum SocketEvents {
@@ -23,7 +24,7 @@ enum SocketEvents {
 
 var vers = 0;
 
-const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
+const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [text, setText] = useState<string>("#Write your solution here");
   const [cursor, setCursor] = useState<number>(
@@ -48,6 +49,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.on("twilio-token", (token: string) => {
       twilioTokenRef.current = token;
+      if (disableVideo) return;
       connect(token, {
         name: roomId, audio: true,
         video: { width: 640, height: 480, frameRate: 24 }
