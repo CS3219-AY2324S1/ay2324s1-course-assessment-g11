@@ -13,6 +13,7 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
         isMute: boolean, toggleMute: () => void,
         isCameraOn: boolean, toggleCamera: () => void
     }) {
+    console.log("Invoked SingleVideoTrack, %s", isLocal)
     const videoContainer = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (!isLocal) {
@@ -48,7 +49,6 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
 }
 
 export default function VideoRoom({ room }: VideoRoomProps) {
-    const videoRef = useRef<HTMLDivElement>(null);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMute, setIsMute] = useState(false);
     const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
@@ -58,19 +58,18 @@ export default function VideoRoom({ room }: VideoRoomProps) {
     const handleNewParticipant = (participant: RemoteParticipant) => {
 
         participant.on('trackSubscribed', track => {
-            setParticipants(participants.map(p => p))
+            setParticipants(p => p)
         });
 
         participant.on('trackUnsubscribed', track => {
-            setParticipants(participants.map(p => p))
+            setParticipants(p => p)
         });
     };
 
     const participantConnected = (participant: RemoteParticipant) => {
         console.log('Participant "%s" connected,', participant.identity);
-        console.log([...participants, participant])
 
-        setParticipants([...participants, participant]);
+        setParticipants(participants => [...participants, participant]);
 
         handleNewParticipant(participant);
     };
@@ -115,18 +114,21 @@ export default function VideoRoom({ room }: VideoRoomProps) {
         return () => {
             room.disconnect();
         };
-    }, [room, handleNewParticipant, participantConnected, participantDisconnected]);
+    }, [room]);
 
     return (
-        <div ref={videoRef} className="flex gap-4 absolute bottom-10">
+        <div className="flex gap-4 absolute bottom-10">
             {localParticipant ? Array.from(localParticipant.videoTracks.values()).map(publication => {
                 if (publication.track.kind === 'video') {
                     return <SingleVideoTrack track={publication.track} key={localParticipant.identity} userId={localParticipant.identity} isLocal={true} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
                 } else { return null; }
             }) : null}
             {participants.flatMap(participant => {
+                console.log(participant)
                 return Array.from(participant.videoTracks.values()).map(publication => {
                     if (publication.track?.kind === 'video') {
+                        console.log("remote track")
+                        // return <div key={publication.trackSid}><p>remote track</p></div>;
                         return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
                     } else { return null; }
                 });
