@@ -12,7 +12,7 @@ services:
       - "5001:5001"
     environment:
       PORT: 5001
-      PRISMA_DATABASE_URL: ${DATABASE_URL}
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
 
   matching-service:
     build:
@@ -25,7 +25,7 @@ services:
       - "5002:5002"
     environment:
       PORT: 5002
-      PRISMA_DATABASE_URL: ${DATABASE_URL}
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
 
   collaboration-service:
     build:
@@ -39,7 +39,7 @@ services:
       - "5003:5003"
     environment:
       PORT: 5003
-      PRISMA_DATABASE_URL: ${DATABASE_URL}
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
 
   question-service:
     build:

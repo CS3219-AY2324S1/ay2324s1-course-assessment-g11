@@ -4,15 +4,15 @@ FROM peerprep-base:latest
 # Set working directory
 WORKDIR /app/services/gateway
 
-# Copy root level package.json, yarn.lock, and the entire services directory
-COPY package.json yarn.lock /app/
+# Copy the entire services directory and prisma
 COPY services/gateway /app/services/gateway
 COPY prisma ./prisma/
 
-RUN yarn prisma generate
-
-# Install dependencies using Yarn Workspaces
+# Install all dependencies using Yarn Workspaces
 RUN yarn install --frozen-lockfile --cwd /app
+
+# Generate the prisma client
+RUN yarn prisma generate
 
 # Run service
 CMD [ "yarn", "workspace", "gateway", "dev" ]
