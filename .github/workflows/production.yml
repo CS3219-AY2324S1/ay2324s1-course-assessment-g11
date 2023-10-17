@@ -17,7 +17,7 @@ env:
   FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
   PRISMA_DATABASE_URL: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
   MONGO_ATLAS_URL: ${{ secrets.MONGO_ATLAS_URL_PROD }}
-  FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
+  NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
 
 jobs:
   setup-build-publish-deploy:
@@ -82,7 +82,7 @@ jobs:
           kubectl create secret generic mongo-atlas-url \
             --from-literal=mongo-atlas-url=$MONGO_ATLAS_URL
           kubectl create secret generic frontend-firebase-config \
-            --from-literal=frontend-firebase-config=$FRONTEND_FIREBASE_CONFIG
+            --from-literal=frontend-firebase-config=$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG
 
       # Deploy the Docker images to the GKE cluster
       - name: Deploy production application
