@@ -63,7 +63,7 @@ async function run() {
                     java: {
                         bsonType: "string"
                     },
-                    cpp: {
+                    "c++": {
                         bsonType: "string"
                     },
                     python: {
@@ -78,7 +78,7 @@ async function run() {
                     java: {
                         bsonType: "string"
                     },
-                    cpp: {
+                    "c++": {
                         bsonType: "string"
                     },
                     python: {

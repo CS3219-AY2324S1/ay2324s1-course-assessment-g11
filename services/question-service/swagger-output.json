@@ -140,6 +140,13 @@
         "description": "Get questions based on topics or difficulty, with offset based pagination.",
         "parameters": [
           {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "topics",
             "description": "Array of topics to filter by.",
             "in": "query",

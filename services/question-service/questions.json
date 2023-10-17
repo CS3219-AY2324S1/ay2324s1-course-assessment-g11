@@ -8,10 +8,10 @@
         "testCaseOutputs": ["olleh", "hannaH"],
         "defaultCode": {
             "python": "class Solution:\n    def reverseString(self, s: List[str]) -> None:\n        \"\"\"\n        Do not return anything, modify s in-place instead.\n        \"\"\"\n        ",
-            "cpp": "class Solution {\npublic:\n    void reverseString(vector<char>& s) {\n        \n    }\n};",
+            "c++": "class Solution {\npublic:\n    void reverseString(vector<char>& s) {\n        \n    }\n};",
             "java": "class Solution {\n    public void reverseString(char[] s) {\n        \n    }\n}"
         },
-        "solutionCode": {
+        "solution": {
             "python": "class Solution:\n    def reverseString(self, s: List[str]) -> None:\n        \"\"\"\n        Do not return anything, modify s in-place instead.\n        \"\"\"\n        s.reverse()"
         }
     },
@@ -24,10 +24,10 @@
         "testCaseOutputs": [],
         "defaultCode": {
             "python": "# Definition for singly-linked list.\n# class ListNode:\n#     def __init__(self, x):\n#         self.val = x\n#         self.next = None\n\nclass Solution:\n    def hasCycle(self, head: ListNode) -> bool:\n        ",
-            "cpp": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        \n    }\n};",
+            "c++": "/**\n * Definition for singly-linked list.\n * struct ListNode {\n *     int val;\n *     ListNode *next;\n *     ListNode(int x) : val(x), next(NULL) {}\n * };\n */\nclass Solution {\npublic:\n    bool hasCycle(ListNode *head) {\n        \n    }\n};",
             "java": "/**\n * Definition for singly-linked list.\n * class ListNode {\n *     int val;\n *     ListNode next;\n *     ListNode(int x) {\n *         val = x;\n *         next = null;\n *     }\n * }\n */\npublic class Solution {\n    public boolean hasCycle(ListNode head) {\n        \n    }\n}"
         },
-        "solutionCode": {}
+        "solution": {}
     },
     {
         "difficulty": "easy",
@@ -38,7 +38,7 @@
         "testCaseOutputs": ["3", "4", "9", "58", "1994"],
         "defaultCode": {
             "python": "class Solution:\n    def romanToInt(self, s: str) -> int:\n        ",
-            "cpp": "class Solution {\npublic:\n    int romanToInt(string s) {\n        \n    }\n};",
+            "c++": "class Solution {\npublic:\n    int romanToInt(string s) {\n        \n    }\n};",
             "java": "class Solution {\n    public int romanToInt(String s) {\n        \n    }\n}"
         }
     },
@@ -51,7 +51,7 @@
         "testCaseOutputs": ["100", "10101"],
         "defaultCode": {
             "python": "class Solution:\n    def addBinary(self, a: str, b: str) -> str:\n        ",
-            "cpp": "class Solution {\npublic:\n    string addBinary(string a, string b) {\n        \n    }\n};",
+            "c++": "class Solution {\npublic:\n    string addBinary(string a, string b) {\n        \n    }\n};",
             "java": "class Solution {\n    public String addBinary(String a, String b) {\n        \n    }\n}"
         }
     },
@@ -64,7 +64,7 @@
         "testCaseOutputs": ["1", "2", "3", "5", "8"],
         "defaultCode": {
             "python": "class Solution:\n    def fib(self, n: int) -> int:\n        ",
-            "cpp": "class Solution {\npublic:\n    int fib(int n) {\n        \n    }\n};",
+            "c++": "class Solution {\npublic:\n    int fib(int n) {\n        \n    }\n};",
             "java": "class Solution {\n    public int fib(int n) {\n        \n    }\n}"
         }
     },
@@ -77,7 +77,7 @@
         "testCaseOutputs": [],
         "defaultCode": {
             "python": "class MyStack:\n\n    def __init__(self):\n        \"\"\"\n        Initialize your data structure here.\n        \"\"\"\n        \n\n    def push(self, x: int) -> None:\n        \"\"\"\n        Push element x onto stack.\n        \"\"\"\n        \n\n    def pop(self) -> int:\n        \"\"\"\n        Removes the element on top of the stack and returns that element.\n        \"\"\"\n        \n\n    def top(self) -> int:\n        \"\"\"\n        Get the top element.\n        \"\"\"\n        \n\n    def empty(self) -> bool:\n        \"\"\"\n        Returns whether the stack is empty.\n        \"\"\"\n        \n\n# Your MyStack object will be instantiated and called as such:\n# obj = MyStack()\n# obj.push(x)\n# param_2 = obj.pop()\n# param_3 = obj.top()\n# param_4 = obj.empty()",
-            "cpp": "class MyStack {\npublic:\n    /** Initialize your data structure here. */\n    MyStack() {\n        \n    }\n    \n    /** Push element x onto stack. */\n    void push(int x) {\n        \n    }\n    \n    /** Removes the element on top of the stack and returns that element. */\n    int pop() {\n        \n    }\n    \n    /** Get the top element. */\n    int top() {\n        \n    }\n    \n    /** Returns whether the stack is empty. */\n    bool empty() {\n        \n    }\n};",
+            "c++": "class MyStack {\npublic:\n    /** Initialize your data structure here. */\n    MyStack() {\n        \n    }\n    \n    /** Push element x onto stack. */\n    void push(int x) {\n        \n    }\n    \n    /** Removes the element on top of the stack and returns that element. */\n    int pop() {\n        \n    }\n    \n    /** Get the top element. */\n    int top() {\n        \n    }\n    \n    /** Returns whether the stack is empty. */\n    bool empty() {\n        \n    }\n};",
             "java": "class MyStack {\n\n    /** Initialize your data structure here. */\n    public MyStack() {\n        \n    }\n    \n    /** Push element x onto stack. */\n    public void push(int x) {\n        \n    }\n    \n    /** Removes the element on top of the stack and returns that element. */\n    public int pop() {\n        \n    }\n    \n    /** Get the top element. */\n    public int top() {\n        \n    }\n    \n    /** Returns whether the stack is empty. */\n    public boolean empty() {\n        \n    }\n}\n\n/**\n * Your MyStack object will be instantiated and called as such:\n * MyStack obj = new MyStack();\n * obj.push(x);\n * int param_2 = obj.pop();\n * int param_3 = obj.top();\n * boolean param_4 = obj.empty();\n */"
         }
     },
@@ -90,7 +90,7 @@
         "testCaseOutputs": ["AAAAACCCCC\nCCCCCAAAAA", "AAAAAAAAAA"],
         "defaultCode": {
             "python": "class Solution:\n    def findRepeatedDnaSequences(self, s: str) -> List[str]:\n        ",
-            "cpp": "class Solution {\npublic:\n    vector<string> findRepeatedDnaSequences(string s) {\n        \n    }\n};",
+            "c++": "class Solution {\npublic:\n    vector<string> findRepeatedDnaSequences(string s) {\n        \n    }\n};",
             "java": "class Solution {\n    public List<String> findRepeatedDnaSequences(String s) {\n        \n    }\n}"
         }
     },

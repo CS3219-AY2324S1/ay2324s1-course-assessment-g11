@@ -79,7 +79,7 @@ router.post("/question", async (req, res, next) => {
   try {
     await mongoClient.connect();
     let db = mongoClient.db("question_db");
-    let collection = db.collection("questions");
+    let collection = db.collection<Question>("questions");
     // Find question with same title
     let same_title_qn = await collection.findOne({ title: req.body.title });
     if (same_title_qn) {
@@ -97,6 +97,7 @@ router.post("/question", async (req, res, next) => {
       testCasesOutputs: req.body.testCasesOutputs ?? [],
       defaultCode: req.body.defaultCode ?? {},
       solution: req.body.solution ?? {},
+      author: req.headers['user-id']
     });
     if (!result.acknowledged) {
       res.status(500).send("Failed to insert question");
@@ -126,7 +127,7 @@ router.get("/list", async (req, res, next) => {
    * #swagger.parameters['page'] = { description: 'Page number to return.', type: 'number' }
    * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
    */
-  console.log(req.headers['User-Id'])
+  console.log(req.headers['user-id'])
   let searchObj: any = {};
   if (req.body.topics && req.body.topics.length > 0) {
     searchObj.topics = { $elemMatch: { $in: req.body.topics } };
