@@ -1,44 +1,84 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Participant, RemoteParticipant, RemoteTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
+import { LocalParticipant, LocalVideoTrack, Participant, RemoteParticipant, RemoteTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
+import { Button } from '../ui/button';
+import { Mic, MicOff, Video, VideoOff } from 'lucide-react';
 
 interface VideoRoomProps {
     room: Room | null;
 }
 
-export default function VideoRoom({ room }: VideoRoomProps ) {
+function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCameraOn, toggleCamera }:
+    {
+        track: RemoteVideoTrack | LocalVideoTrack, userId: string, isLocal: boolean,
+        isMute: boolean, toggleMute: () => void,
+        isCameraOn: boolean, toggleCamera: () => void
+    }) {
+    const videoContainer = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (!isLocal) {
+            console.log("remote track");
+        }
+        const videoElement = track.attach();
+        videoElement.classList.add("w-full", "h-full", "items-center", "justify-center", "flex");
+        videoContainer.current?.appendChild(videoElement);
+        return () => {
+            track.detach().forEach(element => element.remove());
+            videoElement.remove();
+        };
+    }, [isLocal, track]);
+    return (<div
+        className="flex items-center justify-start gap-4"
+        key={userId}
+    >
+        <div className="w-64 h-36 p-2 flex flex-col items-center justify-center border border-primary rounded-lg">
+            <div ref={videoContainer}></div>
+            <div className="flex-1 ml-1 w-full h-8 flex items-center justify-between">
+                <p>{userId}</p>
+                {isLocal ? <div className="flex flex-row gap-2 justify-end">
+                    <Button variant="ghost" size="icon" onClick={toggleCamera}>
+                        {isCameraOn ? <Video /> : <VideoOff />}
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={toggleMute}>
+                        {isMute ? <MicOff /> : <Mic />}
+                    </Button>
+                </div> : null}
+            </div>
+        </div>
+    </div>);
+}
+
+export default function VideoRoom({ room }: VideoRoomProps) {
     const videoRef = useRef<HTMLDivElement>(null);
     const [isCameraOn, setIsCameraOn] = useState(true);
     const [isMute, setIsMute] = useState(false);
+    const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
+    const [localParticipant, setLocalParticipant] = useState<LocalParticipant | null>(null);
 
-    const trackSubscribed = (track: RemoteVideoTrack) => {
-        const newMediaElement = track.attach();
-        newMediaElement.classList.add("h-[17vh]");
-        videoRef.current?.appendChild(newMediaElement);
+
+    const handleNewParticipant = (participant: RemoteParticipant) => {
+
+        participant.on('trackSubscribed', track => {
+            setParticipants(participants.map(p => p))
+        });
+
+        participant.on('trackUnsubscribed', track => {
+            setParticipants(participants.map(p => p))
+        });
     };
 
-    const trackUnsubscribed = (track: RemoteVideoTrack) => track.detach().forEach(element => element.remove());
-
     const participantConnected = (participant: RemoteParticipant) => {
-        console.log('Participant "%s" connected', participant.identity);
-    
-        participant.tracks.forEach(publication => {
-            if (publication.isSubscribed && publication.track?.kind === 'video') {
-                trackSubscribed(publication.track as RemoteVideoTrack);
-            }
-        });
-    
-        participant.on('trackSubscribed', track => {
-            if (track.kind === 'video') {
-                trackSubscribed(track as RemoteVideoTrack);
-            }
-        });
+        console.log('Participant "%s" connected,', participant.identity);
+        console.log([...participants, participant])
 
-        participant.on('trackUnsubscribed', trackUnsubscribed);
+        setParticipants([...participants, participant]);
+
+        handleNewParticipant(participant);
     };
 
     const participantDisconnected = (participant: RemoteParticipant) => {
         console.log('Participant "%s" disconnected', participant.identity);
-        document.getElementById(participant.sid)?.remove();
+        participant.removeAllListeners();
+        setParticipants(participants.filter(p => p.identity !== participant.identity));
     };
 
     const toggleCamera = () => {
@@ -65,36 +105,33 @@ export default function VideoRoom({ room }: VideoRoomProps ) {
         room.on('participantConnected', participantConnected);
         room.on('participantDisconnected', participantDisconnected);
         room.once('disconnected', error => room.participants.forEach(participantDisconnected));
-        
-        room.localParticipant.tracks.forEach(publication => {
-            if (publication.track?.kind === 'video') {
-                const newMediaElement = publication.track.attach();
-                newMediaElement.classList.add("h-[17vh]");
-                videoRef.current?.appendChild(newMediaElement);
-            }
-        });
 
-        room.participants.forEach(participant => {
-            participant.tracks.forEach(publication => {
-                if (publication.isSubscribed) {
-                    trackSubscribed(publication.track as RemoteVideoTrack);
-                }
-            });
+        setLocalParticipant(room.localParticipant);
 
-            participant.on('trackSubscribed', trackSubscribed);
-        });
+        room.participants.forEach(handleNewParticipant);
+
+        setParticipants(Array.from(room.participants.values()));
 
         return () => {
             room.disconnect();
         };
-    }, [room]);
+    }, [room, handleNewParticipant, participantConnected, participantDisconnected]);
 
     return (
-        <div>
-            <div ref={videoRef} style={{ display: 'flex', flexDirection: 'row' }} className="h-[17vh]"></div>
-            <button onClick={toggleCamera}> {isCameraOn ? 'Hide Camera' : 'Show Camera'}</button>
-            <button onClick={toggleMute}> {isMute ? "Unmute" : "Mute"}</button>
+        <div ref={videoRef} className="flex gap-4 absolute bottom-10">
+            {localParticipant ? Array.from(localParticipant.videoTracks.values()).map(publication => {
+                if (publication.track.kind === 'video') {
+                    return <SingleVideoTrack track={publication.track} key={localParticipant.identity} userId={localParticipant.identity} isLocal={true} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
+                } else { return null; }
+            }) : null}
+            {participants.flatMap(participant => {
+                return Array.from(participant.videoTracks.values()).map(publication => {
+                    if (publication.track?.kind === 'video') {
+                        return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
+                    } else { return null; }
+                });
+            })}
         </div>
     );
-};
+}
 

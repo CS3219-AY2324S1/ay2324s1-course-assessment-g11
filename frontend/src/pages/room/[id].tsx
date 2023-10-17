@@ -47,9 +47,9 @@ export default function Room() {
             <Description
               question={question}
               participants={["Charisma", "Chun Wei"]}
+              room={room}
               className="h-[60vh]"
             />
-            <VideoRoom room={room} className="h-[19vh]" />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
         </Tabs>
