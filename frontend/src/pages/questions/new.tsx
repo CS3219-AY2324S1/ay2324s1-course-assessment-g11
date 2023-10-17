@@ -6,16 +6,7 @@ import Link from "next/link";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import QuestionsForm from "./_form";
-
-const formSchema = z.object({
-  title: z.string().min(2).max(100),
-  difficulty: z.enum(['easy', 'medium', 'hard']),
-  topics: z.array(z.string().min(2).max(100)),
-  description: z.string().min(2).max(1000),
-  language: z.enum(['javascript', 'python', 'java', 'c++']),
-  code: z.string().min(0).max(10000) || undefined,
-})
+import QuestionsForm, { formSchema } from "./_form";
 
 export default function NewQuestion() {
   const form = useForm<z.infer<typeof formSchema>>({
@@ -24,9 +15,7 @@ export default function NewQuestion() {
       title: "",
       difficulty: "easy",
       topics: [],
-      description: "",
-      language: "python",
-      code: "",
+      description: ""
     },
   })
 
