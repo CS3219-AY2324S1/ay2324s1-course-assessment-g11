@@ -18,11 +18,11 @@ const firebaseAuth: Auth = getAuth(firebaseApp);
 export function promiseVerifyIsLoggedIn(idToken: string) {
   return firebaseAuth
     .verifyIdToken(idToken, true)
-    .then(() => {
-      return true;
+    .then((decodedToken) => {
+      return decodedToken.sub;
     })
     .catch(() => {
-      return false;
+      return "";
     });
 }
 

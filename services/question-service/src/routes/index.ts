@@ -126,6 +126,7 @@ router.get("/list", async (req, res, next) => {
    * #swagger.parameters['page'] = { description: 'Page number to return.', type: 'number' }
    * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
    */
+  console.log(req.headers['User-Id'])
   let searchObj: any = {};
   if (req.body.topics && req.body.topics.length > 0) {
     searchObj.topics = { $elemMatch: { $in: req.body.topics } };
