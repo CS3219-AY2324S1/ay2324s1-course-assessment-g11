@@ -1,6 +1,9 @@
 # Use the base image
 FROM peerprep-base:latest
 
+# Copy utils
+COPY utils /app/utils/
+
 # Set working directory
 WORKDIR /app/services/collaboration-service
 
