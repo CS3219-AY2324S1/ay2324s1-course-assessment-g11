@@ -14,24 +14,29 @@ env:
   ARTIFACT_REPOSITORY_NAME: codeparty-prod-images
   GKE_CLUSTER: codeparty-g11-prod    # Add your cluster name here.
   GKE_REGION: asia-southeast1   # Add your cluster zone here.
-  FIREBASE_SERVICE_ACCOUNT_PROD: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
-  PRISMA_DATABASE_URL_PROD: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
-  MONGO_ATLAS_URL_PROD: ${{ secrets.MONGO_ATLAS_URL_PROD }}
-  FRONTEND_FIREBASE_CONFIG_PROD: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
+  FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
+  PRISMA_DATABASE_URL: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
+  MONGO_ATLAS_URL: ${{ secrets.MONGO_ATLAS_URL_PROD }}
+  FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
 
 jobs:
   setup-build-publish-deploy:
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: 'read'
+      id-token: 'write'
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Authenticate to Google Cloud
+      - id: 'auth'
+        name: Authenticate to Google Cloud
         uses: 'google-github-actions/auth@v1'
         with:
+          token_format: 'access_token'
           workload_identity_provider: projects/345207492413/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-oidc
           service_account: 'github-actions-service@peerprep-group11-prod.iam.gserviceaccount.com'
 
@@ -39,11 +44,10 @@ jobs:
       - name: Setup Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
 
-      # Configure Docker to use the gcloud command-line tool as a credential
-      # helper for authentication
-      - name: Configure Docker to use gcloud
+      # Configure Docker to login to google cloud
+      - name: Configure Docker
         run: |-
-          gcloud --quiet auth configure-docker
+          echo ${{steps.auth.outputs.access_token}} | docker login -u oauth2accesstoken --password-stdin https://$GKE_REGION-docker.pkg.dev
 
       # Get the GKE credentials so that we can deploy to the cluster
       - name: Get Google Kubernetes Engine credentials for production
@@ -51,6 +55,10 @@ jobs:
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_REGION }}
+
+      # Install the dependencies such as prisma
+      - name: Install dependencies with immutable lockfile
+        run: yarn install --frozen-lockfile
 
       # Apply prisma migrations to production prisma database
       - name: Apply prisma database migrations
@@ -60,24 +68,26 @@ jobs:
       # Build the Docker images and push to Google Artifact Repository
       - name: Build and push Docker images
         run: |-
-          chmod u+x ./deployment/build-prod-images.sh
-          ./deployment/build-prod-images.sh
+          chmod u+x ./build-prod-images.sh
+          ./build-prod-images.sh
+        working-directory: ./deployment
 
       # Set the secrets that are used as env variables in the manifest files
       - name: Set kubectl secrets
         run: |-
           kubectl create secret generic firebase-service-account \
-            --from-literal=firebase-service-account=$FIREBASE_SERVICE_ACCOUNT_PROD
+            --from-literal=firebase-service-account=$FIREBASE_SERVICE_ACCOUNT
           kubectl create secret generic prisma-database-url \
-            --from-literal=prisma-database-url=$PRISMA_DATABASE_URL_PROD
+            --from-literal=prisma-database-url=$PRISMA_DATABASE_URL
           kubectl create secret generic mongo-atlas-url \
-            --from-literal=mongo-atlas-url=$MONGO_ATLAS_URL_PROD
+            --from-literal=mongo-atlas-url=$MONGO_ATLAS_URL
           kubectl create secret generic frontend-firebase-config \
-            --from-literal=frontend-firebase-config=$FRONTEND_FIREBASE_CONFIG_PROD
+            --from-literal=frontend-firebase-config=$FRONTEND_FIREBASE_CONFIG
 
       # Deploy the Docker images to the GKE cluster
       - name: Deploy production application
         run: |-
-          kubectl apply -f ./deployment/gke-prod-manifests
+          kubectl apply -f ./gke-prod-manifests
           kubectl rollout status deployment
           kubectl get services -o wide
+        working-directory: ./deployment
