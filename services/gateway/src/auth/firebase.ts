@@ -5,9 +5,9 @@ import process from "process";
 import dotenv from "dotenv";
 import { App } from "firebase-admin/lib/app";
 
-const serviceAccount = process.env.NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG
-  ? JSON.parse(process.env.NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG as string)
-  : {};
+const serviceAccount = JSON.parse(
+  process.env.FIREBASE_SERVICE_ACCOUNT as string
+);
 
 const firebaseApp: App = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
