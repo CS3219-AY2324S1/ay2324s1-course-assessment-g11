@@ -8,6 +8,18 @@ import { useContext, useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TypographyH3 } from "@/components/ui/typography";
 import { EditableUser } from "@/types/UserTypes";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 export default function AccountSettingsCard() {
   const { user: currentUser } = useContext(AuthContext);
@@ -54,9 +66,26 @@ export default function AccountSettingsCard() {
           <Button className="w-fit" onClick={() => updateUser(updatedUser)}>Save Changes</Button>
           <div>
             <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
-            <Button variant="outline" className="border-destructive text-destructive w-fit" onClick={deleteOwnAccount}>
-              Delete Account
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Button variant="outline" className="border-destructive text-destructive w-fit">
+                  Delete Account
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This action cannot be undone. This will permanently delete your account
+                    and remove your data from our servers.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction onClick={deleteOwnAccount}>Delete Account</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </CardDescription>
       </CardContent>
