@@ -26,6 +26,13 @@
         "description": "Create a new question.",
         "parameters": [
           {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "title",
             "description": "Title of the question.",
             "in": "query",
