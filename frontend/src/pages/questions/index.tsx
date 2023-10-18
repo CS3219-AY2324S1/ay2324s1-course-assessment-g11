@@ -39,7 +39,7 @@ export default function Questions() {
     } else {
       console.log("You are most likely not logged in");
     }
-  }, [currentUser, authIsReady, fetchQuestions, loading]);
+  }, [currentUser]);
 
   const onClickRandomQuestion = async () => {
     try {

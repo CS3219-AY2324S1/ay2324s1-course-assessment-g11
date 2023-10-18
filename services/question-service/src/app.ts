@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, "public")));
 /* Routers */
 app.use("/api/question-service", indexRouter);
 
-app.use("/", swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
   console.log(`Listening on *:${PORT}`);
