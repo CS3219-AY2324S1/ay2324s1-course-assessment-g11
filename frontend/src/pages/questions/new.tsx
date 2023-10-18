@@ -3,12 +3,18 @@ import { Button } from "@/components/ui/button";
 import { TypographyH2 } from "@/components/ui/typography";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "./_form";
+import { postQuestion } from "../api/questionHandler";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/AuthContext";
 
 export default function NewQuestion() {
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -19,8 +25,14 @@ export default function NewQuestion() {
     },
   })
 
+
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+    postQuestion(currentUser, values)
+      .then(() => {
+        alert("Success");
+        router.push("/questions");
+      })
+      .catch((err) => alert(err.message));
   }
 
   return (

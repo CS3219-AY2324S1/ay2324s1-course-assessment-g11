@@ -126,6 +126,10 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
     form.setValue('testCasesOutputs', testCases.map(testCase => testCase.output));
   }, [testCases]);
 
+  useEffect(() => {
+    form.setValue('defaultCode', defaultCodes);
+  }, []);
+
   // const toggleSolution = (hasSolution: boolean) => {
   //   setHasSolution(hasSolution)
   //   if (!hasSolution) {
