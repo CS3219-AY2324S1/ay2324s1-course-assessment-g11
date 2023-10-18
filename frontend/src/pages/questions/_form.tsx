@@ -6,7 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 
 import {
   Select,
@@ -14,8 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-
+} from "@/components/ui/select";
 
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -105,17 +104,17 @@ int main() {
 interface QuestionsFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: any;
-  type?: 'add' | 'edit';
+  type?: "add" | "edit";
+  loading?: boolean;
 }
 
-export default function QuestionsForm({ form, onSubmit, type = 'add' }: QuestionsFormProps) {
+export default function QuestionsForm({
+  form,
+  onSubmit,
+  type = "add",
+  loading = false,
+}: QuestionsFormProps) {
   const [testCases, setTestCases] = useState<{input: string, output: string}[]>([]);
-
-  // useEffect(() => {
-  //   if (form.getValues().code != "") {
-  //     setHasSolution(true);
-  //   }
-  // }, [form.getValues().code]);
 
   const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
 
@@ -129,14 +128,6 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
   useEffect(() => {
     form.setValue('defaultCode', defaultCodes);
   }, []);
-
-  // const toggleSolution = (hasSolution: boolean) => {
-  //   setHasSolution(hasSolution)
-  //   if (!hasSolution) {
-  //     form.setValue('language', '')
-  //     form.setValue('code', '')
-  //   }
-  // }
 
   return (
     <Form {...form}>
@@ -161,7 +152,13 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
             <FormItem>
               <FormLabel>Difficulty Level</FormLabel>
               <FormControl>
-                <DifficultySelector onChange={(value) => form.setValue('difficulty', value != "any" ? value : "easy")} showAny={false} defaultValue={form.getValues().difficulty} />
+                <DifficultySelector
+                  onChange={(value) =>
+                    form.setValue("difficulty", value != "any" ? value : "easy")
+                  }
+                  showAny={false}
+                  defaultValue={form.getValues().difficulty}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -215,7 +212,6 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
               setTestCases(testCases => testCases.filter((_, i) => i != index))
             }}>Delete</Button>
           </div>
-          // return (<p key={`testCase-${index}`}>{testCase.input} Hello {testCase.output}</p>)
         })}
         <div className="flex gap-x-4">
           <Button variant="outline" className="border-primary text-primary" onClick={() => setTestCases(testCases => [...testCases, {input: '', output: ''}])}>Add Test Case</Button>
@@ -275,75 +271,22 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
             </FormItem>
           )}
         />
-        {/* <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <div className="space-y-0.5">
-            <FormLabel>Solution</FormLabel>
-            <FormDescription>
-              Include solution for this question
-            </FormDescription>
+        {type == "add" ? (
+          <Button type="submit" disabled={loading}>
+            Add Question
+          </Button>
+        ) : (
+          <div className="flex gap-x-6">
+            <Button type="submit" disabled={loading}>Save Changes</Button>
+            <Button
+              variant="outline"
+              className="border-destructive text-destructive"
+              disabled={loading}
+            >
+              Delete Question
+            </Button>
           </div>
-          <FormControl>
-            <Switch
-              checked={hasSolution}
-              onCheckedChange={toggleSolution}
-            />
-          </FormControl>
-        </FormItem>
-        {hasSolution && (
-          <FormField
-            control={form.control}
-            name="language"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Language Used</FormLabel>
-                <FormControl>
-                  <Select>
-                    <SelectTrigger >
-                      <SelectValue placeholder="Theme" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
-                      <SelectItem value="system">System</SelectItem>
-                    </SelectContent>
-                  </Select>
-
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )} */}
-        {/* {hasSolution && (
-          <FormField
-            control={form.control}
-            name="code"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Solution Code</FormLabel>
-                <FormControl>
-                  {TODO: Change to code editor later}
-                  <Textarea
-                    placeholder="Write your code here."
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )} */}
-        {type == 'add'
-          ? (
-            <Button type="submit">Add Question</Button>
-          )
-          : (
-            <div className="flex gap-x-6">
-              <Button type="submit">Save Changes</Button>
-              <Button variant="outline" className="border-destructive text-destructive">Delete Question</Button>
-            </div>
-          )}
+        )}
 
       </form>
     </Form>

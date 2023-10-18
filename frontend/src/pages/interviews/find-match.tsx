@@ -19,6 +19,11 @@ export default function FindMatch() {
   useEffect(() => {
     if (match) {
       router.push("/interviews/match-found");
+    } else {
+      setTimeout(() => {
+        cancelLooking();
+        router.push("/interviews/match-not-found");
+      }, 30000);
     }
   }, [match, router]);
 

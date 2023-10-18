@@ -6,7 +6,7 @@ import { z } from "zod";
 export const fetchRandomQuestion = async (
   difficulty: Difficulty,
   user: any,
-  topics: string[] = [],
+  topics: string[] = []
 ) => {
   try {
     const url = `${questionApiPathAddress}random-question`;
@@ -90,7 +90,7 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
       throw new Error(`Unable to post question: ${await response.text()}`);
     }
   } catch (error) {
-    console.error("There was an error fetching the questions", error);
+    console.error("There was an error posting the questions", error);
     throw error;
   }
 };

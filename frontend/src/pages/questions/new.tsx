@@ -9,11 +9,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "./_form";
 import { postQuestion } from "../api/questionHandler";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { AuthContext } from "../../contexts/AuthContext";
 
 export default function NewQuestion() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -23,29 +24,34 @@ export default function NewQuestion() {
       topics: [],
       description: ""
     },
-  })
+  });
 
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
     postQuestion(currentUser, values)
       .then(() => {
+        setLoading(false);
         alert("Success");
         router.push("/questions");
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => {
+        setLoading(false);
+        alert(err.message);
+      });
   }
 
   return (
-    <div className='min-h-screen p-12 mx-auto max-w-3xl'>
+    <div className="min-h-screen p-12 mx-auto max-w-3xl">
       <div className="flex gap-x-4 items-center">
         <Link href="/questions">
-          <Button className='gap-2' size='sm' variant='ghost'>
-            <ArrowLeft className='w-6 h-6' />
+          <Button className="gap-2" size="sm" variant="ghost">
+            <ArrowLeft className="w-6 h-6" />
           </Button>
         </Link>
         <TypographyH2>Add a Question</TypographyH2>
       </div>
-      <QuestionsForm form={form} onSubmit={onSubmit} />
+      <QuestionsForm form={form} onSubmit={onSubmit} loading={loading} />
     </div>
   );
 }
