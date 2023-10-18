@@ -19,8 +19,11 @@ RUN yarn prisma generate
 
 # Compile service from TypeScript to JavaScript
 # Note that this requires the NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG env variable to be set
-# in CI
-# Thus, this would not work locally
+# in CI and passed into the image build as an ARG
+ARG NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
+ENV NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG=$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
+
+# This would not work without the above ARG
 RUN yarn build
 
 # Re-install production-only dependencies
