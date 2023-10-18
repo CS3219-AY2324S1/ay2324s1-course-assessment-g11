@@ -4,7 +4,7 @@ import useCollaboration from "@/hooks/useCollaboration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import { Question } from "../../../types/QuestionTypes";
+import { Question } from "../../types/QuestionTypes";
 
 export default function Room() {
   const router = useRouter();
