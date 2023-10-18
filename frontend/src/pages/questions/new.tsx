@@ -8,12 +8,11 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "./_form";
-import { postQuestion } from "../api/questionHandler";
-import { useContext, useState } from "react";
-import { AuthContext } from "../../contexts/AuthContext";
+import { useState } from "react";
+import { useQuestions } from "../../hooks/useQuestions";
 
 export default function NewQuestion() {
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const {postNewQuestion} = useQuestions();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
@@ -29,7 +28,7 @@ export default function NewQuestion() {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    postQuestion(currentUser, values)
+    postNewQuestion(values)
       .then(() => {
         setLoading(false);
         alert("Success");
