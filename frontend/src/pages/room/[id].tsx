@@ -13,7 +13,7 @@ export default function Room() {
   const userId = "user1";
 
   const { text, setText, cursor, setCursor } = useCollaboration({
-    roomId: roomId as string,
+    roomId: roomId,
     userId,
   });
 

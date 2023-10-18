@@ -6,7 +6,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import Link from "next/link";
 
 export default function Profile() {
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser } = useContext(AuthContext);
 
   const getInitials = (name: string) => {
     const names = name.split(" ");
@@ -22,8 +22,8 @@ export default function Profile() {
       <div className="max-w-sm m-4">
         <div className="flex items-center w-full justify-center gap-x-4 p-4">
           <Avatar className="h-24 w-24">
-            <AvatarImage src={currentUser?.photoURL || ''} />
-            <AvatarFallback>{getInitials(currentUser?.displayName || '')}</AvatarFallback>
+            <AvatarImage src={currentUser?.photoURL ?? ''} />
+            <AvatarFallback>{getInitials(currentUser?.displayName ?? '')}</AvatarFallback>
           </Avatar>
           <div>
             <TypographyH3>{currentUser?.displayName}</TypographyH3>

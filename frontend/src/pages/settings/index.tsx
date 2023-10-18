@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { TypographyH1, TypographyH3 } from "@/components/ui/typography";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { UserIcon } from "lucide-react";
 import { useRouter } from "next/router";
+import { AuthContext } from "@/contexts/AuthContext";
+import { useContext } from "react";
+import { useDeleteOwnAccount } from "@/firebase-client/useDeleteOwnAccount";
 
 const settingsOptions = [
   {
@@ -16,6 +19,8 @@ const settingsOptions = [
 
 export default function Settings() {
   const router = useRouter();
+  const { user: currentUser } = useContext(AuthContext);
+  const { deleteOwnAccount } = useDeleteOwnAccount();
 
   return (
     <div className="max-w-7xl mx-auto py-10">
@@ -46,7 +51,7 @@ export default function Settings() {
                   <Label className="mb-2">Email</Label>
                   <Input
                     placeholder="Email"
-                    value={"charisma.kausar@gmail.com"}
+                    value={currentUser?.email ?? ''}
                     disabled={true}
                     onChange={(event) =>
                       console.log(event.target.value)
@@ -58,7 +63,7 @@ export default function Settings() {
                   <Label className="mb-2">Name</Label>
                   <Input
                     placeholder="Name"
-                    value={"Charisma Kausar"}
+                    value={currentUser?.displayName ?? ''}
                     disabled={true}
                     onChange={(event) =>
                       console.log(event.target.value)
@@ -69,7 +74,9 @@ export default function Settings() {
                 <Button className="w-fit">Save Changes</Button>
                 <div>
                   <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
-                  <Button variant="outline" className="border-destructive text-destructive w-fit">Delete Account</Button>
+                  <Button variant="outline" className="border-destructive text-destructive w-fit" onClick={deleteOwnAccount}>
+                    Delete Account
+                  </Button>
                 </div>
               </CardDescription>
             </CardContent>

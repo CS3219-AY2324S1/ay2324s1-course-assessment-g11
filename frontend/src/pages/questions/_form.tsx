@@ -44,6 +44,7 @@ export default function QuestionsForm({
     if (form.getValues().code != "") {
       setHasSolution(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues().code]);
 
   const topics = [
