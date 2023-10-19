@@ -23,7 +23,7 @@ const formSchema = z.object({
 export default function NewQuestion() {
   const { postNewQuestion } = useQuestions();
   const [loading, setLoading] = useState(false);
-  const { router } = useRouter();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
