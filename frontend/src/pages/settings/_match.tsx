@@ -48,7 +48,7 @@ export default function MatchSettingsCard() {
           </div>
           <div>
             <Label className="mb-2">Email</Label>
-            <DifficultySelector showAny={false} value={selectedDifficulty} onChange={(value) => setSelectedDifficulty(value)} />
+            <DifficultySelector showAny={true} value={selectedDifficulty} onChange={(value) => setSelectedDifficulty(value)} />
           </div>
           <Button className="w-fit" onClick={() => updateUser(updatedUser)}>Save Changes</Button>
         </CardDescription>
