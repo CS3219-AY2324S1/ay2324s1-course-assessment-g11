@@ -26,7 +26,7 @@ spec:
                   key: firebase-service-account
             - name: PORT
               value: "5005"
-          image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/admin-service:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/admin-service:latest
           name: admin-service
           ports:
             - containerPort: 5005
