@@ -4,15 +4,12 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { TypographyH2, TypographySmall } from "../ui/typography";
-import VideoRoom from "./video-room";
 
 // todo change this
 
 type DescriptionProps = {
   question: Question;
   className?: string;
-  participants?: string[];
-  room: Room | null;
 };
 
 export default function Description({
