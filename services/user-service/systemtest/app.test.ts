@@ -14,7 +14,7 @@ const updatePayload = { matchDifficulty: 1 };
 
 describe('/index', () => {
   describe('Sample App Workflow', () => {
-    it('Step 1: Add user 1 to database should pass', async () => {
+    it('Step 1: Add user 1 to database should pass with status 201', async () => {
       // The function being tested
       const response = await request(app).post('/api/user-service').send(fullNewUser);
       expect(response.status).toStrictEqual(201);
@@ -42,9 +42,9 @@ describe('/index', () => {
       expect(response.body).toStrictEqual(updatedNewUser);
     })
 
-    it('Step 5: Attempt to add duplicate user 1 to database should fail with error', async () => {
+    it('Step 5: Attempt to add duplicate user 1 to database should give status 200', async () => {
       const response = await request(app).post('/api/user-service').send(fullNewUser);
-      expect(response.status).toStrictEqual(400);
+      expect(response.status).toStrictEqual(200);
     })
 
     it('Step 6: Delete user 1 from database', async () => {

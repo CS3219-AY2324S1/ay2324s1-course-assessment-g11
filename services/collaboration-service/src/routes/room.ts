@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
+
 import { Room } from "@prisma/client";
 import {
   createOrUpdateRoomWithUser,
@@ -39,6 +40,14 @@ enum SocketEvents {
 
 const socketMap: Record<string, SocketDetails> = {};
 const opMap: OpHistoryMap = new OpHistoryMap();
+
+
+const AccessToken = require("twilio").jwt.AccessToken;
+const VideoGrant = AccessToken.VideoGrant;
+
+const TWILIO_ACCOUNT_SID = process.env.TWILIO_ACCOUNT_SID;
+const TWILIO_API_KEY = process.env.TWILIO_API_KEY;
+const TWILIO_API_SECRET = process.env.TWILIO_API_SECRET;
 
 // Data Access Layer
 function mapSocketToRoomAndUser(
@@ -205,6 +214,18 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
   });
 }
 
+function getTwilioAccessToken(room_id: string, user_id: string): string {
+  const videoGrant = new VideoGrant({ room: room_id });
+  const token = new AccessToken(
+    TWILIO_ACCOUNT_SID,
+    TWILIO_API_KEY,
+    TWILIO_API_SECRET,
+    { identity: user_id, ttl: 60*60*12 }
+  );
+  token.addGrant(videoGrant);
+  return token.toJwt();
+}
+
 export const roomRouter = (io: Server) => {
   const router = express.Router();
 
@@ -255,6 +276,7 @@ export const roomRouter = (io: Server) => {
       createOrUpdateRoomWithUser(room_id, user_id);
       mapSocketToRoomAndUser(socket.id, room_id, user_id);
       roomUpdateWithTextFromDb(io, socket, room_id);
+      socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id))
 
       initSocketListeners(io, socket, room_id);
     });
