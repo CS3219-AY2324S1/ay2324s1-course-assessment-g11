@@ -26,7 +26,7 @@ spec:
                 secretKeyRef:
                   name: frontend-firebase-config
                   key: frontend-firebase-config
-        - image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/frontend:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/frontend:latest
           name: frontend
           ports:
             - containerPort: 3000
