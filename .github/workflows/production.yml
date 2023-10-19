@@ -59,8 +59,8 @@ jobs:
       # Copy the JSON secrets (Firebase configs) into JSON files
       - name: Copy JSON secrets into JSON files
         run: |-
-          printf "$FIREBASE_SERVICE_ACCOUNT" > ./firebase_service_account.json
-          printf "$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG" > ./next_public_frontend_firebase_config.json
+          echo -n "$FIREBASE_SERVICE_ACCOUNT" > ./firebase_service_account.json
+          echo -n "$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG" > ./next_public_frontend_firebase_config.json
 
       # Set the secrets that are used as env variables in the manifest files
       - name: Set kubectl secrets
