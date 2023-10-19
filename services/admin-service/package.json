@@ -7,7 +7,7 @@
     "dev:local": "dotenv -e ../../.env -c development yarn dev",
     "dev": "ts-node-dev src/app.ts",
     "build": "yarn swagger-autogen && tsc",
-    "start": "node dist/app.js",
+    "start": "node dist/src/app.js",
     "test": "dotenv -e ../../.env.firebase_emulators_test yarn test:ci",
     "test:ci": "firebase emulators:exec \"vitest run -c ./test/vitest.config.unit.ts\"",
     "systemtest": "dotenv -e ../../.env.firebase_emulators_test yarn systemtest:ci",
