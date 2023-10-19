@@ -14,6 +14,7 @@ env:
   FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
   PRISMA_DATABASE_URL: ${{ secrets.SYSTEMTEST_DATABASE_URL }}
   PRISMA_DATABASE_PASSWORD: ${{ secrets.SYSTEMTEST_DATABASE_PASSWORD }}
+  NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_DEV }}
 
 jobs:
   mainbuild:
@@ -55,3 +56,13 @@ jobs:
       run: |
         yarn workspace user-service systemtest:ci
         yarn workspace admin-service systemtest:ci
+
+    - name: Simulate production build
+      run: |
+        yarn workspace admin-service build
+        yarn workspace collaboration-service build
+        yarn workspace gateway build
+        yarn workspace matching-service build
+        yarn workspace question-service build
+        yarn workspace user-service build
+        yarn workspace frontend build
