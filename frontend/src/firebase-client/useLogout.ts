@@ -1,4 +1,3 @@
-
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
@@ -10,8 +9,8 @@ export const useLogout = () => {
     try {
       await signOut(auth);
       dispatch({ type: "LOGOUT" });
-      
-      console.log("user logged out")
+
+      console.log("user logged out");
     } catch (error) {
       console.log(error.message);
     }

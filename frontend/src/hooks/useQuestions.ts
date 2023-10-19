@@ -5,7 +5,7 @@ import {
   postNewQuestion as postNewQuestionApi,
 } from "./../pages/api/questionHandler";
 import { AuthContext } from "@/contexts/AuthContext";
-import { Difficulty } from "../../types/QuestionTypes";
+import { Difficulty } from "../types/QuestionTypes";
 
 export const useQuestions = () => {
   const { user: currentUser, authIsReady } = useContext(AuthContext);

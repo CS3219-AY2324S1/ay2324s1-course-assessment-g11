@@ -4,7 +4,7 @@ import useCollaboration from "@/hooks/useCollaboration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import { Question } from "../../../types/QuestionTypes";
+import { Question } from "../../types/QuestionTypes";
 
 export default function Room() {
   const router = useRouter();
@@ -13,7 +13,7 @@ export default function Room() {
   const userId = "user1";
 
   const { text, setText, cursor, setCursor } = useCollaboration({
-    roomId: roomId as string,
+    roomId: roomId,
     userId,
   });
 
