@@ -48,8 +48,6 @@ export default function Room() {
           <TabsContent value="description" className="h-[79vh]">
             <Description
               question={question}
-              participants={["Charisma", "Chun Wei"]}
-              room={room}
             />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
