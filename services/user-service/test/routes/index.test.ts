@@ -42,7 +42,7 @@ describe('/index', () => {
 
       // The function being tested
       const response = await request(app).post('/').send(fullNewUser);
-      expect(response.status).toStrictEqual(400);
+      expect(response.status).toStrictEqual(200);
     })
 
     it('[POST] to / when database is unavailable', async () => {
