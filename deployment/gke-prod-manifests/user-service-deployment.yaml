@@ -6,7 +6,7 @@ metadata:
   name: user-service
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       io.kompose.service: user-service
