@@ -27,11 +27,11 @@
     "prisma": "^5.4.2",
     "shx": "^0.3.4",
     "swagger-autogen": "^2.23.6",
-    "swagger-express-ts": "^1.1.0",
-    "swagger-ui-express": "^5.0.0"
+    "swagger-express-ts": "^1.1.0"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
-    "dotenv-cli": "^7.3.0"
+    "dotenv-cli": "^7.3.0",
+    "swagger-ui-express": "^5.0.0"
   }
 }
