@@ -6,7 +6,7 @@ metadata:
   name: matching-service
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       io.kompose.service: matching-service
@@ -26,7 +26,7 @@ spec:
                   key: prisma-database-url
             - name: PORT
               value: "5002"
-          image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/matching-service:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/matching-service:latest
           name: matching-service
           ports:
             - containerPort: 5002

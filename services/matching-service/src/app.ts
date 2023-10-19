@@ -10,6 +10,7 @@ import {
 import { handleCancelLooking } from "./controllers/matchingController";
 import { handleLeaveMatch } from "./controllers/matchingController";
 import { handleSendMessage } from "./controllers/matchingController";
+import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "../swagger-output.json";
 
@@ -17,12 +18,20 @@ const app = express();
 const port = process.env.PORT || 5002;
 
 app.use(express.json());
+app.use(cors());
 app.use(logger("dev"));
 app.use("/api/matching-service", matchingRoutes);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
+const socketIoOptions: any = {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+};
+
 const httpServer = require("http").createServer(app);
-export const io = new Server(httpServer);
+export const io = new Server(httpServer, socketIoOptions);
 
 app.set("io", io);
 

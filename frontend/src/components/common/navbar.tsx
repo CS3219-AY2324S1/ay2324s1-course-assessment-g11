@@ -9,7 +9,6 @@ import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { ChevronDown } from "lucide-react";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuTrigger,
@@ -22,7 +21,6 @@ enum TabsOptions {
   QUESTIONS = "questions",
   NULL = "",
 }
-
 
 export default function Navbar() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
@@ -48,43 +46,71 @@ export default function Navbar() {
     <header>
       <div className="flex h-20 bg-card justify-between items-center px-12">
         <div className="flex gap-20 justify-center items-center">
-          <Link href="/"><Image src="/CodeParty.svg" alt="CodeParty logo" width={125} height={25} /></Link>
-          {currentUser && <div className="h-12 flex justify-center items-center">
-            <Tabs value={activeTab}>
-              <TabsList>
-                <Link href="/interviews">
-                  <TabsTrigger value="interviews" className="h-20 w-36 hover:bg-accent duration-100">
-                    Interviews
-                  </TabsTrigger>
-                </Link>
-                <Link href="/questions">
-                  <TabsTrigger value="questions" className="h-20 w-36 hover:bg-accent duration-100">
-                    Questions
-                  </TabsTrigger>
-                </Link>
-              </TabsList>
-            </Tabs>
-          </div>}
+          <Link href="/">
+            <Image
+              src="/CodeParty.svg"
+              alt="CodeParty logo"
+              width={125}
+              height={25}
+            />
+          </Link>
+          {currentUser && (
+            <div className="h-12 flex justify-center items-center">
+              <Tabs value={activeTab}>
+                <TabsList>
+                  <Link href="/interviews">
+                    <TabsTrigger
+                      value="interviews"
+                      className="h-20 w-36 hover:bg-accent duration-100"
+                    >
+                      Interviews
+                    </TabsTrigger>
+                  </Link>
+                  <Link href="/questions">
+                    <TabsTrigger
+                      value="questions"
+                      className="h-20 w-36 hover:bg-accent duration-100"
+                    >
+                      Questions
+                    </TabsTrigger>
+                  </Link>
+                </TabsList>
+              </Tabs>
+            </div>
+          )}
         </div>
-        {!currentUser && <div className="grid grid-cols-2 gap-4">
-          <Button variant={"outline"} onClick={login}>Log In</Button>
-          <Button onClick={login}>Sign Up</Button>
-        </div>}
-        {currentUser &&
+        {!currentUser && (
+          <div className="grid grid-cols-2 gap-4">
+            <Button variant={"outline"} onClick={login}>
+              Log In
+            </Button>
+            <Button onClick={login}>Sign Up</Button>
+          </div>
+        )}
+        {currentUser && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex justify-center items-center gap-2 h-14">
+              <Button
+                variant="ghost"
+                className="flex justify-center items-center gap-2 h-14"
+              >
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={currentUser.photoURL || ''} className="rounded-full" />
+                  <AvatarImage
+                    src={currentUser.photoURL || ""}
+                    className="rounded-full"
+                  />
                 </Avatar>
                 <ChevronDown className="w-6 h-6" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/profile")}>
+              <DropdownMenuLabel
+                className="hover:bg-card"
+                onClick={() => router.push("/profile")}
+              >
                 Profile
               </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card">
+              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
                 Settings
               </DropdownMenuLabel>
               <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
@@ -92,8 +118,8 @@ export default function Navbar() {
               </DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
-        }
+        )}
       </div>
     </header>
-  )
+  );
 }

@@ -1,16 +1,30 @@
 # Use the base image you created above
 FROM peerprep-base:latest
 
+# Copy utils
+COPY utils /app/utils/
+
 # Set working directory for frontend
 WORKDIR /app/frontend
 
-# Copy frontend files
-COPY frontend .
+# Copy the entire frontend directory and prisma
+COPY frontend /app/frontend
+COPY prisma ./prisma/
+COPY utils /app/utils/
 
 # Install all dependencies using Yarn Workspaces
 RUN yarn install --frozen-lockfile --cwd /app
 
+# Generate the prisma client
+RUN yarn prisma generate
+
 # Compile service from TypeScript to JavaScript
+# Note that this requires the NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG env variable to be set
+# in CI and passed into the image build as an ARG
+ARG NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
+ENV NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG=$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
+
+# This would not work without the above ARG
 RUN yarn build
 
 # Re-install production-only dependencies
