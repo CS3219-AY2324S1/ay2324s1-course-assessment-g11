@@ -10,6 +10,7 @@ WORKDIR /app/frontend
 # Copy the entire frontend directory and prisma
 COPY frontend /app/frontend
 COPY prisma ./prisma/
+COPY utils /app/utils/
 
 # Install all dependencies using Yarn Workspaces
 RUN yarn install --frozen-lockfile --cwd /app

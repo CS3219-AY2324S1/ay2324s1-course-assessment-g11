@@ -56,6 +56,39 @@ jobs:
           cluster_name: ${{ env.GKE_CLUSTER }}
           location: ${{ env.GKE_REGION }}
 
+      # Copy the JSON secrets (Firebase configs) into JSON files
+      - name: Copy JSON secrets into JSON files
+        run: |-
+          echo -n "$FIREBASE_SERVICE_ACCOUNT" > ./firebase_service_account.json
+          echo -n "$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG" > ./next_public_frontend_firebase_config.json
+
+      # Set the secrets that are used as env variables in the manifest files
+      - name: Set kubectl secrets
+        run: |-
+          kubectl delete secret firebase-service-account \
+            --ignore-not-found
+          kubectl create secret generic firebase-service-account \
+            --from-file=firebase-service-account=./firebase_service_account.json
+          kubectl delete secret prisma-database-url \
+            --ignore-not-found
+          kubectl create secret generic prisma-database-url \
+            --from-literal=prisma-database-url=$PRISMA_DATABASE_URL
+          kubectl delete secret mongo-atlas-url \
+            --ignore-not-found
+          kubectl create secret generic mongo-atlas-url \
+            --from-literal=mongo-atlas-url=$MONGO_ATLAS_URL
+          kubectl delete secret frontend-firebase-config \
+            --ignore-not-found
+          kubectl create secret generic frontend-firebase-config \
+            --from-file=frontend-firebase-config=./next_public_frontend_firebase_config.json
+
+      # Remove the JSON files
+      - name: Delete JSON files
+        if: ${{ always() }}
+        run: |-
+          rm ./firebase_service_account.json
+          rm ./next_public_frontend_firebase_config.json
+
       # Install the dependencies such as prisma
       - name: Install dependencies with immutable lockfile
         run: yarn install --frozen-lockfile
@@ -71,18 +104,6 @@ jobs:
           chmod u+x ./build-prod-images.sh
           ./build-prod-images.sh
         working-directory: ./deployment
-
-      # Set the secrets that are used as env variables in the manifest files
-      - name: Set kubectl secrets
-        run: |-
-          kubectl create secret generic firebase-service-account \
-            --from-literal=firebase-service-account=$FIREBASE_SERVICE_ACCOUNT
-          kubectl create secret generic prisma-database-url \
-            --from-literal=prisma-database-url=$PRISMA_DATABASE_URL
-          kubectl create secret generic mongo-atlas-url \
-            --from-literal=mongo-atlas-url=$MONGO_ATLAS_URL
-          kubectl create secret generic frontend-firebase-config \
-            --from-literal=frontend-firebase-config=$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG
 
       # Deploy the Docker images to the GKE cluster
       - name: Deploy production application

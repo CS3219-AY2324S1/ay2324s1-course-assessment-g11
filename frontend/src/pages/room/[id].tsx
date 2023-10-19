@@ -4,17 +4,20 @@ import useCollaboration from "@/hooks/useCollaboration";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
+import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 
 export default function Room() {
   const router = useRouter();
 
   const roomId = router.query.id as string;
-  const userId = "user1";
+  const userId = router.query.userId as string || "user1";
+  const disableVideo = (router.query.disableVideo as string)?.toLowerCase() === "true";
 
-  const { text, setText, cursor, setCursor } = useCollaboration({
-    roomId: roomId,
+  const { text, setText, cursor, setCursor, room } = useCollaboration({
+    roomId: roomId as string,
     userId,
+    disableVideo,
   });
 
   const question: Question = {
@@ -45,8 +48,6 @@ export default function Room() {
           <TabsContent value="description" className="h-[79vh]">
             <Description
               question={question}
-              participants={["Charisma", "Chun Wei"]}
-              className="h-full"
             />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
@@ -60,6 +61,7 @@ export default function Room() {
           />
         </div>
       </div>
+      <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
     </div>
   );
 }

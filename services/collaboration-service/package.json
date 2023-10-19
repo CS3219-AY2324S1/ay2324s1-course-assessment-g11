@@ -5,7 +5,7 @@
   "main": "src/app.ts",
   "scripts": {
     "build": "yarn run swagger-autogen && tsc",
-    "start": "node ./dist/app.js",
+    "start": "node ./dist/src/app.js",
     "dev": "yarn run swagger-autogen && nodemon src/app.ts",
     "swagger-autogen": "ts-node swagger.ts"
   },
@@ -26,6 +26,7 @@
     "swagger-autogen": "^2.23.5",
     "swagger-express-ts": "^1.1.0",
     "swagger-ui-express": "^5.0.0",
+    "twilio": "^4.18.1",
     "typescript": "^5.2.2",
     "uuid": "^9.0.1"
   },
