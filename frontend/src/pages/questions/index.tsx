@@ -10,7 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { columns } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
-import { Difficulty, Question } from "../../../types/QuestionTypes";
+import { Difficulty, Question } from "../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
@@ -39,13 +39,13 @@ export default function Questions() {
     } else {
       console.log("You are most likely not logged in");
     }
-  }, [currentUser, authIsReady, fetchQuestions, loading]);
+  }, [currentUser]);
 
   const onClickRandomQuestion = async () => {
     try {
       const question: [Question] = await fetchRandomQuestion(difficulty);
       console.log(question);
-      if (question && question[0].title) {
+      if (question[0]?.title) {
         router.push(`/questions/${question[0].title.split(" ").join("-")}`);
       } else {
         console.error("Received undefined question or question without title.");

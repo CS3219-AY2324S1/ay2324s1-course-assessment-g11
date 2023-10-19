@@ -6,7 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 
 import {
   Select,
@@ -14,8 +14,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-
+} from "@/components/ui/select";
 
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { MultiSelect } from "@/components/ui/multi-select";
@@ -29,56 +28,49 @@ import { useEffect, useState } from "react";
 interface QuestionsFormProps {
   form: any;
   onSubmit: any;
-  type?: 'add' | 'edit';
+  type?: "add" | "edit";
+  loading?: boolean;
 }
 
-export default function QuestionsForm({ form, onSubmit, type = 'add' }: QuestionsFormProps) {
+export default function QuestionsForm({
+  form,
+  onSubmit,
+  type = "add",
+  loading = false,
+}: QuestionsFormProps) {
   const [hasSolution, setHasSolution] = useState(false);
 
   useEffect(() => {
     if (form.getValues().code != "") {
       setHasSolution(true);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [form.getValues().code]);
 
   const topics = [
-    {
-      value: "next.js",
-      label: "Next.js",
-    },
-    {
-      value: "sveltekit",
-      label: "SvelteKit",
-    },
-    {
-      value: "nuxt.js",
-      label: "Nuxt.js",
-    },
-    {
-      value: "remix",
-      label: "Remix",
-    },
-    {
-      value: "astro",
-      label: "Astro",
-    },
-    {
-      value: "wordpress",
-      label: "WordPress",
-    },
-    {
-      value: "express.js",
-      label: "Express.js",
-    }
+    { value: "array", label: "Arrays" },
+    { value: "string", label: "Strings" },
+    { value: "linked_list", label: "Linked Lists" },
+    { value: "stack", label: "Stacks" },
+    { value: "queue", label: "Queues" },
+    { value: "tree", label: "Trees" },
+    { value: "graph", label: "Graphs" },
+    { value: "hash_table", label: "Hash Tables" },
+    { value: "heap", label: "Heaps" },
+    { value: "binary_search", label: "Binary Search" },
+    { value: "two_pointers", label: "Two Pointers" },
+    { value: "backtracking", label: "Backtracking" },
+    { value: "dynamic_programming", label: "Dynamic Programming" },
+    { value: "greedy", label: "Greedy Algorithms" },
+    { value: "math", label: "Math" },
   ];
-
   const toggleSolution = (hasSolution: boolean) => {
-    setHasSolution(hasSolution)
+    setHasSolution(hasSolution);
     if (!hasSolution) {
-      form.setValue('language', '')
-      form.setValue('code', '')
+      form.setValue("language", "");
+      form.setValue("code", "");
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -103,7 +95,13 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
             <FormItem>
               <FormLabel>Difficulty Level</FormLabel>
               <FormControl>
-                <DifficultySelector onChange={(value) => form.setValue('difficulty', value != "any" ? value : "easy")} showAny={false} defaultValue={form.getValues().difficulty} />
+                <DifficultySelector
+                  onChange={(value) =>
+                    form.setValue("difficulty", value != "any" ? value : "easy")
+                  }
+                  showAny={false}
+                  defaultValue={form.getValues().difficulty}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -114,7 +112,7 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
           name="topics"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Select Frameworks</FormLabel>
+              <FormLabel>Select Topics</FormLabel>
               <MultiSelect
                 selected={field.value}
                 options={topics}
@@ -127,7 +125,7 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
         />
         <FormField
           control={form.control}
-          name="description"
+          name="content"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Question Description</FormLabel>
@@ -150,10 +148,7 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
             </FormDescription>
           </div>
           <FormControl>
-            <Switch
-              checked={hasSolution}
-              onCheckedChange={toggleSolution}
-            />
+            <Switch checked={hasSolution} onCheckedChange={toggleSolution} />
           </FormControl>
         </FormItem>
         {hasSolution && (
@@ -165,16 +160,16 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
                 <FormLabel>Language Used</FormLabel>
                 <FormControl>
                   <Select>
-                    <SelectTrigger >
-                      <SelectValue placeholder="Theme" />
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select Language" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="light">Light</SelectItem>
-                      <SelectItem value="dark">Dark</SelectItem>
-                      <SelectItem value="system">System</SelectItem>
+                      <SelectItem value="python">Python</SelectItem>
+                      <SelectItem value="javascript">Javascript</SelectItem>
+                      <SelectItem value="java">Java</SelectItem>
+                      <SelectItem value="c++">c++</SelectItem>
                     </SelectContent>
                   </Select>
-
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -184,7 +179,7 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
         {hasSolution && (
           <FormField
             control={form.control}
-            name="code"
+            name="defaultCode"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Solution Code</FormLabel>
@@ -201,17 +196,21 @@ export default function QuestionsForm({ form, onSubmit, type = 'add' }: Question
             )}
           />
         )}
-        {type == 'add'
-          ? (
-            <Button type="submit">Add Question</Button>
-          )
-          : (
-            <div className="flex gap-x-6">
-              <Button type="submit">Save Changes</Button>
-              <Button variant="outline" className="border-destructive text-destructive">Delete Question</Button>
-            </div>
-          )}
-
+        {type == "add" ? (
+          <Button type="submit" disabled={loading}>
+            Add Question
+          </Button>
+        ) : (
+          <div className="flex gap-x-6">
+            <Button type="submit">Save Changes</Button>
+            <Button
+              variant="outline"
+              className="border-destructive text-destructive"
+            >
+              Delete Question
+            </Button>
+          </div>
+        )}
       </form>
     </Form>
   );
