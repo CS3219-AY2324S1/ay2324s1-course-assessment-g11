@@ -3,7 +3,7 @@ import { TypographySmall } from "../ui/typography";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
-import { Difficulty, Question } from "../../../types/QuestionTypes";
+import { Difficulty, Question } from "../../types/QuestionTypes";
 
 export const columns: ColumnDef<Question>[] = [
   {

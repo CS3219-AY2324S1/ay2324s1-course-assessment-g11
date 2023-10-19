@@ -1,5 +1,5 @@
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
-import { Difficulty } from "../../../types/QuestionTypes";
+import { Difficulty } from "../../types/QuestionTypes";
 
 export const fetchRandomQuestion = async (
   difficulty: Difficulty,
