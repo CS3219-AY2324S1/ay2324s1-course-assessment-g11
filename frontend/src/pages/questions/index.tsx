@@ -35,9 +35,11 @@ export default function Questions() {
         })
         .catch((error) => {
           console.error("There was an error fetching the questions", error);
+          setLoading(false);
         });
     } else {
       console.log("You are most likely not logged in");
+      setLoading(false);
     }
   }, [currentUser]);
 

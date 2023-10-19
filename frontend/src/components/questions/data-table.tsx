@@ -33,6 +33,8 @@ import {
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
+import { DotWave } from '@uiball/loaders'
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -105,9 +107,12 @@ export function DataTable<TData, TValue>({
       </div>
       <div className="rounded-md border">
         {loading ? (
-          // todo make loading look good
           <div className="h-64 flex items-center justify-center">
-            Loading...
+            <DotWave
+              size={47}
+              speed={1}
+              color="white"
+            />
           </div>
         ) : (
           <Table>
@@ -120,9 +125,9 @@ export function DataTable<TData, TValue>({
                         {header.isPlaceholder
                           ? null
                           : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                       </TableHead>
                     );
                   })}

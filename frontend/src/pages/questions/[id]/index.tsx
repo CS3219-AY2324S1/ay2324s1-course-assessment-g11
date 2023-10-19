@@ -7,8 +7,9 @@ import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
+import { MrMiyagi } from '@uiball/loaders'
 
-export default function Room() {
+export default function Questions() {
   const router = useRouter();
   const questionTitle = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
@@ -22,8 +23,6 @@ export default function Room() {
       if (currentUser) {
         const idToken = await currentUser.getIdToken(true);
         const url = `${questionApiPathAddress}question/${questionTitle}`;
-
-        console.log(url);
 
         try {
           const response = await fetch(url, {
@@ -40,7 +39,7 @@ export default function Room() {
           }
 
           const data = await response.json();
-          console.log(data);
+
           setQuestion({
             title: data.title,
             difficulty: data.difficulty,
@@ -55,7 +54,7 @@ export default function Room() {
           setLoading(false);
         }
       } else {
-        console.log("You are not logged in");
+        console.error("You are not logged in");
         setLoading(false);
       }
     };
@@ -63,38 +62,47 @@ export default function Room() {
     fetchQuestion();
   }, [questionTitle, authIsReady, currentUser]);
 
-  if (!router.isReady || question === null) return null;
-
   // implement some on change solo save logic here - user side most likely
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
-      <div className="flex h-full">
-        <Tabs defaultValue="description" className="flex-1">
-          <TabsList>
-            <TabsTrigger value="description">
-              <TypographyBody>Description</TypographyBody>
-            </TabsTrigger>
-            <TabsTrigger value="solution">
-              <TypographyBody>Solution</TypographyBody>
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className="h-[79vh]">
-            <Description
-              question={question}
-              className="h-full"
-            />
-          </TabsContent>
-          <TabsContent value="solution">{question.solution}</TabsContent>
-        </Tabs>
-        <div className="flex-1">
-          <CodeEditor
-            defaultValue={question.defaultCode.python}
-            onChange={setAnswer}
-            text={answer}
+      {!router.isReady || question === null || loading ?
+        <div className="flex w-full h-full justify-center items-center">
+          <MrMiyagi
+            size={35}
+            lineWeight={3.5}
+            speed={1}
+            color="white"
           />
-        </div>
-      </div>
+        </div> :
+        (
+          <div className="flex h-full">
+            <Tabs defaultValue="description" className="flex-1">
+              <TabsList>
+                <TabsTrigger value="description">
+                  <TypographyBody>Description</TypographyBody>
+                </TabsTrigger>
+                <TabsTrigger value="solution">
+                  <TypographyBody>Solution</TypographyBody>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="description" className="h-[79vh]">
+                <Description
+                  question={question}
+                  className="h-full"
+                />
+              </TabsContent>
+              <TabsContent value="solution">{question.solution}</TabsContent>
+            </Tabs>
+            <div className="flex-1">
+              <CodeEditor
+                defaultValue={question.defaultCode.python}
+                onChange={setAnswer}
+                text={answer}
+              />
+            </div>
+          </div>
+        )}
     </div>
   );
 }
