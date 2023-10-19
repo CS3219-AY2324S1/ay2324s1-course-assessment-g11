@@ -26,7 +26,7 @@ spec:
                   key: mongo-atlas-url
             - name: PORT
               value: "5004"
-          image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/question-service:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/question-service:latest
           name: question-service
           ports:
             - containerPort: 5004
