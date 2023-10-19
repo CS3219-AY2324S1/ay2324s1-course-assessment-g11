@@ -26,7 +26,7 @@ spec:
                   key: prisma-database-url
             - name: PORT
               value: "5001"
-          image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/user-service:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/user-service:latest
           name: user-service
           ports:
             - containerPort: 5001
