@@ -123,10 +123,12 @@ export default function QuestionsForm({
   useEffect(() => {
     form.setValue('testCasesInputs', testCases.map(testCase => testCase.input));
     form.setValue('testCasesOutputs', testCases.map(testCase => testCase.output));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [testCases]);
 
   useEffect(() => {
     form.setValue('defaultCode', defaultCodes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

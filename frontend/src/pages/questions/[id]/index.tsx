@@ -4,7 +4,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
-import { Question } from "../../../../types/QuestionTypes";
+import { Question } from "../../../types/QuestionTypes";
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 
@@ -65,16 +65,6 @@ export default function Room() {
 
   if (!router.isReady || question === null) return null;
 
-  // const question: Question = {
-  //   title: "Two Sum",
-  //   difficulty: "Easy",
-  //   tags: ["Array", "Hash Table"],
-  //   description:
-  //     "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
-  //   solution:
-  //     "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
-  // };
-
   // implement some on change solo save logic here - user side most likely
 
   return (
@@ -92,7 +82,6 @@ export default function Room() {
           <TabsContent value="description" className="h-[79vh]">
             <Description
               question={question}
-              participants={["Charisma", "Chun Wei"]}
               className="h-full"
             />
           </TabsContent>

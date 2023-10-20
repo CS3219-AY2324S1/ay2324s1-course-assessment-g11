@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, use } from "react";
 import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
 import {
@@ -6,10 +6,12 @@ import {
   createTextOpFromTexts,
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
+import { Room, connect } from "twilio-video";
 
 type UseCollaborationProps = {
   roomId: string;
   userId: string;
+  disableVideo?: boolean;
 };
 
 enum SocketEvents {
@@ -22,18 +24,20 @@ enum SocketEvents {
 
 var vers = 0;
 
-const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
+const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [text, setText] = useState<string>("#Write your solution here");
   const [cursor, setCursor] = useState<number>(
     "#Write your solution here".length
   );
+  const [room, setRoom] = useState<Room | null>(null); // twilio room
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
   const prevCursorRef = useRef<number>(cursor);
   const prevTextRef = useRef<string>(text);
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
+  const twilioTokenRef = useRef<string>("");
   const questionId = "1";
 
   useEffect(() => {
@@ -42,6 +46,20 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
     socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
+
+    socketConnection.on("twilio-token", (token: string) => {
+      twilioTokenRef.current = token;
+      if (disableVideo) return;
+      connect(token, {
+        name: roomId, audio: true,
+        video: { width: 640, height: 480, frameRate: 24 }
+      }).then((room) => {
+        console.log("Connected to Room");
+        setRoom(room);
+      }).catch(err => {
+        console.log(err, token, userId, roomId);
+      });
+    });
 
     socketConnection.on(
       SocketEvents.ROOM_UPDATE,
@@ -83,6 +101,9 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
 
     return () => {
       socketConnection.disconnect();
+      if (room) {
+        room.disconnect();
+      }
     };
   }, [roomId, userId]);
 
@@ -126,7 +147,7 @@ const useCollaboration = ({ roomId, userId }: UseCollaborationProps) => {
     });
   }, [text, socket]);
 
-  return { text, setText, cursor, setCursor };
+  return { text, setText, cursor, setCursor, room };
 };
 
 export default useCollaboration;

@@ -6,7 +6,7 @@ metadata:
   name: frontend
   namespace: default
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       io.kompose.service: frontend
@@ -19,14 +19,14 @@ spec:
     spec:
       containers:
         - env:
-            - name: GATEWAY_ADDRESS
+            - name: NEXT_PUBLIC_GATEWAY_ADDRESS
               value: "http://gateway:4000/"
             - name: NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG
               valueFrom:
                 secretKeyRef:
                   name: frontend-firebase-config
                   key: frontend-firebase-config
-        - image: asia-southeast1-docker.pkg.dev/peerprep-group11-dev/codeparty-prod-images/frontend:latest
+          image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/frontend:latest
           name: frontend
           ports:
             - containerPort: 3000

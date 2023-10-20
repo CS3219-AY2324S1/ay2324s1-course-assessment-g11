@@ -39,6 +39,9 @@ services:
       - "5003:5003"
     environment:
       PORT: 5003
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_API_KEY: ${TWILIO_API_KEY}
+      TWILIO_API_SECRET: ${TWILIO_API_SECRET}
       PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
 
   question-service:
@@ -91,5 +94,5 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GATEWAY_ADDRESS: "http://localhost:4000/"
+      NEXT_PUBLIC_GATEWAY_ADDRESS: "http://localhost:4000/"
       NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}

@@ -59,7 +59,7 @@ export default function Interviews() {
 
   const onClickSearch = () => {
     try {
-      joinQueue([difficulty], "python");
+      joinQueue([difficulty], "python"); // TODO: update with actual language
       console.log("Joined queue");
       router.push("/interviews/find-match");
     } catch (error) {

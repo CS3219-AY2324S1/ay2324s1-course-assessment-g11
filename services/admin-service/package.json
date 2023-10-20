@@ -7,7 +7,7 @@
     "dev:local": "dotenv -e ../../.env -c development yarn dev",
     "dev": "ts-node-dev src/app.ts",
     "build": "yarn swagger-autogen && tsc",
-    "start": "node dist/app.js",
+    "start": "node dist/src/app.js",
     "test": "dotenv -e ../../.env.firebase_emulators_test yarn test:ci",
     "test:ci": "firebase emulators:exec \"vitest run -c ./test/vitest.config.unit.ts\"",
     "systemtest": "dotenv -e ../../.env.firebase_emulators_test yarn systemtest:ci",
@@ -16,12 +16,9 @@
   },
   "dependencies": {
     "dotenv": "^16.3.1",
-    "express": "^4.18.2",
     "firebase-admin": "^11.10.1"
   },
   "devDependencies": {
-    "@types/express": "^4.17.17",
-    "@types/node": "^20.6.2",
     "supertest": "^6.3.3",
     "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0",
