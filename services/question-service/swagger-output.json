@@ -178,6 +178,14 @@
             }
           },
           {
+            "name": "author",
+            "description": "User ID of the author of the questions",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "description": "Number of questions to return per page.",
             "in": "query",
@@ -215,12 +223,12 @@
         }
       }
     },
-    "/api/question-service/question/{name}": {
+    "/api/question-service/question/{id}": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -239,9 +247,7 @@
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/api/question-service/question/{id}": {
+      },
       "put": {
         "description": "Update a question.",
         "parameters": [

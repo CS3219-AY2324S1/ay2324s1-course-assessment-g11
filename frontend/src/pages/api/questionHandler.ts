@@ -1,7 +1,8 @@
 import { questionApiPathAddress } from "@/firebase-client/gateway-address";
-import { Difficulty } from "../../types/QuestionTypes";
+import { Difficulty, Question } from "../../types/QuestionTypes";
 import { formSchema } from "../questions/_form";
 import { z } from "zod";
+import { User } from "firebase/auth";
 
 export const fetchRandomQuestion = async (
   difficulty: Difficulty,
@@ -48,10 +49,12 @@ export const fetchQuestions = async (user: any) => {
 
     const data = await response.json();
     if (data?.questions) {
-      const questions = data.questions.map((question: any) => ({
+      const questions: Question[] = data.questions.map((question: any) => ({
         title: question.title,
         difficulty: question.difficulty,
         topics: question.topics,
+        author: question.author,
+        id: question._id,
       }));
       return questions;
     } else {
@@ -60,6 +63,42 @@ export const fetchQuestions = async (user: any) => {
   } catch (error) {
     console.error("There was an error fetching the questions", error);
     throw error;
+  }
+};
+
+export const fetchQuestion = async (currentUser: User, questionId: string) => {
+  const idToken = await currentUser.getIdToken(true);
+  const url = `${questionApiPathAddress}question/${questionId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Id-Token": idToken,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+
+    const data = await response.json();
+    return <Question>{
+      id: data._id,
+      title: data.title,
+      difficulty: data.difficulty,
+      topics: data.topics,
+      description: data.content,
+      solution: "", // Not supported atm
+      author: data.author, // Author id
+      defaultCode: {
+          ...data.defaultCode
+      }
+    }
+  } catch (error) {
+    console.error("There was an error fetching the questions", error);
   }
 };
 

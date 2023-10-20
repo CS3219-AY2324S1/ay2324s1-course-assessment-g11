@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useContext, useEffect, useState } from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
-import { columns } from "@/components/questions/columns";
+import { getColumnDefs } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
@@ -30,6 +30,10 @@ export default function Questions() {
     if (currentUser) {
       fetchQuestions()
         .then((questions) => {
+          if (!questions) {
+            throw new Error("Cannot fetch questions");
+          }
+          console.log(questions)
           setQuestions(questions);
           loading && setLoading(false);
         })
@@ -45,8 +49,8 @@ export default function Questions() {
     try {
       const question: [Question] = await fetchRandomQuestion(difficulty);
       console.log(question);
-      if (question[0]?.title) {
-        router.push(`/questions/${question[0].title.split(" ").join("-")}`);
+      if (question[0]?.id) {
+        router.push(`/questions/${question[0].id}`);
       } else {
         console.error("Received undefined question or question without title.");
       }
@@ -92,8 +96,13 @@ export default function Questions() {
       </div>
 
       <div className="flex-col flex gap-4 py-12">
+        <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
+        <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} isEditable />
+      </div>
+
+      <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
-        <DataTable columns={columns} data={questions} loading={loading} />
+        <DataTable columns={getColumnDefs(false)} data={questions} loading={loading} />
       </div>
     </div>
   );

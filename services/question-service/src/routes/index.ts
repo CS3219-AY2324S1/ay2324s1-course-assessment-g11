@@ -123,6 +123,7 @@ router.get("/list", async (req, res, next) => {
    * #swagger.parameters['topics'] = { description: 'Array of topics to filter by.', type: 'array' }
    * #swagger.parameters['difficulty'] = { description: 'Array of difficulties to filter by.', type: 'array' }
    * #swagger.parameters['searchTitle'] = { description: 'Search for questions with titles containing this string.', type: 'string' }
+   * #swagger.parameters['author'] = { description: 'User ID of the author of the questions', type: 'string' }
    * #swagger.parameters['limit'] = { description: 'Number of questions to return per page.', type: 'number' }
    * #swagger.parameters['page'] = { description: 'Page number to return.', type: 'number' }
    * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
@@ -144,6 +145,9 @@ router.get("/list", async (req, res, next) => {
   if (req.body.searchTitle) {
     // TODO: Implement atlas search
     // searchObj.title = { "$regex": req.body.searchTitle, "$options": "i"};
+  }
+  if (req.body.author) {
+    searchObj.author = { $eq: req.body.author };
   }
   const limit = req.body.limit ?? 10;
   const page = req.body.page ?? 1;
@@ -175,13 +179,13 @@ router.get("/list", async (req, res, next) => {
   }
 });
 
-router.get("/question/:name", async (req, res, next) => {
+router.get("/question/:id", async (req, res, next) => {
   try {
     await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
     let result = await collection.findOne({
-      title: kebabToProperCase(req.params.name as string),
+      _id: new ObjectId(req.params.id),
     });
     if (!result) {
       res.status(404).send("Question not found");
