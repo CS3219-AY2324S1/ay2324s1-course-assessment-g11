@@ -95,7 +95,9 @@ export const fetchQuestion = async (currentUser: User, questionId: string) => {
       author: data.author, // Author id
       defaultCode: {
           ...data.defaultCode
-      }
+      },
+      testCasesInputs: data.testCasesInputs,
+      testCasesOutputs: data.testCasesOutputs
     }
   } catch (error) {
     console.error("There was an error fetching the questions", error);
@@ -133,3 +135,58 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
     throw error;
   }
 };
+
+export const putQuestion = async (user: any, question: z.infer<typeof formSchema>, questionId: string) => {
+  try {
+    const url = `${questionApiPathAddress}question/${questionId}`;
+    const idToken = await user.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "PUT",
+      mode: "cors",
+      body: JSON.stringify({
+        title: question.title,
+        difficulty: question.difficulty,
+        topics: question.topics,
+        content: question.description,
+        testCasesInputs: question.testCasesInputs,
+        testCasesOutputs: question.testCasesOutputs,
+        defaultCode: question.defaultCode
+      }),
+      headers: {
+        "Content-Type": "application/json",
+        "User-Id-Token": idToken,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unable to put question: ${await response.text()}`);
+    }
+  } catch (error) {
+    console.error("There was an error putting the questions", error);
+    throw error;
+  }
+}
+
+export const deleteQuestion = async (user: any, questionId: string) => {
+  try {
+    const url = `${questionApiPathAddress}question/${questionId}`;
+    const idToken = await user.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "DELETE",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Id-Token": idToken,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Unable to delete question: ${await response.text()}`);
+    }
+  } catch (error) {
+    console.error("There was an error deleting the questions", error);
+    throw error;
+  }
+}

@@ -6,27 +6,69 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "../_form";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQuestions } from "../../../hooks/useQuestions";
+import { Button } from "../../../components/ui/button";
+import { deleteQuestion, fetchQuestion, putQuestion } from "../../api/questionHandler";
+import { AuthContext } from "@/contexts/AuthContext";
+import { Question } from "../../../types/QuestionTypes";
 
 export default function EditQuestion() {
   const {postNewQuestion} = useQuestions();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [question, setQuestion] = useState<Question | null>(null);
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  
   const router = useRouter();
+  const { id: questionId } = router.query;
+  if (!questionId) {
+    return <div>Invalid ID</div>;
+  }
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       difficulty: "easy",
       topics: [],
-      description: ""
+      description: "",
+      testCasesInputs: [],
+      testCasesOutputs: [],
     },
   });
 
+  useEffect(() => {
+    if (currentUser) {
+      fetchQuestion(currentUser, questionId as string).then(question => {
+        if (question) {
+          setQuestion(question);
+          form.setValue("title", question.title);
+          form.setValue("difficulty", question.difficulty as any);
+          form.setValue("topics", question.topics);
+          form.setValue("description", question.description);
+          form.setValue("defaultCode", {python: "", java: "", "c++": "", ...question.defaultCode});
+          form.setValue("testCasesInputs", question.testCasesInputs || []);
+          form.setValue("testCasesOutputs", question.testCasesOutputs || []);
+        } else {
+          // if question is not found, redirect to home
+          router.push("/");
+        }
+      }).catch(err => {
+        console.log(err);
+        router.push("/");
+      }).finally(() => {
+        setLoading(false);
+      });
+    } else {
+      // if user is not logged in, redirect to home
+      router.push("/");
+    }
+  }, [questionId, authIsReady, currentUser]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    postNewQuestion(values)
+    console.log("Submitting", values)
+    putQuestion(currentUser, values, questionId as string)
       .then(() => {
         setLoading(false);
         alert("Success");
@@ -36,6 +78,24 @@ export default function EditQuestion() {
         setLoading(false);
         alert(err.message);
       });
+  }
+
+  function onDelete(event: any) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (confirm("Are you sure you want to delete this question?")) {
+      setLoading(true);
+      deleteQuestion(currentUser, questionId as string)
+        .then(() => {
+          setLoading(false);
+          alert("Successfully deleted question");
+          router.push("/questions");
+        })
+        .catch((err) => {
+          setLoading(false);
+          alert(err.message);
+        });
+    }
   }
 
   return (
@@ -48,7 +108,7 @@ export default function EditQuestion() {
         </Link>
         <TypographyH2>Add a Question</TypographyH2>
       </div>
-      <QuestionsForm form={form} onSubmit={onSubmit} loading={loading} />
+      <QuestionsForm form={form} onSubmit={onSubmit} onDelete={onDelete} loading={loading} type="edit" />
     </div>
   );
 }

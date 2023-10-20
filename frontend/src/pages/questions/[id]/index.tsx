@@ -20,7 +20,7 @@ export default function Room() {
   useEffect(() => {
     if (currentUser) {
       fetchQuestion(currentUser, questionId).then(question => {
-        if (question) {
+        if (question && question.author === currentUser.uid) {
           setQuestion(question);
         } else {
           // if question is not found, redirect to home

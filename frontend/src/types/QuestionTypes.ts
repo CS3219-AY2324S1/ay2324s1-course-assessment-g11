@@ -8,7 +8,7 @@ export type Question = {
   difficulty: string;
   topics: string[];
   description: string;
-  solution: string;
+  solution?: string;
   author: string;
   defaultCode: {
     javascript?: string;
@@ -16,4 +16,6 @@ export type Question = {
     java?: string;
     "c++"?: string;
   };
+  testCasesInputs?: string[];
+  testCasesOutputs?: string[];
 };

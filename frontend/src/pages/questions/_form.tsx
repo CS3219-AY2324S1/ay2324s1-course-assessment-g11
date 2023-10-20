@@ -1,29 +1,18 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import * as z from "zod";
 import { UseFormReturn } from "react-hook-form";
 
@@ -44,13 +33,13 @@ export const formSchema = z.object({
 
 const defaultCodes = {
   'python': `def twoSum(self, nums: list[int], target: int) -> list[int]:
-pass
+  pass
 
 if __name__ == "__main__":
-size = int(input())
-nums = list(map(int, input().split()))
-target = int(input())
-print(" ".join(twoSum(nums, target)))`,
+  size = int(input())
+  nums = list(map(int, input().split()))
+  target = int(input())
+  print(" ".join(twoSum(nums, target)))`,
 
 'java': `import java.util.*;
 
@@ -104,6 +93,7 @@ int main() {
 interface QuestionsFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: any;
+  onDelete?: any;
   type?: "add" | "edit";
   loading?: boolean;
 }
@@ -111,20 +101,17 @@ interface QuestionsFormProps {
 export default function QuestionsForm({
   form,
   onSubmit,
+  onDelete = () => {},
   type = "add",
   loading = false,
 }: QuestionsFormProps) {
-  const [testCases, setTestCases] = useState<{input: string, output: string}[]>([]);
+  const {testCasesInputs, testCasesOutputs} = form.getValues();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+  // const [testCases, setTestCases] = useState<{input: string, output: string}[]>(getTestCases(testCasesInputs, testCasesOutputs));
 
   const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
 
   const topics = ["Algorithms", "Arrays", "Bit Manipulation", "Brainteaser", "Data Structures", "Databases", "Graph", "Recursion", "Strings"].map(createTopic);
-
-  useEffect(() => {
-    form.setValue('testCasesInputs', testCases.map(testCase => testCase.input));
-    form.setValue('testCasesOutputs', testCases.map(testCase => testCase.output));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [testCases]);
 
   useEffect(() => {
     form.setValue('defaultCode', defaultCodes);
@@ -200,24 +187,40 @@ export default function QuestionsForm({
           )}
         />
         <p>Test cases</p>
-        {testCases.map((testCase, index) => {
+        {testCasesInputs.map((testCase, index) => {
           return <div className="flex flex-row items-center justify-between gap-0.5" key={`testCase-${index}`}>
-            <Textarea placeholder="Input" value={testCase.input} onChange={(e) => {
-              testCase.input = e.target.value;
-              setTestCases(testCases => [...testCases]);
+            <Textarea placeholder="Input" value={testCase} onChange={(e) => {
+              form.setValue(`testCasesInputs.${index}`, e.target.value);
+              forceUpdate();
+
             }} />
-            <Textarea placeholder="Output" value={testCase.output} onChange={(e) => {
-              testCase.output = e.target.value;
-              setTestCases(testCases => [...testCases]);
+            <Textarea placeholder="Output" value={testCasesOutputs[index]} onChange={(e) => {
+              form.setValue(`testCasesOutputs.${index}`, e.target.value);
+              forceUpdate();
             }} />
-            <Button variant="outline" className="border-destructive text-destructive" onClick={() => {
-              setTestCases(testCases => testCases.filter((_, i) => i != index))
+            <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
+              e.stopPropagation(); e.preventDefault();
+              // setTestCases(testCases => testCases.filter((_, i) => i != index))
+              form.setValue('testCasesInputs', testCasesInputs.filter((_, i) => i != index));
+              form.setValue('testCasesOutputs', testCasesOutputs.filter((_, i) => i != index));
+              forceUpdate();
             }}>Delete</Button>
           </div>
         })}
         <div className="flex gap-x-4">
-          <Button variant="outline" className="border-primary text-primary" onClick={() => setTestCases(testCases => [...testCases, {input: '', output: ''}])}>Add Test Case</Button>
-          <Button variant="outline" className="border-destructive text-destructive" onClick={() => setTestCases([])}>Clear Test Cases</Button>
+          <Button variant="outline" className="border-primary text-primary" onClick={(e) => {
+            e.stopPropagation(); e.preventDefault(); 
+            form.setValue('testCasesInputs', [...testCasesInputs, ""]);
+            form.setValue('testCasesOutputs', [...testCasesOutputs, ""]);
+            forceUpdate();
+          }}>Add Test Case</Button>
+          <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
+            e.stopPropagation(); e.preventDefault(); 
+            // setTestCases([]);
+            form.setValue('testCasesInputs', []);
+            form.setValue('testCasesOutputs', []);
+            forceUpdate();
+          }}>Clear Test Cases</Button>
         </div>
         <FormField
           control={form.control}
@@ -279,11 +282,15 @@ export default function QuestionsForm({
           </Button>
         ) : (
           <div className="flex gap-x-6">
-            <Button type="submit" disabled={loading}>Save Changes</Button>
+            <Button type="submit" disabled={loading} onClick={e => {
+            e.stopPropagation(); e.preventDefault();
+            onSubmit(form.getValues());
+            }}>Save Changes</Button>
             <Button
               variant="outline"
               className="border-destructive text-destructive"
               disabled={loading}
+              onClick={onDelete}
             >
               Delete Question
             </Button>

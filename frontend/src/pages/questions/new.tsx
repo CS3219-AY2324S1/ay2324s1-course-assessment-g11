@@ -21,7 +21,9 @@ export default function NewQuestion() {
       title: "",
       difficulty: "easy",
       topics: [],
-      description: ""
+      description: "",
+      testCasesInputs: [],
+      testCasesOutputs: [],
     },
   });
 
