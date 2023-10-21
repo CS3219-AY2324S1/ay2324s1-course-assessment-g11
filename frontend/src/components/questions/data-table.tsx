@@ -36,7 +36,6 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  isEditable?: boolean;
   loading?: boolean;
 }
 
@@ -44,7 +43,6 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   loading = false,
-  isEditable = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);

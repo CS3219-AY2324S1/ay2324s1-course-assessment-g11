@@ -96,7 +96,7 @@ export default function Questions() {
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
-        <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} isEditable />
+        <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} />
       </div>
 
       <div className="flex-col flex gap-4 py-12">
