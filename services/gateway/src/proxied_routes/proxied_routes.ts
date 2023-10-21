@@ -29,9 +29,6 @@ export const proxied_routes: ProxiedRoute[] = [
     proxy: {
       target: adminServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        "^/api/admin-service": "",
-      },
     },
   },
   {
