@@ -41,14 +41,11 @@ import { User } from "firebase/auth";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  loading?: boolean;
   isEditable?: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  data,
   isEditable = false,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);

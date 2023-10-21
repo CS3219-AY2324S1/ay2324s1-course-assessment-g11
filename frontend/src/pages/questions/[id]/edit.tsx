@@ -7,16 +7,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "../_form";
 import { useContext, useEffect, useState } from "react";
-import { useQuestions } from "../../../hooks/useQuestions";
 import { Button } from "../../../components/ui/button";
 import { deleteQuestion, fetchQuestion, putQuestion } from "../../api/questionHandler";
 import { AuthContext } from "@/contexts/AuthContext";
-import { Question } from "../../../types/QuestionTypes";
 
 export default function EditQuestion() {
-  const {postNewQuestion} = useQuestions();
   const [loading, setLoading] = useState(true);
-  const [question, setQuestion] = useState<Question | null>(null);
   const { user: currentUser, authIsReady } = useContext(AuthContext);
   
   const router = useRouter();
@@ -41,7 +37,6 @@ export default function EditQuestion() {
     if (currentUser) {
       fetchQuestion(currentUser, questionId as string).then(question => {
         if (question) {
-          setQuestion(question);
           form.setValue("title", question.title);
           form.setValue("difficulty", question.difficulty as any);
           form.setValue("topics", question.topics);

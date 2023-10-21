@@ -14,7 +14,7 @@ export const setupIsLoggedIn = (app : Express, routes : any[]) => {
       } else {
         promiseVerifyIsLoggedIn(idToken as string).then((uid) => {
           if (uid) {
-            req.headers["User-Id"] = uid;
+            req.headers["user-id"] = uid;
             next();
           } else {
             res.redirect(redirectLink)

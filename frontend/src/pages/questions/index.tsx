@@ -21,21 +21,17 @@ export default function Questions() {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
-
-  const { fetchQuestions, fetchRandomQuestion } = useQuestions();
+  const { fetchRandomQuestion } = useQuestions();
 
   const queryClientMyQuestions = new QueryClient();
   const queryClientAll = new QueryClient();
 
   const onClickRandomQuestion = async () => {
     try {
-      const question: [Question] = await fetchRandomQuestion(difficulty);
+      const question = await fetchRandomQuestion(difficulty);
       console.log(question);
-      if (question[0]?.id) {
-        router.push(`/questions/${question[0].id}`);
+      if (question?.id) {
+        router.push(`/questions/${question.id}`);
       } else {
         console.error("Received undefined question or question without title.");
       }
@@ -83,14 +79,14 @@ export default function Questions() {
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
         <QueryClientProvider client={queryClientMyQuestions}>
-          <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} isEditable />
+          <DataTable columns={getColumnDefs(true)} isEditable />
         </QueryClientProvider>
       </div>
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
         <QueryClientProvider client={queryClientAll}>
-          <DataTable columns={getColumnDefs(false)} data={questions} loading={loading} />
+          <DataTable columns={getColumnDefs(false)} />
         </QueryClientProvider>
       </div>
     </div>

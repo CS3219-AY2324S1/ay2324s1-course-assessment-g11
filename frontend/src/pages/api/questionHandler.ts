@@ -26,7 +26,25 @@ export const fetchRandomQuestion = async (
       throw new Error(`Network response was not ok: ${response.statusText}`);
     }
 
-    return response.json();
+    const rawData = (await response.json());
+    if (!rawData || rawData.length === 0) {
+      throw new Error("No question found");
+    }
+    const data = rawData[0];
+    return <Question>{
+      id: data._id,
+      title: data.title,
+      difficulty: data.difficulty,
+      topics: data.topics,
+      description: data.content,
+      solution: "", // Not supported atm
+      author: data.author, // Author id
+      defaultCode: {
+          ...data.defaultCode
+      },
+      testCasesInputs: data.testCasesInputs,
+      testCasesOutputs: data.testCasesOutputs
+    }
   } catch (error) {
     console.error(error);
     throw error;

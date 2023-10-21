@@ -107,7 +107,6 @@ export default function QuestionsForm({
 }: QuestionsFormProps) {
   const {testCasesInputs, testCasesOutputs} = form.getValues();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
-  // const [testCases, setTestCases] = useState<{input: string, output: string}[]>(getTestCases(testCasesInputs, testCasesOutputs));
 
   const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
 
@@ -200,7 +199,6 @@ export default function QuestionsForm({
             }} />
             <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
               e.stopPropagation(); e.preventDefault();
-              // setTestCases(testCases => testCases.filter((_, i) => i != index))
               form.setValue('testCasesInputs', testCasesInputs.filter((_, i) => i != index));
               form.setValue('testCasesOutputs', testCasesOutputs.filter((_, i) => i != index));
               forceUpdate();
@@ -215,8 +213,7 @@ export default function QuestionsForm({
             forceUpdate();
           }}>Add Test Case</Button>
           <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
-            e.stopPropagation(); e.preventDefault(); 
-            // setTestCases([]);
+            e.stopPropagation(); e.preventDefault();
             form.setValue('testCasesInputs', []);
             form.setValue('testCasesOutputs', []);
             forceUpdate();

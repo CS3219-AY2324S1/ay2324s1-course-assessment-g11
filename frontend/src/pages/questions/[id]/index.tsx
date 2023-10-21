@@ -20,11 +20,8 @@ export default function Room() {
   useEffect(() => {
     if (currentUser) {
       fetchQuestion(currentUser, questionId).then(question => {
-        if (question && question.author === currentUser.uid) {
+        if (question) {
           setQuestion(question);
-        } else {
-          // if question is not found, redirect to home
-          router.push("/");
         }
       }).catch(err => {
         console.log(err);
@@ -38,7 +35,9 @@ export default function Room() {
     }
   }, [questionId, authIsReady, currentUser]);
 
-  if (!router.isReady || question === null) return null;
+  if (loading) return (<p>Loading...</p>);
+
+  if (question === null) return (<p>Question not found</p>);
 
   // implement some on change solo save logic here - user side most likely
 
