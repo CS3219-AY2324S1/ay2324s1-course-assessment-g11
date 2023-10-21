@@ -33,12 +33,37 @@ export const fetchRandomQuestion = async (
   }
 };
 
-export const fetchQuestions = async (user: any) => {
+export type QuestionFilterConditions = {
+  difficulty?: Difficulty;
+  topics?: string[];
+  author?: string;
+  searchTitle?: string;
+  sort?: {"title": 1 | -1} // 1 for asc, -1 for desc
+}
+
+export const fetchQuestions = async (user: any, pageNumber: number = 1, pageSize: number = 10, conditions: QuestionFilterConditions = {}) => {
   try {
-    const url = `${questionApiPathAddress}list`;
+    const url = `${questionApiPathAddress}list?`;
     const idToken = await user.getIdToken(true);
 
-    const response = await fetch(url, {
+    const jsonBody: any = {
+      page: pageNumber,
+      limit: pageSize,
+      ...conditions
+    };
+    if (jsonBody.difficulty === "any") {
+      jsonBody.difficulty = ["easy", "medium", "hard"];
+    } else if (jsonBody.difficulty) {
+      jsonBody.difficulty = [jsonBody.difficulty];
+    }
+
+    const response = await fetch(url + new URLSearchParams({
+      body: JSON.stringify({
+        page: pageNumber,
+        limit: pageSize,
+        ...conditions
+      })
+    }), {
       method: "GET",
       mode: "cors",
       headers: {
@@ -56,7 +81,10 @@ export const fetchQuestions = async (user: any) => {
         author: question.author,
         id: question._id,
       }));
-      return questions;
+      return {
+        questions,
+        hasNextPage: data.hasNextPage,
+      };
     } else {
       throw new Error("Invalid data format from the server");
     }

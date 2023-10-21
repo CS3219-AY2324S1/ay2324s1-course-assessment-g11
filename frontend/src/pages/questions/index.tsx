@@ -15,34 +15,20 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useQuestions } from "@/hooks/useQuestions";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Questions() {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   const { fetchQuestions, fetchRandomQuestion } = useQuestions();
 
-  useEffect(() => {
-    if (currentUser) {
-      fetchQuestions()
-        .then((questions) => {
-          if (!questions) {
-            throw new Error("Cannot fetch questions");
-          }
-          setQuestions(questions);
-          loading && setLoading(false);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the questions", error);
-        });
-    } else {
-      console.log("You are most likely not logged in");
-    }
-  }, [currentUser]);
+  const queryClientMyQuestions = new QueryClient();
+  const queryClientAll = new QueryClient();
 
   const onClickRandomQuestion = async () => {
     try {
@@ -96,12 +82,16 @@ export default function Questions() {
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
-        <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} />
+        <QueryClientProvider client={queryClientMyQuestions}>
+          <DataTable columns={getColumnDefs(true)} data={questions.filter(q => q.author === currentUser?.uid)} loading={loading} isEditable />
+        </QueryClientProvider>
       </div>
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
-        <DataTable columns={getColumnDefs(false)} data={questions} loading={loading} />
+        <QueryClientProvider client={queryClientAll}>
+          <DataTable columns={getColumnDefs(false)} data={questions} loading={loading} />
+        </QueryClientProvider>
       </div>
     </div>
   );
