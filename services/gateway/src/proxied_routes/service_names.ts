@@ -30,5 +30,5 @@ export const adminServiceAddress = (isLocal)
 
 export const frontendAddress = (isLocal)
   ? "http://localhost:3000"
-  : "http://frontend:3000";
+  : process.env.FRONTEND_ADDRESS;
 // This is used in CORS origin checking, so the address cannot have a trailing forward slash

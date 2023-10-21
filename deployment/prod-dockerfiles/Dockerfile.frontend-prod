@@ -19,12 +19,12 @@ RUN yarn install --frozen-lockfile --cwd /app
 RUN yarn prisma generate
 
 # Compile service from TypeScript to JavaScript
-# Note that this requires the NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG env variable to be set
-# in CI and passed into the image build as an ARG
+# Note that NEXT_PUBLIC env variables are set at build time
 ARG NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
 ENV NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG=$NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG
 
-# This would not work without the above ARG
+ENV NEXT_PUBLIC_GATEWAY_ADDRESS="http://api.codeparty.org:4000/"
+
 RUN yarn build
 
 # Re-install production-only dependencies
