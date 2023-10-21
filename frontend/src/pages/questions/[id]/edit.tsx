@@ -101,7 +101,7 @@ export default function EditQuestion() {
             <ArrowLeft className="w-6 h-6" />
           </Button>
         </Link>
-        <TypographyH2>Add a Question</TypographyH2>
+        <TypographyH2>Edit a Question</TypographyH2>
       </div>
       <QuestionsForm form={form} onSubmit={onSubmit} onDelete={onDelete} loading={loading} type="edit" />
     </div>
