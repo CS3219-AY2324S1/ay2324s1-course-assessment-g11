@@ -33,7 +33,6 @@ export default function Questions() {
           if (!questions) {
             throw new Error("Cannot fetch questions");
           }
-          console.log(questions)
           setQuestions(questions);
           loading && setLoading(false);
         })

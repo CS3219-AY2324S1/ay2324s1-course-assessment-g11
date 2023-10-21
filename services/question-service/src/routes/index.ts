@@ -15,7 +15,6 @@ const uri = process.env.MONGO_ATLAS_URL || "mongodb://localhost:27017";
 const mongoClient = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
     deprecationErrors: true,
   },
 });
@@ -116,10 +115,12 @@ router.post("/question", async (req, res, next) => {
 
 /**
  * Get questions based on topics or difficulty, with offset based pagination.
+ * 
+ * Note: This will not return the content, test cases, default code, and solution of each question.
  */
 router.get("/list", async (req, res, next) => {
   /**
-   * #swagger.description = 'Get questions based on topics or difficulty, with offset based pagination.'
+   * #swagger.description = 'Get questions based on topics or difficulty, with offset based pagination. Note: This will not return the content, test cases, default code, and solution of each question.'
    * #swagger.parameters['topics'] = { description: 'Array of topics to filter by.', type: 'array' }
    * #swagger.parameters['difficulty'] = { description: 'Array of difficulties to filter by.', type: 'array' }
    * #swagger.parameters['searchTitle'] = { description: 'Search for questions with titles containing this string.', type: 'string' }
@@ -130,6 +131,7 @@ router.get("/list", async (req, res, next) => {
    */
   console.log(req.headers['user-id'])
   let searchObj: any = {};
+  let aggregateObj: Array<object> = [];
   if (req.body.topics && req.body.topics.length > 0) {
     searchObj.topics = { $elemMatch: { $in: req.body.topics } };
   }
@@ -143,24 +145,33 @@ router.get("/list", async (req, res, next) => {
     searchObj.difficulty = { $in: req.body.difficulty };
   }
   if (req.body.searchTitle) {
-    // TODO: Implement atlas search
-    // searchObj.title = { "$regex": req.body.searchTitle, "$options": "i"};
+    aggregateObj.push({
+      "$search": {
+        index: "title_index",
+        "text": {
+          "path": "title",
+          "query": req.body.searchTitle,
+        }
+      }
+    },);
   }
   if (req.body.author) {
     searchObj.author = { $eq: req.body.author };
   }
-  const limit = req.body.limit ?? 10;
+
+  aggregateObj.push({ "$match": searchObj });
+
+  const limit = Math.min(req.body.limit ?? 20, 100); // Max 100 questions per page
   const page = req.body.page ?? 1;
   const sortObj = req.body.sort ?? { title: 1 };
+  aggregateObj.push({ "$project": { "content": 0, "testCasesInputs": 0, "testCasesOutputs": 0, "defaultCode": 0, "solution": 0 } },
+  { "$sort": sortObj }, { "$skip": (page - 1) * limit }, { "$limit": limit + 1 })
   try {
     await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
     let result = await collection
-      .find(searchObj)
-      .sort(sortObj)
-      .limit(limit + 1)
-      .skip((page - 1) * limit)
+      .aggregate(aggregateObj)
       .toArray();
     let hasNextPage = result.length === limit + 1;
     if (hasNextPage) {
