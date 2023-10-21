@@ -5,7 +5,7 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
-import { questionApiPathAddress } from "@/firebase-client/gateway-address";
+import { questionApiPathAddress } from "@/gateway-address/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Room() {

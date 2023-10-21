@@ -1,4 +1,4 @@
-import { userApiPathAddress } from "@/firebase-client/gateway-address";
+import { userApiPathAddress } from "@/gateway-address/gateway-address";
 import { EditableUser } from "@/types/UserTypes";
 
 export const updateUserByUid = async (user: EditableUser, currentUser: any) => {

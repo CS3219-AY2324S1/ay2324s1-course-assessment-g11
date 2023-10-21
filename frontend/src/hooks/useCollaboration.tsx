@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, use } from "react";
+import {useEffect, useState, useRef, use, useContext} from "react";
 import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
 import {
@@ -7,6 +7,8 @@ import {
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
 import { Room, connect } from "twilio-video";
+import {collaborationSocketAddress} from "@/gateway-address/gateway-address";
+import {AuthContext} from "@/contexts/AuthContext";
 
 type UseCollaborationProps = {
   roomId: string;
@@ -39,73 +41,84 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
   const awaitingSync = useRef<boolean>(false); // synced with server
   const twilioTokenRef = useRef<string>("");
   const questionId = "1";
+  const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   useEffect(() => {
-    const socketConnection = io("http://localhost:5003/");
-    setSocket(socketConnection);
+    if (currentUser) {
+      currentUser.getIdToken(true).then(
+        (token) => {
+          const socketConnection = io(collaborationSocketAddress, {
+            extraHeaders: {
+              "User-Id-Token": token
+            }
+          });
+          setSocket(socketConnection);
 
-    socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
-    socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
+          socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
+          socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
 
-    socketConnection.on("twilio-token", (token: string) => {
-      twilioTokenRef.current = token;
-      if (disableVideo) return;
-      connect(token, {
-        name: roomId, audio: true,
-        video: { width: 640, height: 480, frameRate: 24 }
-      }).then((room) => {
-        console.log("Connected to Room");
-        setRoom(room);
-      }).catch(err => {
-        console.log(err, token, userId, roomId);
-      });
-    });
+          socketConnection.on("twilio-token", (token: string) => {
+            twilioTokenRef.current = token;
+            if (disableVideo) return;
+            connect(token, {
+              name: roomId, audio: true,
+              video: { width: 640, height: 480, frameRate: 24 }
+            }).then((room) => {
+              console.log("Connected to Room");
+              setRoom(room);
+            }).catch(err => {
+              console.log(err, token, userId, roomId);
+            });
+          });
 
-    socketConnection.on(
-      SocketEvents.ROOM_UPDATE,
-      ({
-        version,
-        text,
-        cursor,
-      }: {
-        version: number;
-        text: string;
-        cursor: number | undefined | null;
-      }) => {
-        prevCursorRef.current = cursorRef.current;
-        console.log("prevCursor: " + prevCursorRef.current);
+          socketConnection.on(
+            SocketEvents.ROOM_UPDATE,
+            ({
+               version,
+               text,
+               cursor,
+             }: {
+              version: number;
+              text: string;
+              cursor: number | undefined | null;
+            }) => {
+              prevCursorRef.current = cursorRef.current;
+              console.log("prevCursor: " + prevCursorRef.current);
 
-        console.log("cursor: " + cursor);
+              console.log("cursor: " + cursor);
 
-        console.log("Update vers to " + version);
-        vers = version;
+              console.log("Update vers to " + version);
+              vers = version;
 
-        if (awaitingAck.current) return;
+              if (awaitingAck.current) return;
 
-        textRef.current = text;
-        prevTextRef.current = text;
-        setText(text);
-        if (cursor && cursor > -1) {
-          console.log("Update cursor to " + cursor);
-          cursorRef.current = cursor;
-          setCursor(cursor);
-        } else {
-          cursorRef.current = prevCursorRef.current;
-          cursor = prevCursorRef.current;
-          console.log("Update cursor to " + prevCursorRef.current);
-          setCursor(prevCursorRef.current);
+              textRef.current = text;
+              prevTextRef.current = text;
+              setText(text);
+              if (cursor && cursor > -1) {
+                console.log("Update cursor to " + cursor);
+                cursorRef.current = cursor;
+                setCursor(cursor);
+              } else {
+                cursorRef.current = prevCursorRef.current;
+                cursor = prevCursorRef.current;
+                console.log("Update cursor to " + prevCursorRef.current);
+                setCursor(prevCursorRef.current);
+              }
+              awaitingSync.current = false;
+            }
+          );
+
+          return () => {
+            socketConnection.disconnect();
+            if (room) {
+              room.disconnect();
+            }
+          };
         }
-        awaitingSync.current = false;
-      }
-    );
-
-    return () => {
-      socketConnection.disconnect();
-      if (room) {
-        room.disconnect();
-      }
-    };
-  }, [roomId, userId]);
+      )
+    }
+  }, [roomId, userId, currentUser]);
 
   useEffect(() => {
     textRef.current = text;

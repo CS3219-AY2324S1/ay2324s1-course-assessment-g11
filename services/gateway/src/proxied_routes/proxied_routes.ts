@@ -70,4 +70,28 @@ export const proxied_routes: ProxiedRoute[] = [
       changeOrigin: true,
     },
   },
+  {
+    url: "/collaboration/sockets",
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: collaborationServiceAddress,
+      changeOrigin: true,
+      pathRewrite: {
+        "^/collaboration/sockets": "",
+      },
+    },
+  },
+  {
+    url: "/match/sockets",
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: matchingServiceAddress,
+      changeOrigin: true,
+      pathRewrite: {
+        "^/match/sockets": "",
+      },
+    },
+  },
 ];
