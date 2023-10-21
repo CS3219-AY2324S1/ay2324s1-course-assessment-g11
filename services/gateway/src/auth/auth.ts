@@ -29,10 +29,9 @@ export const setupIsLoggedIn = (app : Express, routes : any[]) => {
 
 export const setupUserIdMatch = (app : Express, routes : any[]) => {
   routes.forEach(r => {
-    r.user_match_required_methods.forEach((method : string) => {
-      applyMiddleware(r.url + "/:uid", method, app,
-        function(req : express.Request, res : express.Response, next : express.NextFunction) {
-          const idToken = req.get(userIdTokenHeader);
+    app.use(r.url, function(req : express.Request, res : express.Response, next : express.NextFunction) {
+      if (r.user_match_required_methods.includes(req.method)) {
+        const idToken = req.get(userIdTokenHeader);
         const paramUid = req.params.uid;
         if (!idToken || !paramUid) {
           res.redirect(redirectLink)
@@ -48,7 +47,10 @@ export const setupUserIdMatch = (app : Express, routes : any[]) => {
             res.status(500).send("A server-side error occurred! Contact the admin for help.");
           });
         }
-      });
+      } else {
+        // Skip
+        next();
+      }
     });
   });
 }
@@ -56,9 +58,8 @@ export const setupUserIdMatch = (app : Express, routes : any[]) => {
 export const setupAdmin = (app : Express, routes : any[]) => {
   // If admin access is required, check that the firebase ID token has an admin claim
   routes.forEach(r => {
-    r.admin_required_methods.forEach((method : string) => {
-      applyMiddleware(r.url, method, app,
-        function(req : express.Request, res : express.Response, next : express.NextFunction) {
+    app.use(r.url, function(req : express.Request, res : express.Response, next : express.NextFunction) {
+      if (r.admin_required_methods.includes(req.method)) {
         // Pass in the user as a header of the request
         const idToken = req.get(userIdTokenHeader);
         if (!idToken) {
@@ -75,23 +76,10 @@ export const setupAdmin = (app : Express, routes : any[]) => {
             res.status(500).send("A server-side error occurred! Contact the admin for help.");
           })
         }
-      })
+      } else {
+        // Skip
+        next();
+      }
     });
-  })
+  });
 };
-
-const applyMiddleware = (url : string, method : string, app : Express, func : any) => {
-  switch(method) {
-    case "GET":
-      app.get(url, func);
-      break;
-    case "POST":
-      app.post(url, func);
-      break;
-    case "PUT":
-      app.put(url, func);
-      break;
-    case "DELETE":
-      app.delete(url, func)
-  }
-}

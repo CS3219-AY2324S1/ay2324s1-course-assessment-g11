@@ -42,6 +42,7 @@ export function promiseVerifyIsAdmin(idToken: string) {
   return firebaseAuth
     .verifyIdToken(idToken, true)
     .then((claims) => {
+      console.log(claims)
       return !!claims.admin;
     })
     .catch((error) => {
