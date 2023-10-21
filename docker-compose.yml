@@ -82,6 +82,7 @@ services:
     environment:
       PORT: 4000
       FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
+      FRONTEND_ADDRESS: "http://localhost:3000"
 
   frontend:
     build:
