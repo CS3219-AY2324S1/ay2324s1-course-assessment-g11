@@ -65,7 +65,7 @@ export default function Questions() {
           <TypographySmall>Choose question difficulty</TypographySmall>
           <DifficultySelector
             onChange={(value) => setDifficulty(value)}
-            showAny={true}
+            showAny={false}
             defaultValue={difficulty}
           />
         </div>
