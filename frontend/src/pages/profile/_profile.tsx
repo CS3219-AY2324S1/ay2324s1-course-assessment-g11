@@ -1,11 +1,12 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
-import { TypographyBody, TypographyH3 } from "@/components/ui/typography";
+import { TypographyBody, TypographyH3, TypographyH2 } from "@/components/ui/typography";
 import { Attempt } from "@/types/UserTypes";
 import { User } from "firebase/auth";
 import Link from "next/link";
 import ActivityCalendar, { Activity } from "react-activity-calendar";
 import { Tooltip as MuiTooltip } from '@mui/material';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 type ProfileProps = {
   selectedUser: User,
@@ -47,8 +48,8 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
   const activities = Object.values(countsByDate).sort((a, b) => a.date.localeCompare(b.date));
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col justify-center items-center">
-      <div className="max-w-sm m-4">
+    <div className="max-w-7xl mx-auto flex justify-center items-start">
+      <div className="max-w-sm mx-4 my-20">
         <div className="flex items-center w-full justify-center gap-x-4 p-4">
           <Avatar className="h-24 w-24">
             <AvatarImage src={selectedUser?.photoURL ?? ''} />
@@ -67,22 +68,33 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
           </Link>
         }
       </div>
-      <ActivityCalendar
-        data={activities}
-        theme={{
-          dark: ['#161B22', '#241D4F', '#3C3180', '#5245AD', '#8270FE'],
-        }}
-        renderBlock={(block, activity) => (
-          <MuiTooltip
-            title={`${activity.count} activities on ${activity.date}`}
-          >
-            {block}
-          </MuiTooltip>
-        )}
-        labels={{
-          totalCount: '{{count}} activities in 2023',
-        }}
-      />
+      <div className="flex flex-col gap-4 p-12">
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            <TypographyH2>Activity</TypographyH2>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <ActivityCalendar
+            data={activities}
+            theme={{
+              dark: ['#161B22', '#241D4F', '#3C3180', '#5245AD', '#8270FE'],
+            }}
+            renderBlock={(block, activity) => (
+              <MuiTooltip
+                title={`${activity.count} activities on ${activity.date}`}
+              >
+                {block}
+              </MuiTooltip>
+            )}
+            labels={{
+              totalCount: '{{count}} activities in 2023',
+            }}
+          />
+        </CardContent>
+      </Card>
+      </div>
     </div>
   )
 }
