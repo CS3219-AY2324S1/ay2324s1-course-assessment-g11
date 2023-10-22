@@ -26,6 +26,21 @@ spec:
                   key: prisma-database-url
             - name: PORT
               value: "5003"
+            - name: TWILIO_ACCOUNT_SID
+              valueFrom:
+                secretKeyRef:
+                  name: twilio-account-sid
+                  key: twilio-account-sid
+            - name: TWILIO_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: twilio-api-key
+                  key: twilio-api-key
+            - name: TWILIO_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: twilio-api-secret
+                  key: twilio-api-secret
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/collaboration-service:latest
           name: collaboration-service
           ports:
