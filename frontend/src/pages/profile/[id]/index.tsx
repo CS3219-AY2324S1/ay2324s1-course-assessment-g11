@@ -12,6 +12,6 @@ export default function Page() {
 
   // TODO: if selected user is null, redirect to 404 page
   return (
-    <Profile selectedUser={selectedUser as User} isCurrentUser={false} />
+    <Profile selectedUser={selectedUser as User} isCurrentUser={false} attempts={[]}/>
   )
 }

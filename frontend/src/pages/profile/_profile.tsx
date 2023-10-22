@@ -5,6 +5,7 @@ import { Attempt } from "@/types/UserTypes";
 import { User } from "firebase/auth";
 import Link from "next/link";
 import ActivityCalendar, { Activity } from "react-activity-calendar";
+import { Tooltip as MuiTooltip } from '@mui/material';
 
 type ProfileProps = {
   selectedUser: User,
@@ -22,7 +23,13 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
     return initials;
   }
 
-  const countsByDate: Record<string, Activity> = {};
+  const date = new Date();
+  date.setFullYear(date.getFullYear() - 1)
+  const dateLastYearString = date.toISOString().slice(0, 10);
+
+  const countsByDate: Record<string, Activity> = {
+    [dateLastYearString]: { date: dateLastYearString, count: 0, level: 0 },
+  };
 
   // Transform attempts into activities and accumulate counts
   attempts?.forEach((attempt) => {
@@ -60,7 +67,22 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
           </Link>
         }
       </div>
-      <ActivityCalendar data={activities} />
+      <ActivityCalendar
+        data={activities}
+        theme={{
+          dark: ['#161B22', '#241D4F', '#3C3180', '#5245AD', '#8270FE'],
+        }}
+        renderBlock={(block, activity) => (
+          <MuiTooltip
+            title={`${activity.count} activities on ${activity.date}`}
+          >
+            {block}
+          </MuiTooltip>
+        )}
+        labels={{
+          totalCount: '{{count}} activities in 2023',
+        }}
+      />
     </div>
   )
 }

@@ -12,8 +12,11 @@
     "start:local": "dotenv -e ../.env -- next start -H 0.0.0.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.1",
     "@monaco-editor/react": "^4.5.2",
+    "@mui/material": "^5.14.14",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
