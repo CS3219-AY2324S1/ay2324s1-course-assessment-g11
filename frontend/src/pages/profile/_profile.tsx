@@ -1,15 +1,17 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { TypographyBody, TypographyH3 } from "@/components/ui/typography";
+import { Attempt } from "@/types/UserTypes";
 import { User } from "firebase/auth";
 import Link from "next/link";
 
 type ProfileProps = {
   selectedUser: User,
+  attempts?: Attempt[],
   isCurrentUser: boolean,
 }
 
-export default function Profile({ selectedUser, isCurrentUser }: ProfileProps) {
+export default function Profile({ selectedUser, attempts, isCurrentUser }: ProfileProps) {
   const getInitials = (name: string) => {
     const names = name.split(" ");
     let initials = "";
