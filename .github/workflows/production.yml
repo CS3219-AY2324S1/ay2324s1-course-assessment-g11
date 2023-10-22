@@ -18,6 +18,9 @@ env:
   PRISMA_DATABASE_URL: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
   MONGO_ATLAS_URL: ${{ secrets.MONGO_ATLAS_URL_PROD }}
   NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
+  TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
+  TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
+  TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
 
 jobs:
   setup-build-publish-deploy:
@@ -81,6 +84,18 @@ jobs:
             --ignore-not-found
           kubectl create secret generic frontend-firebase-config \
             --from-file=frontend-firebase-config=./next_public_frontend_firebase_config.json
+          kubectl delete secret twilio-account-sid \
+            --ignore-not-found
+          kubectl create secret generic twilio-account-sid \
+            --from-literal=twilio-account-sid=$TWILIO_ACCOUNT_SID
+          kubectl delete secret twilio-api-key \
+            --ignore-not-found
+          kubectl create secret generic twilio-api-key \
+            --from-literal=twilio-api-key=$TWILIO_API_KEY
+          kubectl delete secret twilio-api-secret \
+            --ignore-not-found
+          kubectl create secret generic twilio-api-secret \
+            --from-literal=twilio-api-secret=$TWILIO_API_SECRET
 
       # Remove the JSON files
       - name: Delete JSON files
