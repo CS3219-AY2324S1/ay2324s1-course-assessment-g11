@@ -4,6 +4,7 @@ import { TypographyBody, TypographyH3 } from "@/components/ui/typography";
 import { Attempt } from "@/types/UserTypes";
 import { User } from "firebase/auth";
 import Link from "next/link";
+import ActivityCalendar, { Activity } from "react-activity-calendar";
 
 type ProfileProps = {
   selectedUser: User,
@@ -20,6 +21,23 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
     });
     return initials;
   }
+
+  const countsByDate: Record<string, Activity> = {};
+
+  // Transform attempts into activities and accumulate counts
+  attempts?.forEach((attempt) => {
+    const date = attempt.time_created.toISOString().slice(0, 10); // Format the date as yyyy-MM-dd
+    const level = attempt.solved ? 3 : 1; // Set level based on the solved status
+
+    if (!countsByDate[date]) {
+      countsByDate[date] = { date, count: 0, level };
+    }
+
+    countsByDate[date].count += 1;
+  });
+
+  // Extract the values from the dictionary to get the final activities array
+  const activities = Object.values(countsByDate).sort((a, b) => a.date.localeCompare(b.date));
 
   return (
     <div className="max-w-7xl mx-auto flex flex-col justify-center items-center">
@@ -42,6 +60,7 @@ export default function Profile({ selectedUser, attempts, isCurrentUser }: Profi
           </Link>
         }
       </div>
+      <ActivityCalendar data={activities} />
     </div>
   )
 }

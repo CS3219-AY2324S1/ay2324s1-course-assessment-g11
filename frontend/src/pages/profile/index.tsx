@@ -12,9 +12,9 @@ export default function Page() {
       question_id: "1",
       answer: "A1",
       solved: true,
-      time_created: new Date("2023-10-23T08:00:00"),
-      time_saved_at: new Date("2023-10-23T08:15:00"),
-      time_updated: new Date("2023-10-23T08:15:00"),
+      time_created: new Date("2023-10-13T08:00:00"),
+      time_saved_at: new Date("2023-10-13T08:15:00"),
+      time_updated: new Date("2023-10-13T08:15:00"),
       room_id: "Room1",
     },
     {
@@ -92,9 +92,9 @@ export default function Page() {
       question_id: "9",
       answer: "A9",
       solved: true,
-      time_created: new Date("2023-10-23T12:00:00"),
-      time_saved_at: new Date("2023-10-23T12:15:00"),
-      time_updated: new Date("2023-10-23T12:15:00"),
+      time_created: new Date("2023-10-03T12:00:00"),
+      time_saved_at: new Date("2023-10-03T12:15:00"),
+      time_updated: new Date("2023-10-03T12:15:00"),
       room_id: "Room4",
     },
     {
@@ -110,6 +110,6 @@ export default function Page() {
   ];
 
   return (
-    (currentUser && <Profile selectedUser={currentUser} isCurrentUser={true} />)
+    (currentUser && <Profile selectedUser={currentUser} isCurrentUser={true} attempts={attempts}/>)
   )
 }
