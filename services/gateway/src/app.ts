@@ -9,7 +9,7 @@ import {frontendAddress} from "./proxied_routes/service_names";
 
 const app : Express = express();
 const corsOptions = {
-  origin: [frontendAddress, "http://localhost:3000"],
+  origin: frontendAddress,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }
 

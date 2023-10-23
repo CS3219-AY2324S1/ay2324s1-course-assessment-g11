@@ -1,33 +1,99 @@
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-
 import DifficultySelector from "@/components/common/difficulty-selector";
 import { MultiSelect } from "@/components/ui/multi-select";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
+import * as z from "zod";
+import { UseFormReturn } from "react-hook-form";
+
+export const formSchema = z.object({
+  title: z.string().min(2).max(100),
+  difficulty: z.enum(['easy', 'medium', 'hard']),
+  topics: z.array(z.string().min(2).max(100)),
+  description: z.string().min(2).max(10000),
+  testCasesInputs: z.array(z.string().min(2).max(10000)),
+  testCasesOutputs: z.array(z.string().min(2).max(10000)),
+  defaultCode: z.object({
+    "python": z.string().min(0).max(10000),
+    "java": z.string().min(0).max(10000),
+    "c++": z.string().min(0).max(10000)
+  }) || undefined,
+})
+
+
+const defaultCodes = {
+  'python': `def twoSum(self, nums: list[int], target: int) -> list[int]:
+  pass
+
+if __name__ == "__main__":
+  size = int(input())
+  nums = list(map(int, input().split()))
+  target = int(input())
+  print(" ".join(twoSum(nums, target)))`,
+
+'java': `import java.util.*;
+
+class Solution {
+  public int[] twoSum(int[] nums, int target) {
+    // TODO: Write your code here
+  }
+  
+  public static void main(String[] args) {
+    Scanner sc = new Scanner(System.in);
+    int size = sc.nextInt();
+    int[] nums = new int[size];
+    for (int i = 0; i < size; i++) {
+      nums[i] = sc.nextInt();
+    }
+    int target = sc.nextInt();
+    Solution solution = new Solution();
+    int[] result = solution.twoSum(nums, target);
+    System.out.println(result[0] + " " + result[1]);
+  }
+}`,
+
+'c++': `#include <iostream>
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+  vector<int> twoSum(vector<int>& nums, int target) {
+    // TODO: Write your code here
+  }
+};
+
+int main() {
+  int size;
+  cin >> size;
+  vector<int> nums(size);
+  for (int i = 0; i < size; i++) {
+    cin >> nums[i];
+  }
+  int target;
+  cin >> target;
+  Solution solution;
+  vector<int> result = solution.twoSum(nums, target);
+  cout << result[0] << " " << result[1] << endl;
+  return 0;
+}`
+};
+
 
 interface QuestionsFormProps {
-  form: any;
+  form: UseFormReturn<z.infer<typeof formSchema>>;
   onSubmit: any;
+  onDelete?: any;
   type?: "add" | "edit";
   loading?: boolean;
 }
@@ -35,42 +101,21 @@ interface QuestionsFormProps {
 export default function QuestionsForm({
   form,
   onSubmit,
+  onDelete = () => {},
   type = "add",
   loading = false,
 }: QuestionsFormProps) {
-  const [hasSolution, setHasSolution] = useState(false);
+  const {testCasesInputs, testCasesOutputs} = form.getValues();
+  const [, forceUpdate] = useReducer((x) => x + 1, 0);
+
+  const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
+
+  const topics = ["Algorithms", "Arrays", "Bit Manipulation", "Brainteaser", "Data Structures", "Databases", "Graph", "Recursion", "Strings"].map(createTopic);
 
   useEffect(() => {
-    if (form.getValues().code != "") {
-      setHasSolution(true);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [form.getValues().code]);
-
-  const topics = [
-    { value: "array", label: "Arrays" },
-    { value: "string", label: "Strings" },
-    { value: "linked_list", label: "Linked Lists" },
-    { value: "stack", label: "Stacks" },
-    { value: "queue", label: "Queues" },
-    { value: "tree", label: "Trees" },
-    { value: "graph", label: "Graphs" },
-    { value: "hash_table", label: "Hash Tables" },
-    { value: "heap", label: "Heaps" },
-    { value: "binary_search", label: "Binary Search" },
-    { value: "two_pointers", label: "Two Pointers" },
-    { value: "backtracking", label: "Backtracking" },
-    { value: "dynamic_programming", label: "Dynamic Programming" },
-    { value: "greedy", label: "Greedy Algorithms" },
-    { value: "math", label: "Math" },
-  ];
-  const toggleSolution = (hasSolution: boolean) => {
-    setHasSolution(hasSolution);
-    if (!hasSolution) {
-      form.setValue("language", "");
-      form.setValue("code", "");
-    }
-  };
+    form.setValue('defaultCode', defaultCodes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Form {...form}>
@@ -100,7 +145,7 @@ export default function QuestionsForm({
                     form.setValue("difficulty", value != "any" ? value : "easy")
                   }
                   showAny={false}
-                  defaultValue={form.getValues().difficulty}
+                  value={form.getValues().difficulty}
                 />
               </FormControl>
               <FormMessage />
@@ -112,12 +157,12 @@ export default function QuestionsForm({
           name="topics"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Select Topics</FormLabel>
+              <FormLabel>Select topics</FormLabel>
               <MultiSelect
                 selected={field.value}
                 options={topics}
-                {...field}
                 className="sm:w-[510px]"
+                onChange={field.onChange}
               />
               <FormMessage />
             </FormItem>
@@ -125,13 +170,13 @@ export default function QuestionsForm({
         />
         <FormField
           control={form.control}
-          name="content"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Question Description</FormLabel>
               <FormControl>
                 <Textarea
-                  placeholder="Write your question here."
+                  placeholder="Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."
                   className="resize-none"
                   {...field}
                 />
@@ -140,77 +185,115 @@ export default function QuestionsForm({
             </FormItem>
           )}
         />
-        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-3 shadow-sm">
-          <div className="space-y-0.5">
-            <FormLabel>Solution</FormLabel>
-            <FormDescription>
-              Include solution for this question
-            </FormDescription>
+        <p>Test cases</p>
+        {testCasesInputs.map((testCase, index) => {
+          return <div className="flex flex-row items-center justify-between gap-0.5" key={`testCase-${index}`}>
+            <Textarea placeholder="Input" value={testCase} onChange={(e) => {
+              form.setValue(`testCasesInputs.${index}`, e.target.value);
+              forceUpdate();
+
+            }} />
+            <Textarea placeholder="Output" value={testCasesOutputs[index]} onChange={(e) => {
+              form.setValue(`testCasesOutputs.${index}`, e.target.value);
+              forceUpdate();
+            }} />
+            <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
+              e.stopPropagation(); e.preventDefault();
+              form.setValue('testCasesInputs', testCasesInputs.filter((_, i) => i != index));
+              form.setValue('testCasesOutputs', testCasesOutputs.filter((_, i) => i != index));
+              forceUpdate();
+            }}>Delete</Button>
           </div>
-          <FormControl>
-            <Switch checked={hasSolution} onCheckedChange={toggleSolution} />
-          </FormControl>
-        </FormItem>
-        {hasSolution && (
-          <FormField
-            control={form.control}
-            name="language"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Language Used</FormLabel>
-                <FormControl>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="python">Python</SelectItem>
-                      <SelectItem value="javascript">Javascript</SelectItem>
-                      <SelectItem value="java">Java</SelectItem>
-                      <SelectItem value="c++">c++</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-        {hasSolution && (
-          <FormField
-            control={form.control}
-            name="defaultCode"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Solution Code</FormLabel>
-                <FormControl>
-                  {/* TODO: Change to code editor later */}
-                  <Textarea
-                    placeholder="Write your code here."
-                    className="resize-none"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
+        })}
+        <div className="flex gap-x-4">
+          <Button variant="outline" className="border-primary text-primary" onClick={(e) => {
+            e.stopPropagation(); e.preventDefault(); 
+            form.setValue('testCasesInputs', [...testCasesInputs, ""]);
+            form.setValue('testCasesOutputs', [...testCasesOutputs, ""]);
+            forceUpdate();
+          }}>Add Test Case</Button>
+          <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
+            e.stopPropagation(); e.preventDefault();
+            form.setValue('testCasesInputs', []);
+            form.setValue('testCasesOutputs', []);
+            forceUpdate();
+          }}>Clear Test Cases</Button>
+        </div>
+        <FormField
+          control={form.control}
+          name="defaultCode.c++"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Default C++ Code (TODO: Change to Code Editor)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your code here."
+                  className="resize-none"
+                  {...field}
+                  value={field.value || defaultCodes["c++"]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="defaultCode.java"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Default Java Code</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your code here."
+                  className="resize-none"
+                  {...field}
+                  value={field.value || defaultCodes["java"]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="defaultCode.python"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Default Python Code</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your code here."
+                  className="resize-none"
+                  {...field}
+                  value={field.value || defaultCodes["python"]}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         {type == "add" ? (
           <Button type="submit" disabled={loading}>
             Add Question
           </Button>
         ) : (
           <div className="flex gap-x-6">
-            <Button type="submit">Save Changes</Button>
+            <Button type="submit" disabled={loading} onClick={e => {
+            e.stopPropagation(); e.preventDefault();
+            onSubmit(form.getValues());
+            }}>Save Changes</Button>
             <Button
               variant="outline"
               className="border-destructive text-destructive"
+              disabled={loading}
+              onClick={onDelete}
             >
               Delete Question
             </Button>
           </div>
         )}
+
       </form>
     </Form>
   );
