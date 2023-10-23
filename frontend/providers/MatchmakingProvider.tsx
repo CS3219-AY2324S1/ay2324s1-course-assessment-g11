@@ -57,7 +57,8 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
             query: { username: generateRandomNumber() },
             extraHeaders: {
               "User-Id-Token": token
-            }
+            },
+            path: "/match/socket.io"
           });
           setSocket(newSocket);
           newSocket.connect();

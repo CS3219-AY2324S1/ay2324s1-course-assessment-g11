@@ -50,7 +50,8 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
           const socketConnection = io(collaborationSocketAddress, {
             extraHeaders: {
               "User-Id-Token": token
-            }
+            },
+            path: "/collaboration/socket.io"
           });
           setSocket(socketConnection);
 

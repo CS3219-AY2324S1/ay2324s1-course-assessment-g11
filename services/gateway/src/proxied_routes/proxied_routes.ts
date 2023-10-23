@@ -71,26 +71,26 @@ export const proxied_routes: ProxiedRoute[] = [
     },
   },
   {
-    url: "/collaboration/sockets",
+    url: "/collaboration/socket.io",
     admin_required_methods: [],
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: collaborationServiceAddress,
       changeOrigin: true,
       pathRewrite: {
-        "^/collaboration/sockets": "",
+        "^/collaboration/socket.io": "socket.io",
       },
     },
   },
   {
-    url: "/match/sockets",
+    url: "/match/socket.io",
     admin_required_methods: [],
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: matchingServiceAddress,
       changeOrigin: true,
       pathRewrite: {
-        "^/match/sockets": "",
+        "^/match/socket.io": "socket.io",
       },
     },
   },
