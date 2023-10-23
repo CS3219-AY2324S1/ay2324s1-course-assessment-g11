@@ -8,45 +8,30 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { useContext, useEffect, useState } from "react";
 import DifficultySelector from "@/components/common/difficulty-selector";
-import { columns } from "@/components/questions/columns";
+import { getColumnDefs } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useQuestions } from "@/hooks/useQuestions";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Questions() {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
-  const [questions, setQuestions] = useState<Question[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { fetchRandomQuestion } = useQuestions();
 
-  const { fetchQuestions, fetchRandomQuestion } = useQuestions();
-
-  useEffect(() => {
-    if (currentUser) {
-      fetchQuestions()
-        .then((questions) => {
-          setQuestions(questions);
-          loading && setLoading(false);
-        })
-        .catch((error) => {
-          console.error("There was an error fetching the questions", error);
-        });
-    } else {
-      console.log("You are most likely not logged in");
-    }
-  }, [currentUser]);
+  const queryClientMyQuestions = new QueryClient();
+  const queryClientAll = new QueryClient();
 
   const onClickRandomQuestion = async () => {
     try {
-      const question: [Question] = await fetchRandomQuestion(difficulty);
+      const question = await fetchRandomQuestion(difficulty);
       console.log(question);
-      if (question[0]?.title) {
-        router.push(`/questions/${question[0].title.split(" ").join("-")}`);
+      if (question?.id) {
+        router.push(`/questions/${question.id}`);
       } else {
         console.error("Received undefined question or question without title.");
       }
@@ -80,7 +65,7 @@ export default function Questions() {
           <TypographySmall>Choose question difficulty</TypographySmall>
           <DifficultySelector
             onChange={(value) => setDifficulty(value)}
-            showAny={true}
+            showAny={false}
             defaultValue={difficulty}
           />
         </div>
@@ -92,8 +77,17 @@ export default function Questions() {
       </div>
 
       <div className="flex-col flex gap-4 py-12">
+        <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
+        <QueryClientProvider client={queryClientMyQuestions}>
+          <DataTable columns={getColumnDefs(true)} isEditable />
+        </QueryClientProvider>
+      </div>
+
+      <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
-        <DataTable columns={columns} data={questions} loading={loading} />
+        <QueryClientProvider client={queryClientAll}>
+          <DataTable columns={getColumnDefs(false)} />
+        </QueryClientProvider>
       </div>
     </div>
   );

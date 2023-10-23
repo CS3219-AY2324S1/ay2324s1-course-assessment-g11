@@ -5,12 +5,12 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
-import { questionApiPathAddress } from "@/firebase-client/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
+import { fetchQuestion } from "../../api/questionHandler";
 
 export default function Room() {
   const router = useRouter();
-  const questionTitle = router.query.id as string;
+  const questionId = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
   const [answer, setAnswer] = useState("");
@@ -18,52 +18,26 @@ export default function Room() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   useEffect(() => {
-    const fetchQuestion = async () => {
-      if (currentUser) {
-        const idToken = await currentUser.getIdToken(true);
-        const url = `${questionApiPathAddress}question/${questionTitle}`;
-
-        console.log(url);
-
-        try {
-          const response = await fetch(url, {
-            method: "GET",
-            mode: "cors",
-            headers: {
-              "Content-Type": "application/json",
-              "User-Id-Token": idToken,
-            },
-          });
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          console.log(data);
-          setQuestion({
-            title: data.title,
-            difficulty: data.difficulty,
-            topics: data.topics,
-            description: data.content,
-            solution: data.solutionCode,
-            defaultCode: data.defaultCode,
-          });
-        } catch (error) {
-          console.error("There was an error fetching the questions", error);
-        } finally {
-          setLoading(false);
+    if (currentUser) {
+      fetchQuestion(currentUser, questionId).then(question => {
+        if (question) {
+          setQuestion(question);
         }
-      } else {
-        console.log("You are not logged in");
+      }).catch(err => {
+        console.log(err);
+        router.push("/");
+      }).finally(() => {
         setLoading(false);
-      }
-    };
+      });
+    } else {
+      // if user is not logged in, redirect to home
+      router.push("/");
+    }
+  }, [questionId, authIsReady, currentUser]);
 
-    fetchQuestion();
-  }, [questionTitle, authIsReady, currentUser]);
+  if (loading) return (<p>Loading...</p>);
 
-  if (!router.isReady || question === null) return null;
+  if (question === null) return (<p>Question not found</p>);
 
   // implement some on change solo save logic here - user side most likely
 

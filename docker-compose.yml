@@ -82,6 +82,7 @@ services:
     environment:
       PORT: 4000
       FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
+      FRONTEND_ADDRESS: "http://localhost:3000"
 
   frontend:
     build:
@@ -94,5 +95,5 @@ services:
     ports:
       - "3000:3000"
     environment:
-      GATEWAY_ADDRESS: "http://localhost:4000/"
+      NEXT_PUBLIC_GATEWAY_ADDRESS: "http://localhost:4000/"
       NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}
