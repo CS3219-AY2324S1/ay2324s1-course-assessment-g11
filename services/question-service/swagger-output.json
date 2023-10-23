@@ -11,20 +11,17 @@
     }
   ],
   "paths": {
-    "/api/question-service/": {
-      "get": {
-        "description": "",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
-    },
     "/api/question-service/question": {
       "post": {
         "description": "Create a new question.",
         "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "title",
             "description": "Title of the question.",
@@ -137,8 +134,22 @@
     },
     "/api/question-service/list": {
       "get": {
-        "description": "Get questions based on topics or difficulty, with offset based pagination.",
+        "description": "Get questions based on topics or difficulty, with offset based pagination. Note: This will not return the content, test cases, default code, and solution of each question.",
         "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "topics",
             "description": "Array of topics to filter by.",
@@ -164,8 +175,17 @@
             }
           },
           {
+            "name": "author",
+            "description": "User ID of the author of the questions",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "limit",
             "description": "Number of questions to return per page.",
+            "default": 20,
             "in": "query",
             "schema": {
               "type": "number"
@@ -173,7 +193,8 @@
           },
           {
             "name": "page",
-            "description": "Page number to return.",
+            "description": "Page index to return.",
+            "default": 0,
             "in": "query",
             "schema": {
               "type": "number"
@@ -201,12 +222,12 @@
         }
       }
     },
-    "/api/question-service/question/{name}": {
+    "/api/question-service/question/{id}": {
       "get": {
         "description": "",
         "parameters": [
           {
-            "name": "name",
+            "name": "id",
             "in": "path",
             "required": true,
             "schema": {
@@ -225,9 +246,7 @@
             "description": "Internal Server Error"
           }
         }
-      }
-    },
-    "/api/question-service/question/{id}": {
+      },
       "put": {
         "description": "Update a question.",
         "parameters": [

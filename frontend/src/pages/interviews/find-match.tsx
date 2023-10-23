@@ -4,7 +4,7 @@ import { TypographyBody, TypographyH2 } from "@/components/ui/typography";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import InterviewsLayout from "@/components/interviews/InterviewsLayout";
+import InterviewsLayout from "@/components/interviews/interviews-layout";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function FindMatch() {
