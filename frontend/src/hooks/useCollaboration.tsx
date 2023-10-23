@@ -105,6 +105,7 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
         room.disconnect();
       }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId, userId]);
 
   useEffect(() => {

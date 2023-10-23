@@ -1,10 +1,8 @@
 import Loader from "@/components/interviews/loader";
 import { Button } from "@/components/ui/button";
 import { TypographyBody, TypographyH2 } from "@/components/ui/typography";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import InterviewsLayout from "@/components/interviews/InterviewsLayout";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function FindMatch() {
@@ -25,6 +23,7 @@ export default function FindMatch() {
         router.push("/interviews/match-not-found");
       }, 30000);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match, router]);
 
   return (
