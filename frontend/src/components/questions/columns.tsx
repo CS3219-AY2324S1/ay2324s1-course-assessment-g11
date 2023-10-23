@@ -5,7 +5,7 @@ import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 
-export const columns: ColumnDef<Question>[] = [
+export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isEditable => [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -54,23 +54,25 @@ export const columns: ColumnDef<Question>[] = [
     },
   },
   {
+    accessorKey: "id",
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const questionId = row.getValue("title") as string;
+      const questionId = row.original.id;
       return (
         <div className="flex gap-2 justify-between">
-          <Button variant="secondary" size="icon" className="h-8 w-8">
-            <EditIcon size={20} />
-          </Button>
+          {isEditable &&
+            <Button variant="secondary" size="icon" className="h-8 w-8" onClick={() => {
+              window.location.href = `/questions/${questionId}/edit`;
+            }}>
+              <EditIcon size={20} />
+            </Button>}
           <Button
             variant="outline"
             size="sm"
             className="h-8 gap-2"
             onClick={() => {
-              window.location.href = `/questions/${questionId
-                .split(" ")
-                .join("-")}`;
+              window.location.href = `/questions/${questionId}`;
             }}
           >
             Practice

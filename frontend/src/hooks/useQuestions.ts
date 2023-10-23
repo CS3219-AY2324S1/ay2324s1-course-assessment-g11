@@ -2,7 +2,7 @@ import { useContext } from "react";
 import {
   fetchQuestions as fetchQuestionsApi,
   fetchRandomQuestion as fetchRandomQuestionApi,
-  postNewQuestion as postNewQuestionApi,
+  postQuestion as postNewQuestionApi,
 } from "./../pages/api/questionHandler";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Difficulty } from "../types/QuestionTypes";

@@ -18,7 +18,7 @@ export const userQueuesByProgrammingLanguage: {
 } = {
   python: [],
   java: [],
-  cpp: [],
+  "c++": [],
 };
 
 export const waitingUsers: Map<string, EventEmitter> = new Map(); // key: user id, val: Event

@@ -29,7 +29,11 @@ export default function DifficultySelector({ onChange, showAny, defaultValue }: 
             className="w-32"
             variant={defaultValue == difficulty.value ? "outline" : "secondary"}
             value={difficulty.value}
-            onClick={(e) => onChange(e.currentTarget.value as Difficulty)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onChange(e.currentTarget.value as Difficulty);
+            }}
           >
             {difficulty.label}
           </Button>
