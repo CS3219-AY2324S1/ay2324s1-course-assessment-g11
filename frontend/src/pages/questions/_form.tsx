@@ -145,7 +145,7 @@ export default function QuestionsForm({
                     form.setValue("difficulty", value != "any" ? value : "easy")
                   }
                   showAny={false}
-                  defaultValue={form.getValues().difficulty}
+                  value={form.getValues().difficulty}
                 />
               </FormControl>
               <FormMessage />
