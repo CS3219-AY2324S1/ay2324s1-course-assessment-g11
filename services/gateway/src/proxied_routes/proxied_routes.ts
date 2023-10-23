@@ -24,7 +24,7 @@ export const proxied_routes: ProxiedRoute[] = [
   },
   {
     url: "/api/admin-service",
-    admin_required_methods: ["GET, POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
+    admin_required_methods: ["GET", "POST", "PUT", "DELETE"], // All routes in admin service can only be accessed by admins
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: adminServiceAddress,
@@ -33,7 +33,7 @@ export const proxied_routes: ProxiedRoute[] = [
   },
   {
     url: "/api/question-service",
-    admin_required_methods: ["POST, PUT, DELETE"], // Only admins can create, update or delete questions
+    admin_required_methods: ["POST", "PUT", "DELETE"], // Only admins can create, update or delete questions
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: questionServiceAddress,
@@ -55,15 +55,6 @@ export const proxied_routes: ProxiedRoute[] = [
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: collaborationServiceAddress,
-      changeOrigin: true,
-    },
-  },
-  {
-    url: "/api/question-service",
-    admin_required_methods: ["POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
-    user_match_required_methods: [], // No need for exact user match here
-    proxy: {
-      target: questionServiceAddress,
       changeOrigin: true,
     },
   },
