@@ -131,7 +131,7 @@ export default function Interviews() {
             <DifficultySelector
               onChange={(value) => setDifficulty(value)}
               showAny={true}
-              defaultValue={difficulty}
+              value={difficulty}
             />
           </div>
 
