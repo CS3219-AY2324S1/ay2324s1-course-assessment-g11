@@ -15,12 +15,11 @@ const uri = process.env.MONGO_ATLAS_URL || "mongodb://localhost:27017";
 const mongoClient = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
-    strict: true,
     deprecationErrors: true,
   },
 });
 
-async function run() {
+async function initConnection() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await mongoClient.connect();
@@ -29,21 +28,19 @@ async function run() {
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await mongoClient.close();
+  } catch (err) {
+    console.log(
+      util.inspect(err, { showHidden: false, depth: null, colors: true })
+    );
   }
 }
-
-/* For debugging. */
-router.get("/", function (req, res, next) {
-  run().catch(console.dir);
-  res.send("question-service");
-});
 
 function validateNewQuestion(reqBody: any): reqBody is NewQuestion {
   return reqBody.title && reqBody.content && isDifficulty(reqBody.difficulty);
 }
+
+// Ensure that the server can connect to mongodb first!
+// await initConnection();
 
 /**
  * Create a new question.
@@ -77,9 +74,8 @@ router.post("/question", async (req, res, next) => {
   req.body.solution = req.body.solution ?? {};
   // Connect to question db
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
-    let collection = db.collection("questions");
+    let collection = db.collection<Question>("questions");
     // Find question with same title
     let same_title_qn = await collection.findOne({ title: req.body.title });
     if (same_title_qn) {
@@ -97,6 +93,7 @@ router.post("/question", async (req, res, next) => {
       testCasesOutputs: req.body.testCasesOutputs ?? [],
       defaultCode: req.body.defaultCode ?? {},
       solution: req.body.solution ?? {},
+      author: req.headers['user-id']
     });
     if (!result.acknowledged) {
       res.status(500).send("Failed to insert question");
@@ -108,25 +105,31 @@ router.post("/question", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to insert question");
-  } finally {
-    await mongoClient.close();
   }
 });
 
 /**
  * Get questions based on topics or difficulty, with offset based pagination.
+ * 
+ * Note: This will not return the content, test cases, default code, and solution of each question.
  */
 router.get("/list", async (req, res, next) => {
   /**
-   * #swagger.description = 'Get questions based on topics or difficulty, with offset based pagination.'
+   * #swagger.description = 'Get questions based on topics or difficulty, with offset based pagination. Note: This will not return the content, test cases, default code, and solution of each question.'
    * #swagger.parameters['topics'] = { description: 'Array of topics to filter by.', type: 'array' }
    * #swagger.parameters['difficulty'] = { description: 'Array of difficulties to filter by.', type: 'array' }
    * #swagger.parameters['searchTitle'] = { description: 'Search for questions with titles containing this string.', type: 'string' }
-   * #swagger.parameters['limit'] = { description: 'Number of questions to return per page.', type: 'number' }
-   * #swagger.parameters['page'] = { description: 'Page number to return.', type: 'number' }
+   * #swagger.parameters['author'] = { description: 'User ID of the author of the questions', type: 'string' }
+   * #swagger.parameters['limit'] = { description: 'Number of questions to return per page.', type: 'number', default: 20 }
+   * #swagger.parameters['page'] = { description: 'Page index to return.', type: 'number', default: 0 }
    * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
    */
+  console.log(req.headers['user-id'])
+  if (req.query.body) {
+    req.body = JSON.parse(req.query.body as string);
+  }
   let searchObj: any = {};
+  let aggregateObj: Array<object> = [];
   if (req.body.topics && req.body.topics.length > 0) {
     searchObj.topics = { $elemMatch: { $in: req.body.topics } };
   }
@@ -140,21 +143,32 @@ router.get("/list", async (req, res, next) => {
     searchObj.difficulty = { $in: req.body.difficulty };
   }
   if (req.body.searchTitle) {
-    // TODO: Implement atlas search
-    // searchObj.title = { "$regex": req.body.searchTitle, "$options": "i"};
+    aggregateObj.push({
+      "$search": {
+        index: "title_index",
+        "text": {
+          "path": "title",
+          "query": req.body.searchTitle,
+        }
+      }
+    },);
   }
-  const limit = req.body.limit ?? 10;
-  const page = req.body.page ?? 1;
+  if (req.body.author) {
+    searchObj.author = { $eq: req.body.author };
+  }
+
+  aggregateObj.push({ "$match": searchObj });
+
+  const limit = Math.min(req.body.limit ?? 20, 100); // Max 100 questions per page
+  const page = req.body.page ?? 0;
   const sortObj = req.body.sort ?? { title: 1 };
+  aggregateObj.push({ "$project": { "content": 0, "testCasesInputs": 0, "testCasesOutputs": 0, "defaultCode": 0, "solution": 0 } },
+  { "$sort": sortObj }, { "$skip": page * limit }, { "$limit": limit + 1 });
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
     let result = await collection
-      .find(searchObj)
-      .sort(sortObj)
-      .limit(limit + 1)
-      .skip((page - 1) * limit)
+      .aggregate(aggregateObj)
       .toArray();
     let hasNextPage = result.length === limit + 1;
     if (hasNextPage) {
@@ -168,18 +182,15 @@ router.get("/list", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to get questions");
-  } finally {
-    await mongoClient.close();
   }
 });
 
-router.get("/question/:name", async (req, res, next) => {
+router.get("/question/:id", async (req, res, next) => {
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
     let result = await collection.findOne({
-      title: kebabToProperCase(req.params.name as string),
+      _id: new ObjectId(req.params.id),
     });
     if (!result) {
       res.status(404).send("Question not found");
@@ -191,8 +202,6 @@ router.get("/question/:name", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to get question");
-  } finally {
-    await mongoClient.close();
   }
 });
 
@@ -222,7 +231,6 @@ router.put("/question/:id", async (req, res, next) => {
   }
   // Connect to question db
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection("questions");
     // Find question with same title
@@ -252,14 +260,11 @@ router.put("/question/:id", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to update question");
-  } finally {
-    await mongoClient.close();
   }
 });
 
 router.delete("/question/:id", async (req, res, next) => {
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection("questions");
     let result = await collection.deleteOne({
@@ -279,8 +284,6 @@ router.delete("/question/:id", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to delete question");
-  } finally {
-    await mongoClient.close();
   }
 });
 
@@ -297,7 +300,6 @@ router.post("/random-question", async (req, res, next) => {
   let difficulty = req.body.difficulty;
   let topics = req.body.topics ?? [];
   try {
-    await mongoClient.connect();
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
     // Find random question filtered by difficulty and topics
@@ -318,7 +320,5 @@ router.post("/random-question", async (req, res, next) => {
       util.inspect(err, { showHidden: false, depth: null, colors: true })
     );
     res.status(500).send("Failed to get random question");
-  } finally {
-    await mongoClient.close();
   }
 });

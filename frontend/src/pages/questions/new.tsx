@@ -3,63 +3,43 @@ import { Button } from "@/components/ui/button";
 import { TypographyH2 } from "@/components/ui/typography";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import QuestionsForm from "./_form";
-import { useQuestions } from "@/hooks/useQuestions";
+import QuestionsForm, { formSchema } from "./_form";
 import { useState } from "react";
-import { useRouter } from "next/router";
-
-const formSchema = z.object({
-  title: z.string().min(2).max(100),
-  difficulty: z.enum(["easy", "medium", "hard"]),
-  topics: z.array(z.string().min(2).max(100)),
-  content: z.string().min(2).max(1000),
-  language: z.enum(["javascript", "python", "java", "c++"]),
-  defaultCode: z.string().min(0).max(10000) || undefined,
-});
+import { useQuestions } from "../../hooks/useQuestions";
 
 export default function NewQuestion() {
-  const { postNewQuestion } = useQuestions();
+  const {postNewQuestion} = useQuestions();
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
       difficulty: "easy",
       topics: [],
-      content: "",
-      language: "python",
-      defaultCode: "",
+      description: "",
+      testCasesInputs: [],
+      testCasesOutputs: [],
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    const new_vals = {
-      ...values,
-      testCaseInputs: [""],
-      testCaseOutputs: [""],
-      solution: { python: values.defaultCode },
-      defaultCode: {
-        python: "print('Hello World')",
-      },
-    };
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    try {
-      const res = await postNewQuestion(new_vals);
-      setLoading(false);
-      console.log(res);
-      console.log("Question successfully added");
-      // redirect to question page
-      router.push(`/questions/${res.title.split(" ").join("-")}`);
-    } catch (error) {
-      console.error(error);
-      // display error to user
-    }
+    postNewQuestion(values)
+      .then(() => {
+        setLoading(false);
+        alert("Success");
+        router.push("/questions");
+      })
+      .catch((err) => {
+        setLoading(false);
+        alert(err.message);
+      });
   }
 
   return (
