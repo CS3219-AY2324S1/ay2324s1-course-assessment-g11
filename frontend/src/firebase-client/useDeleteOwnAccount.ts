@@ -1,7 +1,7 @@
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
-import { userApiPathAddress } from "@/firebase-client/gateway-address";
+import { userApiPathAddress } from "@/gateway-address/gateway-address";
 
 export const useDeleteOwnAccount = () => {
   const { dispatch } = useContext(AuthContext);

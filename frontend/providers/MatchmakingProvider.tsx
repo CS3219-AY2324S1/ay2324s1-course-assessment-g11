@@ -8,8 +8,9 @@ import React, {
 import { io, Socket } from "socket.io-client";
 import { Match } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthContext";
+import {matchSocketAddress} from "@/gateway-address/gateway-address";
 
-const SERVER_URL = "http://localhost:5002";
+const SERVER_URL = matchSocketAddress;
 
 interface MatchmakingContextValue {
   socket: Socket | null;
@@ -48,19 +49,27 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   // Initialize socket connection
   useEffect(() => {
     if (currentUser) {
-      const newSocket = io(SERVER_URL, {
-        autoConnect: false,
-        // query: { username: currentUser?.email },
-        query: { username: generateRandomNumber() },
-      });
-      setSocket(newSocket);
-      newSocket.connect();
+      currentUser.getIdToken(true).then(
+        (token) => {
+          const newSocket = io(SERVER_URL, {
+            autoConnect: false,
+            // query: { username: currentUser?.email },
+            query: { username: generateRandomNumber() },
+            extraHeaders: {
+              "User-Id-Token": token
+            },
+            path: "/match/socket.io"
+          });
+          setSocket(newSocket);
+          newSocket.connect();
 
-      console.log("Socket connected");
+          console.log("Socket connected");
 
-      return () => {
-        newSocket.close();
-      };
+          return () => {
+            newSocket.close();
+          };
+        }
+      )
     }
   }, [currentUser]);
 
