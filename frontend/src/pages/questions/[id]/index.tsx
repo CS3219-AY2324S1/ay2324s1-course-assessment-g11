@@ -7,8 +7,9 @@ import { useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
+import { MrMiyagi } from "@uiball/loaders";
 
-export default function Room() {
+export default function Questions() {
   const router = useRouter();
   const questionId = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
@@ -36,40 +37,49 @@ export default function Room() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  if (loading) return (<p>Loading...</p>);
-
-  if (question === null) return (<p>Question not found</p>);
+  if (question === null && !loading) return (<p>Question not found</p>);
 
   // implement some on change solo save logic here - user side most likely
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
-      <div className="flex h-full">
-        <Tabs defaultValue="description" className="flex-1">
-          <TabsList>
-            <TabsTrigger value="description">
-              <TypographyBody>Description</TypographyBody>
-            </TabsTrigger>
-            <TabsTrigger value="solution">
-              <TypographyBody>Solution</TypographyBody>
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className="h-[79vh]">
-            <Description
-              question={question}
-              className="h-full"
-            />
-          </TabsContent>
-          <TabsContent value="solution">{question.solution}</TabsContent>
-        </Tabs>
-        <div className="flex-1">
-          <CodeEditor
-            defaultValue={question.defaultCode.python}
-            onChange={setAnswer}
-            text={answer}
+      {!router.isReady || question === null || loading ?
+        <div className="flex w-full h-full justify-center items-center">
+          <MrMiyagi
+            size={35}
+            lineWeight={3.5}
+            speed={1}
+            color="white"
           />
-        </div>
-      </div>
+        </div> :
+        (
+          <div className="flex h-full">
+            <Tabs defaultValue="description" className="flex-1">
+              <TabsList>
+                <TabsTrigger value="description">
+                  <TypographyBody>Description</TypographyBody>
+                </TabsTrigger>
+                <TabsTrigger value="solution">
+                  <TypographyBody>Solution</TypographyBody>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="description" className="h-[79vh]">
+                <Description
+                  question={question}
+                  className="h-full"
+                />
+              </TabsContent>
+              <TabsContent value="solution">{question.solution}</TabsContent>
+            </Tabs>
+            <div className="flex-1">
+              <CodeEditor
+                defaultValue={question.defaultCode.python}
+                onChange={setAnswer}
+                text={answer}
+              />
+            </div>
+          </div>
+        )}
     </div>
   );
 }
