@@ -12,8 +12,11 @@
     "start:local": "dotenv -e ../.env -- next start -H 0.0.0.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@hookform/resolvers": "^3.3.1",
     "@monaco-editor/react": "^4.5.2",
+    "@mui/material": "^5.14.14",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -25,6 +28,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-switch": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@tanstack/react-query": "^5.0.0",
     "@tanstack/react-table": "^8.10.4",
     "@types/node": "20.6.0",
     "@types/react": "18.2.21",
@@ -35,8 +39,6 @@
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
     "diff-match-patch": "^1.0.5",
-    "eslint": "8.49.0",
-    "eslint-config-next": "13.4.19",
     "firebase": "^10.4.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.279.0",
@@ -45,6 +47,7 @@
     "ot-text-unicode": "^4.0.0",
     "postcss": "8.4.29",
     "react": "18.2.0",
+    "react-activity-calendar": "^2.0.2",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.47.0",
     "react-icons": "^4.11.0",
@@ -54,12 +57,16 @@
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
     "twilio-video": "^2.28.1",
-    "typescript": "5.2.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/diff-match-patch": "^1.0.34",
     "@types/lodash": "^4.14.199",
-    "@types/socket.io-client": "^3.0.0"
+    "@types/react": "^18.2.30",
+    "@types/react-dom": "^18.2.14",
+    "@types/socket.io-client": "^3.0.0",
+    "eslint": "^8.51.0",
+    "eslint-config-next": "^13.5.6",
+    "typescript": "^5.2.2"
   }
 }

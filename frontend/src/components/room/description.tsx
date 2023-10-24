@@ -1,4 +1,3 @@
-import { Room } from "twilio-video";
 import { Question } from "../../types/QuestionTypes";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";

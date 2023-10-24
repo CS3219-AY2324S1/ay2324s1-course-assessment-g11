@@ -6,7 +6,7 @@ metadata:
   name: gateway
   namespace: default
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       io.kompose.service: gateway
@@ -26,6 +26,8 @@ spec:
                   key: firebase-service-account
             - name: PORT
               value: "4000"
+            - name: FRONTEND_ADDRESS
+              value: "http://www.codeparty.org:3000"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/gateway:latest
           name: gateway
           ports:

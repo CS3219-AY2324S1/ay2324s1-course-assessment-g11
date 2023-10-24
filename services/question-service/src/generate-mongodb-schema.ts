@@ -21,7 +21,7 @@ async function run() {
     validator: {
         $jsonSchema: {
             bsonType: "object",
-            required: [ "topics", "difficulty", "title", "content", "testCaseInputs", "testCaseOutputs", "dateCreated", "dateUpdated" ],
+            required: [ "topics", "difficulty", "title", "content", "testCasesInputs", "testCasesOutputs", "dateCreated", "dateUpdated" ],
             properties: {
                 topics: {
                 bsonType: "array",
@@ -42,14 +42,14 @@ async function run() {
                 bsonType: "string",
                 description: "must be a string and is required"
                 },
-                testCaseInputs: {
+                testCasesInputs: {
                 bsonType: "array",
                 description: "must be an array of strings and is required",
                 items: {
                     bsonType: "string"
                 }
                 },
-                testCaseOutputs: {
+                testCasesOutputs: {
                 bsonType: "array",
                 description: "must be an array of strings and is required",
                 items: {
@@ -63,7 +63,7 @@ async function run() {
                     java: {
                         bsonType: "string"
                     },
-                    cpp: {
+                    "c++": {
                         bsonType: "string"
                     },
                     python: {
@@ -78,7 +78,7 @@ async function run() {
                     java: {
                         bsonType: "string"
                     },
-                    cpp: {
+                    "c++": {
                         bsonType: "string"
                     },
                     python: {
