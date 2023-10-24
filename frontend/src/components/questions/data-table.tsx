@@ -60,19 +60,29 @@ export function DataTable<TData, TValue>({
 
   const [{pageIndex, pageSize}, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
+  const [searchTitle, setSearchTitle] = useState("");
+
   const fetchDataOptions = {
     pageIndex,
     pageSize,
+    searchTitle,
     uid: currentUser?.uid ?? null,
   };
 
   const dataQuery = useQuery({
     queryKey: ["questions", fetchDataOptions],
     queryFn: async ({queryKey}) => {
-      const {uid, pageIndex, pageSize} = queryKey[1] as {uid: string | null, pageIndex: number, pageSize: number};
+      const {uid, pageIndex, pageSize, searchTitle} = queryKey[1] as typeof fetchDataOptions;
       if (!uid) throw new Error("Unauthenticated user");
       setLoading(true);
-      const response = await fetchQuestions(currentUser, pageIndex, pageSize, (isEditable ? {"author": uid}: {}));
+      let conditions = {};
+      if (isEditable) {
+        conditions = {"author": uid};
+      }
+      if (searchTitle) {
+        conditions = {...conditions, "searchTitle": searchTitle};
+      }
+      const response = await fetchQuestions(currentUser, pageIndex, pageSize, conditions);
       setLoading(false)
       if (pageIndex > maxPage.current.maxFetchedPage) {
         maxPage.current.maxFetchedPage = pageIndex;
@@ -115,17 +125,51 @@ export function DataTable<TData, TValue>({
     pageCount: maxPage.current.isMax ? maxPage.current.maxFetchedPage + 1 : -1,
   });
 
+  
+
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Search questions..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-left w-full space-x-2">
+          <Input
+            placeholder="Search questions..."
+            defaultValue={searchTitle}
+            // onChange={(event) => setSearchTitle(event.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                setSearchTitle((e.target as EventTarget & HTMLInputElement).value);
+              }
+            }}
+            className="max-w-sm"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="sm" className="ml-auto">
+                Filter
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((column) => column.id === "difficulty")
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      // checked={column.getIsVisible()}
+                      // onCheckedChange={(value) =>
+                      //   column.toggleVisibility(!!value)
+                      // }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="sm" className="ml-auto">
