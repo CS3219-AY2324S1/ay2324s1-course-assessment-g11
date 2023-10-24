@@ -68,6 +68,7 @@ export const proxied_routes: ProxiedRoute[] = [
       pathRewrite: {
         "^/collaboration/socket.io": "socket.io",
       },
+      ws: true
     },
   },
   {
@@ -80,6 +81,7 @@ export const proxied_routes: ProxiedRoute[] = [
       pathRewrite: {
         "^/match/socket.io": "socket.io",
       },
+      ws: true
     },
   },
 ];

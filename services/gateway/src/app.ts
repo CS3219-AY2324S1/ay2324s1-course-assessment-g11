@@ -25,8 +25,12 @@ setupLogging(app);
 setupIsLoggedIn(app, proxied_routes);
 setupUserIdMatch(app, proxied_routes);
 setupAdmin(app, proxied_routes);
-setupProxies(app, proxied_routes);
+const proxyMiddlewareArray = setupProxies(app, proxied_routes);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
+
+for (let i = 0; i < proxyMiddlewareArray.length; i++) {
+  server.on('upgrade', proxyMiddlewareArray[i].upgrade);
+}
