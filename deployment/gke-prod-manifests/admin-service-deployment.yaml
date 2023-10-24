@@ -32,6 +32,10 @@ spec:
             - containerPort: 5005
               hostPort: 5005
               protocol: TCP
-          resources: {}
+          resources: 
+            # You must specify requests for CPU to autoscale
+            # based on CPU utilization
+            requests:
+              cpu: "250m"
       restartPolicy: Always
 status: {}

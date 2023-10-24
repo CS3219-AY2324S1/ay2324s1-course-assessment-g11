@@ -24,6 +24,10 @@ spec:
             - containerPort: 3000
               hostPort: 3000
               protocol: TCP
-          resources: {}
+          resources: 
+            # You must specify requests for CPU to autoscale
+            # based on CPU utilization
+            requests:
+              cpu: "250m"
       restartPolicy: Always
 status: {}
