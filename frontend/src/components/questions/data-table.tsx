@@ -61,21 +61,24 @@ export function DataTable<TData, TValue>({
   const [{pageIndex, pageSize}, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
   const [searchTitle, setSearchTitle] = useState("");
+  const [filteredDifficulty, setFilteredDifficulty] = useState({"easy": true, "medium": true, "hard": true});
+  const [localFilteredDifficulty, setLocalFilteredDifficulty] = useState({"easy": true, "medium": true, "hard": true});
 
   const fetchDataOptions = {
     pageIndex,
     pageSize,
     searchTitle,
+    filteredDifficulty,
     uid: currentUser?.uid ?? null,
   };
 
   const dataQuery = useQuery({
     queryKey: ["questions", fetchDataOptions],
     queryFn: async ({queryKey}) => {
-      const {uid, pageIndex, pageSize, searchTitle} = queryKey[1] as typeof fetchDataOptions;
+      const {uid, pageIndex, pageSize, searchTitle, filteredDifficulty} = queryKey[1] as typeof fetchDataOptions;
       if (!uid) throw new Error("Unauthenticated user");
       setLoading(true);
-      let conditions = {};
+      let conditions: any = {"difficulty": Object.keys(filteredDifficulty).filter((key) => (filteredDifficulty as any)[key])};
       if (isEditable) {
         conditions = {"author": uid};
       }
@@ -134,35 +137,48 @@ export function DataTable<TData, TValue>({
           <Input
             placeholder="Search questions..."
             defaultValue={searchTitle}
-            // onChange={(event) => setSearchTitle(event.target.value)}
             onKeyDown={e => {
               if (e.key === 'Enter') {
                 setSearchTitle((e.target as EventTarget & HTMLInputElement).value);
+                // reset pagination
+                setPagination({pageIndex: 0, pageSize: 10});
+                maxPage.current = {maxFetchedPage: -1, isMax: false};
               }
             }}
             className="max-w-sm"
           />
-          <DropdownMenu>
+          <DropdownMenu onOpenChange={open => {
+            if (!open) {
+              if (JSON.stringify(localFilteredDifficulty) !== JSON.stringify(filteredDifficulty)) {
+                setFilteredDifficulty(localFilteredDifficulty);
+                // reset pagination
+                setPagination({pageIndex: 0, pageSize: 10});
+                maxPage.current = {maxFetchedPage: -1, isMax: false};
+              }
+            }
+          }}>
             <DropdownMenuTrigger asChild>
               <Button variant="secondary" size="sm" className="ml-auto">
-                Filter
+                Filter by difficulty
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              {table
-                .getAllColumns()
-                .filter((column) => column.id === "difficulty")
-                .map((column) => {
+              {["easy", "medium", "hard"]
+                .map((difficulty) => {
                   return (
                     <DropdownMenuCheckboxItem
-                      key={column.id}
+                      key={difficulty}
                       className="capitalize"
-                      // checked={column.getIsVisible()}
-                      // onCheckedChange={(value) =>
-                      //   column.toggleVisibility(!!value)
-                      // }
+                      checked={(localFilteredDifficulty as any)[difficulty]}
+                      onCheckedChange={(value) =>
+                        setLocalFilteredDifficulty(prevValue => {
+                          const newValue = {...prevValue};
+                          (newValue as any)[difficulty] = !!value;
+                          return newValue;
+                        })
+                      }
                     >
-                      {column.id}
+                      {difficulty}
                     </DropdownMenuCheckboxItem>
                   );
                 })}
