@@ -24,19 +24,16 @@ export const proxied_routes: ProxiedRoute[] = [
   },
   {
     url: "/api/admin-service",
-    admin_required_methods: ["GET, POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
+    admin_required_methods: ["GET", "POST", "PUT", "DELETE"], // All routes in admin service can only be accessed by admins
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: adminServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        "^/api/admin-service": "",
-      },
     },
   },
   {
     url: "/api/question-service",
-    admin_required_methods: ["POST, PUT, DELETE"], // Only admins can create, update or delete questions
+    admin_required_methods: ["POST", "PUT", "DELETE"], // Only admins can create, update or delete questions
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: questionServiceAddress,
@@ -62,12 +59,27 @@ export const proxied_routes: ProxiedRoute[] = [
     },
   },
   {
-    url: "/api/question-service",
-    admin_required_methods: ["POST, PUT, DELETE"], // All routes in admin service can only be accessed by admins
+    url: "/collaboration/socket.io",
+    admin_required_methods: [],
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
-      target: questionServiceAddress,
+      target: collaborationServiceAddress,
       changeOrigin: true,
+      pathRewrite: {
+        "^/collaboration/socket.io": "socket.io",
+      },
+    },
+  },
+  {
+    url: "/match/socket.io",
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: matchingServiceAddress,
+      changeOrigin: true,
+      pathRewrite: {
+        "^/match/socket.io": "socket.io",
+      },
     },
   },
 ];

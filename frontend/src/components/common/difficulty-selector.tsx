@@ -5,10 +5,10 @@ type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
 interface DifficultySelectorProps {
   onChange: (value: Difficulty) => void;
   showAny: boolean;
-  defaultValue: Difficulty;
+  value: Difficulty;
 }
 
-export default function DifficultySelector({ onChange, showAny, defaultValue }: DifficultySelectorProps) {
+export default function DifficultySelector({ onChange, showAny, value }: DifficultySelectorProps) {
 
   const difficulties = [
     { label: "Easy", value: "easy" },
@@ -27,9 +27,13 @@ export default function DifficultySelector({ onChange, showAny, defaultValue }: 
           <Button
             key={difficulty.value}
             className="w-32"
-            variant={defaultValue == difficulty.value ? "outline" : "secondary"}
+            variant={value == difficulty.value ? "outline" : "secondary"}
             value={difficulty.value}
-            onClick={(e) => onChange(e.currentTarget.value as Difficulty)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onChange(e.currentTarget.value as Difficulty);
+            }}
           >
             {difficulty.label}
           </Button>

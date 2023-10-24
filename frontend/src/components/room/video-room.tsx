@@ -126,6 +126,7 @@ const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
         return () => {
             room.disconnect();
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [room]);
 
     return (

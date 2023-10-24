@@ -1,4 +1,6 @@
 import DifficultySelector from "@/components/common/difficulty-selector";
+import { columns } from "@/components/interviews/leaderboard/columns";
+import { DataTable } from "@/components/interviews/leaderboard/data-table";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -49,6 +51,50 @@ const frameworks = [
   },
 ];
 
+const leaderboardData = [
+  {
+    displayName: "John Doe",
+    attempts: 10,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "Jane Doe",
+    attempts: 98,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "John Doe",
+    attempts: 1,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "Jane Doe",
+    attempts: 132,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "John Doe",
+    attempts: 3410,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "Jane Doe",
+    attempts: 1340,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "John Doe",
+    attempts: 130,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+  {
+    displayName: "Jane Doe",
+    attempts: 10234,
+    photoURL: "https://i.pravatar.cc/300",
+  },
+];
+
+
 export default function Interviews() {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
@@ -77,70 +123,78 @@ export default function Interviews() {
         Try out mock interviews with your peers!
       </TypographyBodyHeavy>
 
-      <div className="flex-col flex gap-4 mt-12">
-        <TypographyH2 className="text-primary">Quick Match</TypographyH2>
-        <div>
-          <TypographySmall>Choose question difficulty</TypographySmall>
-          <DifficultySelector
-            onChange={(value) => setDifficulty(value)}
-            showAny={true}
-            defaultValue={difficulty}
-          />
-        </div>
-
-        <div>
-          <TypographySmall>Choose programming language</TypographySmall>
-          <div className="pt-3 pb-10">
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-[240px] justify-between"
-                >
-                  {value
-                    ? frameworks.find((framework) => framework.value === value)
-                        ?.label
-                    : "Select framework..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[240px] p-0">
-                <Command>
-                  <CommandInput placeholder="Search framework..." />
-                  <CommandEmpty>No framework found.</CommandEmpty>
-                  <CommandGroup>
-                    {frameworks.map((framework) => (
-                      <CommandItem
-                        key={framework.value}
-                        onSelect={(currentValue) => {
-                          setValue(currentValue === value ? "" : currentValue);
-                          setOpen(false);
-                        }}
-                      >
-                        <Check
-                          className={cn(
-                            "mr-2 h-4 w-4",
-                            value === framework.value
-                              ? "opacity-100"
-                              : "opacity-0"
-                          )}
-                        />
-                        {framework.label}
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </Command>
-              </PopoverContent>
-            </Popover>
+      <div className="flex justify-between">
+        <div className="flex-col flex gap-4 mt-12">
+          <TypographyH2 className="text-primary">Quick Match</TypographyH2>
+          <div>
+            <TypographySmall>Choose question difficulty</TypographySmall>
+            <DifficultySelector
+              onChange={(value) => setDifficulty(value)}
+              showAny={true}
+              value={difficulty}
+            />
           </div>
+
+          <div>
+            <TypographySmall>Choose programming language</TypographySmall>
+            <div className="pt-3 pb-10">
+              <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={open}
+                    className="w-[240px] justify-between"
+                  >
+                    {value
+                      ? frameworks.find((framework) => framework.value === value)
+                        ?.label
+                      : "Select framework..."}
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[240px] p-0">
+                  <Command>
+                    <CommandInput placeholder="Search framework..." />
+                    <CommandEmpty>No framework found.</CommandEmpty>
+                    <CommandGroup>
+                      {frameworks.map((framework) => (
+                        <CommandItem
+                          key={framework.value}
+                          onSelect={(currentValue) => {
+                            setValue(currentValue === value ? "" : currentValue);
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value === framework.value
+                                ? "opacity-100"
+                                : "opacity-0"
+                            )}
+                          />
+                          {framework.label}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
+            </div>
+          </div>
+          <Button onClick={onClickSearch} variant={"default"} className="w-fit px-6">
+            Practice with a peer!
+          </Button>
+        </div>
+        <div className="flex-col flex gap-4">
+          <TypographyH2 className="text-primary">
+            Leaderboard
+          </TypographyH2>
+          <DataTable columns={columns} data={leaderboardData} />
+          <div></div>
         </div>
       </div>
-
-      <Button onClick={onClickSearch} variant={"default"}>
-        Practice with a peer!
-      </Button>
     </div>
   );
 }

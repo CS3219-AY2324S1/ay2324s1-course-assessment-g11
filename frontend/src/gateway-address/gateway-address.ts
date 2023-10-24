@@ -9,3 +9,6 @@ const gatewayAddress = process.env.NEXT_PUBLIC_GATEWAY_ADDRESS || "http://localh
 
 export const userApiPathAddress = gatewayAddress + "api/user-service/";
 export const questionApiPathAddress = gatewayAddress + "api/question-service/";
+
+export const collaborationSocketAddress = gatewayAddress + "collaboration/socket.io";
+export const matchSocketAddress = gatewayAddress + "match/socket.io";
