@@ -27,6 +27,7 @@ export default function Spotlight({
       box.style.setProperty('--mouse-x', `${boxX}px`)
       box.style.setProperty('--mouse-y', `${boxY}px`)
     })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function Spotlight({
 
   useEffect(() => {
     onMouseMove()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mousePosition])
 
   const initContainer = () => {

@@ -63,7 +63,7 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
             if (disableVideo) return;
             connect(token, {
               name: roomId, audio: true,
-              video: { width: 640, height: 480, frameRate: 24 }
+              video: {width: 640, height: 480, frameRate: 24}
             }).then((room) => {
               console.log("Connected to Room");
               setRoom(room);
@@ -115,11 +115,12 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
             if (room) {
               room.disconnect();
             }
-          };
+          }
         }
-      )
+      );
     }
-  }, [roomId, userId, currentUser]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId, userId]);
 
   useEffect(() => {
     textRef.current = text;

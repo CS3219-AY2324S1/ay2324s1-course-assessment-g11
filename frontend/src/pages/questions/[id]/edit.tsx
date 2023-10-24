@@ -17,9 +17,6 @@ export default function EditQuestion() {
   
   const router = useRouter();
   const { id: questionId } = router.query;
-  if (!questionId) {
-    return <div>Invalid ID</div>;
-  }
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -34,6 +31,9 @@ export default function EditQuestion() {
   });
 
   useEffect(() => {
+    if (!questionId || !authIsReady) {
+      return;
+    }
     if (currentUser) {
       fetchQuestion(currentUser, questionId as string).then(question => {
         if (question) {
@@ -58,6 +58,7 @@ export default function EditQuestion() {
       // if user is not logged in, redirect to home
       router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
@@ -94,6 +95,7 @@ export default function EditQuestion() {
   }
 
   return (
+    questionId &&
     <div className="min-h-screen p-12 mx-auto max-w-3xl">
       <div className="flex gap-x-4 items-center">
         <Link href="/questions">

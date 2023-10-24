@@ -33,6 +33,7 @@ export default function Room() {
       // if user is not logged in, redirect to home
       router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
   if (loading) return (<p>Loading...</p>);

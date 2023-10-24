@@ -66,7 +66,7 @@ export default function Questions() {
           <DifficultySelector
             onChange={(value) => setDifficulty(value)}
             showAny={false}
-            defaultValue={difficulty}
+            value={difficulty}
           />
         </div>
         <Link href="">
