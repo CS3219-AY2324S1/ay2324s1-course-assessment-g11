@@ -4,6 +4,7 @@ import { io } from "../app";
 import prisma from "../prismaClient";
 import EventEmitter from "events";
 import { Match } from "@prisma/client";
+import { getRandomQuestionOfDifficulty } from "../questionAdapter";
 
 export const MAX_WAITING_TIME = 60 * 1000; // 60 seconds
 
@@ -487,6 +488,17 @@ export const findMatch = async (req: Request, res: Response) => {
     // Emit match found event to both users
     io.to(userId.toString()).emit("matchFound", match);
     io.to(match.id.toString()).emit("matchFound", user);
+
+    const questionId = getRandomQuestionOfDifficulty(difficulties[0]).then(
+      // difficulties???? need to intersect difficulties or not
+      (questionId) => {
+        return questionId;
+      }
+    );
+
+    // Emit question id to both users
+    io.to(userId.toString()).emit("qn", questionId);
+    io.to(match.id.toString()).emit("qn", questionId);
 
     return res.json({ match });
   }

@@ -6,13 +6,15 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
+import { useQuestions } from "@/hooks/useQuestions";
 
 export default function Room() {
   const router = useRouter();
 
   const roomId = router.query.id as string;
-  const userId = router.query.userId as string || "user1";
-  const disableVideo = (router.query.disableVideo as string)?.toLowerCase() === "true";
+  const userId = (router.query.userId as string) || "user1";
+  const disableVideo =
+    (router.query.disableVideo as string)?.toLowerCase() === "true";
 
   const { text, setText, cursor, setCursor, room } = useCollaboration({
     roomId: roomId as string,
@@ -20,15 +22,20 @@ export default function Room() {
     disableVideo,
   });
 
+  // const { } = useQuestions();
+  // TODO fetch question by question ID provided by matching service
+
   const question: Question = {
     title: "Two Sum",
     difficulty: "Easy",
     topics: ["Array", "Hash Table"],
-    description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
-    solution: "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
+    description:
+      "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
+    solution:
+      "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
     defaultCode: { python: "var twoSum = function(nums, target) {\n\n};" },
     id: "",
-    author: ""
+    author: "",
   };
 
   if (!router.isReady) return null;
@@ -46,9 +53,7 @@ export default function Room() {
             </TabsTrigger>
           </TabsList>
           <TabsContent value="description" className="h-[79vh]">
-            <Description
-              question={question}
-            />
+            <Description question={question} />
           </TabsContent>
           <TabsContent value="solution">{question.solution}</TabsContent>
         </Tabs>
