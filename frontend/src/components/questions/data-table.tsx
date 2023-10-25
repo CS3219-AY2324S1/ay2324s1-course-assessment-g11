@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
   columns,
   isEditable = false,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{"id": "title", "desc": false}]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const { user: currentUser, authIsReady } = useContext(AuthContext);
@@ -69,21 +69,26 @@ export function DataTable<TData, TValue>({
     pageSize,
     searchTitle,
     filteredDifficulty,
+    sorting,
     uid: currentUser?.uid ?? null,
   };
 
   const dataQuery = useQuery({
     queryKey: ["questions", fetchDataOptions],
     queryFn: async ({queryKey}) => {
-      const {uid, pageIndex, pageSize, searchTitle, filteredDifficulty} = queryKey[1] as typeof fetchDataOptions;
+      const {uid, pageIndex, pageSize, searchTitle, filteredDifficulty, sorting} = queryKey[1] as typeof fetchDataOptions;
       if (!uid) throw new Error("Unauthenticated user");
       setLoading(true);
       let conditions: any = {"difficulty": Object.keys(filteredDifficulty).filter((key) => (filteredDifficulty as any)[key])};
       if (isEditable) {
-        conditions = {"author": uid};
+        conditions = {...conditions, "author": uid};
       }
       if (searchTitle) {
         conditions = {...conditions, "searchTitle": searchTitle};
+      }
+      if (sorting.length > 0) {
+        const sortObj = sorting.map(sortState => ({[sortState.id]: sortState.desc ? -1 : 1})).reduce((acc, curr) => ({...acc, ...curr}), {});
+        conditions = {...conditions, "sort": sortObj};
       }
       const response = await fetchQuestions(currentUser, pageIndex, pageSize, conditions);
       setLoading(false)
@@ -123,6 +128,7 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       pagination
     },
+    manualSorting: true,
     manualPagination: true,
     onPaginationChange: setPagination,
     pageCount: maxPage.current.isMax ? maxPage.current.maxFetchedPage + 1 : -1,
@@ -177,6 +183,7 @@ export function DataTable<TData, TValue>({
                           return newValue;
                         })
                       }
+                      onSelect={e => e.preventDefault()}
                     >
                       {difficulty}
                     </DropdownMenuCheckboxItem>
