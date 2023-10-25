@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
+    "lint": "eslint src/**/*.{ts,js} swagger-doc-gen.ts",
     "build": "yarn run swagger-autogen && tsc",
     "start": "node ./dist/src/app.js",
     "dev:local": "dotenv -e ../../.env -c development -- yarn dev",
