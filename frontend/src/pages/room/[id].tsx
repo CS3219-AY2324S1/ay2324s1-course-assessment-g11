@@ -16,14 +16,16 @@ export default function Room() {
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
-  const { text, setText, cursor, setCursor, room } = useCollaboration({
-    roomId: roomId as string,
-    userId,
-    disableVideo,
-  });
+  const { text, setText, cursor, setCursor, room, setQuestionId } =
+    useCollaboration({
+      roomId: roomId as string,
+      userId,
+      disableVideo,
+    });
 
   // const { } = useQuestions();
   // TODO fetch question by question ID provided by matching service
+  // setQuestionId
 
   const question: Question = {
     title: "Two Sum",
