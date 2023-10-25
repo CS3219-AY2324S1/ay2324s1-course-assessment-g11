@@ -23,7 +23,6 @@
     "@types/cors": "^2.8.14",
     "@types/morgan": "^1.9.6",
     "swagger-autogen": "^2.23.6",
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "ts-node-dev": "^2.0.0"
   }
 }
