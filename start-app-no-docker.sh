@@ -6,7 +6,7 @@ prepend() {
     done
 }
 
-(yarn && yarn prisma generate && \
+(yarn install --frozen-lockfile && yarn prisma generate && \
     trap 'kill 0' INT TERM; \
     (yarn workspace frontend dev:local | prepend "frontend: ") & \
     (yarn workspace user-service dev:local | prepend "user-service: ") & \
