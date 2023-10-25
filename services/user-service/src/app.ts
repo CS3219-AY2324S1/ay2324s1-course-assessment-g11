@@ -3,7 +3,7 @@ import path from "path";
 import logger from "morgan";
 import indexRouter from "./routes/index";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../openapiDoc.json";
+import swaggerFile from "../swagger-output.json";
 import cors from "cors";
 
 const port: number = parseInt(process.env.PORT || "5001");

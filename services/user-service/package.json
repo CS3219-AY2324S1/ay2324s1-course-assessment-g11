@@ -5,8 +5,8 @@
   "scripts": {
     "dev:local": "dotenv -e ../../.env -c development -- yarn dev",
     "dev": "yarn swagger-autogen && ts-node-dev src/app.ts",
-    "swagger-autogen": "ts-node-dev ./openapiDocGen.ts",
-    "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} openapiDocGen.ts",
+    "swagger-autogen": "ts-node swagger-doc-gen.ts",
+    "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} swagger-doc-gen.ts",
     "build": "yarn swagger-autogen && tsc",
     "start": "node dist/src/app.js",
     "test": "vitest run -c ./test/vitest.config.unit.ts",

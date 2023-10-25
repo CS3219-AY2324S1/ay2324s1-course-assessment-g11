@@ -12,7 +12,7 @@ prepend() {
     (yarn workspace user-service dev:local | prepend "user-service: ") & \
     (yarn workspace admin-service dev:local | prepend "admin-service: ") & \
     (yarn workspace collaboration-service dev | prepend "collaboration-service: ") & \
-    (yarn workspace matching-service dev | prepend "matching-service: ") & \
-    (yarn workspace question-service dev | prepend "question-service: ") & \
+    (yarn workspace matching-service dev:local | prepend "matching-service: ") & \
+    (yarn workspace question-service dev:local | prepend "question-service: ") & \
     (yarn workspace gateway dev:local | prepend "gateway: ") & \
     wait)

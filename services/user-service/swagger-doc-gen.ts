@@ -9,7 +9,7 @@ const doc = {
   schemes: ["http"],
 };
 
-const outputFile = "./openapiDoc.json";
+const outputFile = "./swagger-output.json";
 const endpointsFiles = ["./src/app.ts"];
 
 /* NOTE: if you use the express Router, you must pass in the
