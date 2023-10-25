@@ -191,6 +191,15 @@ export function handleLooking(
         `Match found for user ${userId} with user ${matchId} and difficulty ${difficulty}`
       );
 
+      const questionId = await getRandomQuestionOfDifficulty(
+        difficulty! ?? "easy"
+      ).then(
+        // difficulties???? need to intersect difficulties or not
+        (questionId) => {
+          return questionId;
+        }
+      );
+
       // Inform both users of the match
       const newMatch = await prisma
         .$transaction([
@@ -200,6 +209,7 @@ export function handleLooking(
               userId2: matchId,
               chosenDifficulty: difficulty || "easy",
               chosenProgrammingLanguage: programmingLang,
+              questionId: questionId,
             },
           }),
           prisma.user.update({
@@ -485,7 +495,10 @@ export const findMatch = async (req: Request, res: Response) => {
       },
     });
 
-    const questionId = getRandomQuestionOfDifficulty(difficulties[0]).then(
+    // This function and REST API seems to be not in use
+    const questionId = await getRandomQuestionOfDifficulty(
+      difficulties[0]
+    ).then(
       // difficulties???? need to intersect difficulties or not
       (questionId) => {
         return questionId;
