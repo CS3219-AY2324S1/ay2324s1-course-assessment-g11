@@ -60,5 +60,5 @@ io.on("connection", (socket) => {
 });
 
 httpServer.listen(port, () => {
-  console.log(`Matching service is running at http://localhost:${port}`);
+  console.log(`matching-service is running on the port ${port}`);
 });

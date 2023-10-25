@@ -21,7 +21,7 @@ app.use("/api/user-service", indexRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`user-service listening on port ${port}`);
 });
 
 export default app;
