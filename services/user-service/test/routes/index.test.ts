@@ -9,6 +9,7 @@ import request from 'supertest';
 vi.mock('../../src/db/functions')
 
 const app = express();
+const userIdHeader = "User-Id";
 app.use(indexRouter);
 
 const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 0,
@@ -93,7 +94,10 @@ describe('/index', () => {
       userDatabaseFunctionsMock.updateUserByUid.mockResolvedValueOnce(fullNewUser);
 
       // The function being tested
-      const response = await request(app).put('/1').send();
+      const response = await request(app)
+        .put('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(200);
       expect(response.body).toStrictEqual(fullNewUser);
     })
@@ -106,7 +110,10 @@ describe('/index', () => {
       }));
 
       // The function being tested
-      const response = await request(app).put('/1').send();
+      const response = await request(app)
+        .put('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(404);
     })
 
@@ -115,8 +122,24 @@ describe('/index', () => {
       userDatabaseFunctionsMock.updateUserByUid.mockRejectedValueOnce(new Error());
 
       // The function being tested
-      const response = await request(app).put('/1').send();
+      const response = await request(app)
+        .put('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(500);
+    })
+
+    it('[PUT] /1 but the header UID does not match path param UID', async () => {
+
+      // Used to get back the user
+      userDatabaseFunctionsMock.updateUserByUid.mockResolvedValueOnce(fullNewUser);
+
+      // The function being tested
+      const response = await request(app)
+        .put('/1')
+        .set(userIdHeader, "2")
+        .send();
+      expect(response.status).toStrictEqual(400);
     })
   })
 
@@ -127,7 +150,10 @@ describe('/index', () => {
       userDatabaseFunctionsMock.deleteUserByUid.mockResolvedValueOnce(fullNewUser);
 
       // The function being tested
-      const response = await request(app).delete('/1').send();
+      const response = await request(app)
+        .delete('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(204);
     })
 
@@ -139,7 +165,10 @@ describe('/index', () => {
       }));
 
       // The function being tested
-      const response = await request(app).delete('/1').send();
+      const response = await request(app)
+        .delete('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(404);
     })
 
@@ -148,8 +177,24 @@ describe('/index', () => {
       userDatabaseFunctionsMock.deleteUserByUid.mockRejectedValueOnce(new Error());
 
       // The function being tested
-      const response = await request(app).delete('/1').send();
+      const response = await request(app)
+        .delete('/1')
+        .set(userIdHeader, "1")
+        .send();
       expect(response.status).toStrictEqual(500);
+    })
+
+    it('[DELETE] /1 but the header UID does not match path param UID', async () => {
+
+      // Used to get back the user
+      userDatabaseFunctionsMock.deleteUserByUid.mockResolvedValueOnce(fullNewUser);
+
+      // The function being tested
+      const response = await request(app)
+        .delete('/1')
+        .set(userIdHeader, "2")
+        .send();
+      expect(response.status).toStrictEqual(400);
     })
   })
 })
