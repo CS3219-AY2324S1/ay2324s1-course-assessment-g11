@@ -113,25 +113,31 @@ it in case you forget later on when you have a lot more files to commit.
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```
+1. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
+
+    ```bash
+    ./start-app-no-docker.sh # on mac /linus
+   
+    # You can also use the above command on Windows with Git Bash
+    
+    ```
 
 ### Getting Started - Docker:
+Docker and Docker Compose are used to set up a simulated production build (meaning that the Docker images and 
+containers that will be spun up locally are almost identical to those in the production environment, with the exception
+of some environment variables).
 
 1. **Run the start-app.sh script:** From the root repo, run
 
 ```bash
 ./start-app.sh # on mac / linus
 
-# or
-
-start-app.sh # on windows
+# You can also use the above command on Windows with Git Bash
 ```
 
-2. Made a change in code? To refresh containers, run
-
-```bash
-docker-compose up --force-recreate --build -d
-docker image prune -f
-```
+Any edits you make to the source code will not be automatically reflected on the site. We recommend using Docker
+Compose to check if your changes are likely to work on the production environment once they have been proven to work
+in your local development environment.
 
 ### Notes:
 

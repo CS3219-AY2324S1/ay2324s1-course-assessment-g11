@@ -4,7 +4,7 @@ services:
   user-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.user-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.user-service
     container_name: user-service
     volumes:
       - ./services/user-service:/app/services/user-service
@@ -17,7 +17,7 @@ services:
   matching-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.matching-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.matching-service
     container_name: matching-service
     volumes:
       - ./services/matching-service:/app/services/matching-service
@@ -30,7 +30,7 @@ services:
   collaboration-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.collaboration-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.collaboration-service
     container_name: collaboration-service
     volumes:
       - ./services/collaboration-service:/app/services/collaboration-service
@@ -47,7 +47,7 @@ services:
   question-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.question-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.question-service
     container_name: question-service
     volumes:
       - ./services/question-service:/app/services/question-service
@@ -60,7 +60,7 @@ services:
   admin-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.admin-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.admin-service
     container_name: admin-service
     volumes:
       - ./services/admin-service:/app/services/admin-service
@@ -73,7 +73,7 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.gateway
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.gateway
     container_name: gateway
     volumes:
       - ./services/gateway:/app/services/gateway
@@ -87,7 +87,10 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.frontend
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}
+        NEXT_PUBLIC_GATEWAY_ADDRESS_ARG: "http://localhost:4000/"
     container_name: frontend
     volumes:
       - ./frontend:/app/frontend
