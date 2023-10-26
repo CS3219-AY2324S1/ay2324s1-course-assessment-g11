@@ -79,8 +79,12 @@ services:
       - ./services/gateway:/app/services/gateway
     ports:
       - "4000:4000"
+      - "4002:4002"
+      - "4003:4003"
     environment:
-      PORT: 4000
+      HTTP_PROXY_PORT: 4000
+      WS_MATCH_PROXY_PORT: 4002
+      WS_COLLABORATION_PROXY_PORT: 4003
       FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
       FRONTEND_ADDRESS: "http://localhost:3000"
 
@@ -95,5 +99,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      NEXT_PUBLIC_GATEWAY_ADDRESS: "http://localhost:4000/"
+      NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS: "http://localhost:4000/"
+      NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS: "http://localhost:4002/"
+      NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS: "http://localhost:4003/"
       NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}

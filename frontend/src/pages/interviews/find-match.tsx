@@ -15,13 +15,18 @@ export default function FindMatch() {
   };
 
   useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
     if (match) {
       router.push("/interviews/match-found");
     } else {
-      setTimeout(() => {
+      timeout = setTimeout(() => {
         cancelLooking();
         router.push("/interviews/match-not-found");
       }, 30000);
+    }
+    return () => {
+      if (timeout)
+      clearTimeout(timeout);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match, router]);

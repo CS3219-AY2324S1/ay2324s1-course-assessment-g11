@@ -41,38 +41,72 @@ indexRouter.get(
 indexRouter.put(
   "/:uid",
   function (req: express.Request, res: express.Response) {
-    userDatabaseFunctions
-      .updateUserByUid(req.params.uid, req.body)
-      .then((result) => {
-        res.status(200).json(result);
-      })
-      .catch((error) => {
-        if (error.code === "P2025") {
-          res.status(404).end();
-        } else {
-          // Server side error such as database not being available
-          res.status(500).end();
-        }
-      });
+    /**
+     * Need to check that header UID was not tampered with.
+     *
+     * Attack Scenario:
+     *   1) User 2 wants to edit profile of user 1.
+     *   2) This should be blocked by the gateway since path param uid = 1 and header uid = 1
+     *      but user 2 only has authentication token for user 2
+     *   3) User 2 could change header uid = 2 to pass authentication, but retain path param uid = 1
+     *      to attempt to change user 1's data
+     *   4) Hence, need to check that param uid = header uid
+     */
+    const pathUid = req.params.uid;
+    const headerUid = req.get("User-Id");
+    if (pathUid !== headerUid) {
+      res.status(400).end();
+    } else {
+      userDatabaseFunctions
+        .updateUserByUid(req.params.uid, req.body)
+        .then((result) => {
+          res.status(200).json(result);
+        })
+        .catch((error) => {
+          if (error.code === "P2025") {
+            res.status(404).end();
+          } else {
+            // Server side error such as database not being available
+            res.status(500).end();
+          }
+        });
+    }
   }
 );
 
 indexRouter.delete(
   "/:uid",
   function (req: express.Request, res: express.Response) {
-    userDatabaseFunctions
-      .deleteUserByUid(req.params.uid)
-      .then(() => {
-        res.status(204).end();
-      })
-      .catch((error) => {
-        if (error.code === "P2025") {
-          res.status(404).end();
-        } else {
-          // Server side error such as database not being available
-          res.status(500).end();
-        }
-      });
+    /**
+     * Need to check that header UID was not tampered with.
+     *
+     * Attack Scenario:
+     *   1) User 2 wants to edit profile of user 1.
+     *   2) This should be blocked by the gateway since path param uid = 1 and header uid = 1
+     *      but user 2 only has authentication token for user 2
+     *   3) User 2 could change header uid = 2 to pass authentication, but retain path param uid = 1
+     *      to attempt to change user 1's data
+     *   4) Hence, need to check that param uid = header uid
+     */
+    const pathUid = req.params.uid;
+    const headerUid = req.get("User-Id");
+    if (pathUid !== headerUid) {
+      res.status(400).end();
+    } else {
+      userDatabaseFunctions
+        .deleteUserByUid(req.params.uid)
+        .then(() => {
+          res.status(204).end();
+        })
+        .catch((error) => {
+          if (error.code === "P2025") {
+            res.status(404).end();
+          } else {
+            // Server side error such as database not being available
+            res.status(500).end();
+          }
+        })
+    }
   }
 );
 
