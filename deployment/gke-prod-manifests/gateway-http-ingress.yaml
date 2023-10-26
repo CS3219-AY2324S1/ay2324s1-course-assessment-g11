@@ -8,6 +8,6 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: frontend-service
+      name: frontend
       port:
         number: 4000
