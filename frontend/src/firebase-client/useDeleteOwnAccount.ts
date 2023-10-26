@@ -15,6 +15,7 @@ export const useDeleteOwnAccount = () => {
           method: "DELETE",
           headers: {
             "User-Id-Token": idToken,
+            "User-Id": currentUser.uid
           },
         });
         // This will delete the user from the Firebase Authentication database
