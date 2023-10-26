@@ -61,8 +61,8 @@ function SingleAudioTrack({track}: {track: RemoteAudioTrack}) {
 }
 
 const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
-    const [isCameraOn, setIsCameraOn] = useState(true);
-    const [isMute, setIsMute] = useState(false);
+    const [isCameraOn, setIsCameraOn] = useState(false);
+    const [isMute, setIsMute] = useState(true);
     const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
     const [localParticipant, setLocalParticipant] = useState<LocalParticipant | null>(null);
 

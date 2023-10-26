@@ -66,6 +66,12 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
               video: {width: 640, height: 480, frameRate: 24}
             }).then((room) => {
               console.log("Connected to Room");
+              room.localParticipant.videoTracks.forEach(publication => {
+                publication.track.disable();
+              });
+              room.localParticipant.audioTracks.forEach(publication => {
+                publication.track.disable();
+              });
               setRoom(room);
             }).catch(err => {
               console.log(err, token, userId, roomId);
