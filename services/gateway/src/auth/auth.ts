@@ -4,6 +4,7 @@ import {frontendAddress} from "../proxied_routes/service_names";
 
 const redirectLink = frontendAddress;
 const userIdTokenHeader = "User-Id-Token";
+const userIdHeader = "User-Id";
 
 export const setupIsLoggedIn = (app : Express, routes : any[]) => {
   routes.forEach(r => {
@@ -32,8 +33,9 @@ export const setupUserIdMatch = (app : Express, routes : any[]) => {
   routes.forEach(r => {
     app.use(r.url, function(req : express.Request, res : express.Response, next : express.NextFunction) {
       if (r.user_match_required_methods.includes(req.method)) {
+        console.log(req.params)
         const idToken = req.get(userIdTokenHeader);
-        const paramUid = req.params.uid;
+        const paramUid = req.get(userIdHeader);
         if (!idToken || !paramUid) {
           res.redirect(redirectLink)
         } else {

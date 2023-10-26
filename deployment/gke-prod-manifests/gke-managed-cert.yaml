@@ -1,0 +1,11 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: gke-managed-cert
+spec:
+  domains:
+    - codeparty.org
+    - www.codeparty.org
+    - api.codeparty.org
+    - wsmatch.codeparty.org
+    - wscollab.codeparty.org

@@ -10,8 +10,13 @@ spec:
     - name: "4000"
       port: 4000
       targetPort: 4000
+    - name: "4002"
+      port: 4002
+      targetPort: 4002
+    - name: "4003"
+      port: 4003
+      targetPort: 4003
   selector:
     io.kompose.service: gateway
-  type: LoadBalancer
 status:
   loadBalancer: {}

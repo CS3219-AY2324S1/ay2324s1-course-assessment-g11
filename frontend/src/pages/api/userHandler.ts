@@ -3,7 +3,7 @@ import { EditableUser } from "@/types/UserTypes";
 
 export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
   try {
-    const url = `${userApiPathAddress}${currentUser.uid}}`;
+    const url = `${userApiPathAddress}${currentUser.uid}`;
     const idToken = await currentUser.getIdToken(true);
 
     console.log("user", user);
@@ -14,6 +14,7 @@ export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "User-Id": currentUser.uid
       },
       body: JSON.stringify(user),
     });
