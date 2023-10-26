@@ -6,8 +6,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.user-service
     container_name: user-service
-    volumes:
-      - ./services/user-service:/app/services/user-service
     ports:
       - "5001:5001"
     environment:
@@ -19,8 +17,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.matching-service
     container_name: matching-service
-    volumes:
-      - ./services/matching-service:/app/services/matching-service
     ports:
       - "5002:5002"
     environment:
@@ -32,9 +28,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.collaboration-service
     container_name: collaboration-service
-    volumes:
-      - ./services/collaboration-service:/app/services/collaboration-service
-      - ./utils:/app/utils
     ports:
       - "5003:5003"
     environment:
@@ -49,8 +42,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.question-service
     container_name: question-service
-    volumes:
-      - ./services/question-service:/app/services/question-service
     ports:
       - "5004:5004"
     environment:
@@ -62,8 +53,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.admin-service
     container_name: admin-service
-    volumes:
-      - ./services/admin-service:/app/services/admin-service
     ports:
       - "5005:5005"
     environment:
@@ -75,8 +64,6 @@ services:
       context: .
       dockerfile: deployment/prod-dockerfiles/Dockerfile.gateway
     container_name: gateway
-    volumes:
-      - ./services/gateway:/app/services/gateway
     ports:
       - "4000:4000"
       - "4002:4002"
@@ -98,8 +85,5 @@ services:
         NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4002/"
         NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4003/"
     container_name: frontend
-    volumes:
-      - ./frontend:/app/frontend
-      - ./utils:/app/utils
     ports:
       - "3000:3000"
