@@ -8,9 +8,9 @@ import React, {
 import { io, Socket } from "socket.io-client";
 import { Match } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthContext";
-import {matchSocketAddress} from "@/gateway-address/gateway-address";
+import {wsMatchProxyGatewayAddress} from "@/gateway-address/gateway-address";
 
-const SERVER_URL = matchSocketAddress;
+const SERVER_URL = wsMatchProxyGatewayAddress;
 
 interface MatchmakingContextValue {
   socket: Socket | null;
@@ -57,8 +57,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
             query: { username: generateRandomNumber() },
             extraHeaders: {
               "User-Id-Token": token
-            },
-            path: "/match/socket.io"
+            }
           });
           setSocket(newSocket);
           newSocket.connect();
