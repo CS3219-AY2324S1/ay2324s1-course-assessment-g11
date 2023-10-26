@@ -212,14 +212,14 @@ export function handleLooking(
               questionId: questionId,
             },
           }),
-          prisma.user.update({
-            where: { id: userId },
-            data: { matchedUserId: matchId },
-          }),
-          prisma.user.update({
-            where: { id: matchId },
-            data: { matchedUserId: userId },
-          }),
+          // prisma.user.update({
+          //   where: { id: userId },
+          //   data: { matchedUserId: matchId },
+          // }),
+          // prisma.user.update({
+          //   where: { id: matchId },
+          //   data: { matchedUserId: userId },
+          // }),
         ])
         .catch((err) => {
           console.log(err);
