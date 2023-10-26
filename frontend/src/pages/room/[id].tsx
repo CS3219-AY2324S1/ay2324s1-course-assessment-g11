@@ -7,12 +7,12 @@ import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 export default function Room() {
   const router = useRouter();
-
   const roomId = router.query.id as string;
-  const questionId = router.query.questionId as string;
   const userId = (router.query.userId as string) || "user1";
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
@@ -38,12 +38,19 @@ export default function Room() {
   };
 
   const { fetchQuestion } = useQuestions();
-  fetchQuestion(questionId).then((fetchQuestion) => {
-    if (fetchQuestion != null) {
-      question = fetchQuestion;
-      setQuestionId(question.id);
-    }
-  });
+
+  async function getQuestionId() {
+    return await prisma.match.findUnique({ roomId: roomId }).questionId;
+  }
+
+  getQuestionId().then((questionId) =>
+    fetchQuestion(questionId).then((fetchQuestion) => {
+      if (fetchQuestion != null) {
+        question = fetchQuestion;
+        setQuestionId(question.id);
+      }
+    })
+  );
 
   if (!router.isReady) return null;
 

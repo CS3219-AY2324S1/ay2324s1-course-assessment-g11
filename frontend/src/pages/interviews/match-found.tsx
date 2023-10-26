@@ -39,10 +39,7 @@ export default function MatchFound() {
   };
 
   const onClickAccept = () => {
-    router.push({
-      pathname: `/room/${match?.roomId}`,
-      query: { questionId: match?.questionId },
-    });
+    router.push(`/room/${match?.roomId}`);
   };
 
   return (
