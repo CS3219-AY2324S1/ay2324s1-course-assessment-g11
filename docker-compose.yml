@@ -79,8 +79,12 @@ services:
       - ./services/gateway:/app/services/gateway
     ports:
       - "4000:4000"
+      - "4002:4002"
+      - "4003:4003"
     environment:
-      PORT: 4000
+      HTTP_PROXY_PORT: 4000
+      WS_MATCH_PROXY_PORT: 4002
+      WS_COLLABORATION_PROXY_PORT: 4003
       FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
       FRONTEND_ADDRESS: "http://localhost:3000"
 

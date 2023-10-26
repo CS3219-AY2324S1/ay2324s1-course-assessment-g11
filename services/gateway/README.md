@@ -24,7 +24,7 @@ The below code shows a sample route that is being proxied from the frontend to t
   }
 ```
 
-This code is part of the `proxied_routes` list in `src/proxied_routes/proxied_routes.ts` file.
+This code is part of the `http_proxied_routes` list in `src/proxied_routes/proxied_routes.ts` file.
 
 Explanation:
 * `url` - The initial path. Assuming that the gateway address is `YYY://localhost:4000`, the frontend would call `YYY://localhost:4000/users`
