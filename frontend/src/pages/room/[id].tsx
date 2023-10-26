@@ -12,6 +12,7 @@ export default function Room() {
   const router = useRouter();
 
   const roomId = router.query.id as string;
+  const questionId = router.query.questionId as string;
   const userId = (router.query.userId as string) || "user1";
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
@@ -23,12 +24,8 @@ export default function Room() {
       disableVideo,
     });
 
-  // const { } = useQuestions();
-  // TODO fetch question by question ID provided by matching service
-  // setQuestionId
-
-  const question: Question = {
-    title: "Two Sum",
+  let question: Question = {
+    title: "Example Question",
     difficulty: "Easy",
     topics: ["Array", "Hash Table"],
     description:
@@ -39,6 +36,14 @@ export default function Room() {
     id: "",
     author: "",
   };
+
+  const { fetchQuestion } = useQuestions();
+  fetchQuestion(questionId).then((fetchQuestion) => {
+    if (fetchQuestion != null) {
+      question = fetchQuestion;
+      setQuestionId(question.id);
+    }
+  });
 
   if (!router.isReady) return null;
 

@@ -7,6 +7,7 @@ import {
   TypographyH3,
 } from "@/components/ui/typography";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import { query } from "express";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -38,7 +39,10 @@ export default function MatchFound() {
   };
 
   const onClickAccept = () => {
-    router.push(`/room/${match?.roomId}`);
+    router.push({
+      pathname: `/room/${match?.roomId}`,
+      query: { questionId: match?.questionId },
+    });
   };
 
   return (

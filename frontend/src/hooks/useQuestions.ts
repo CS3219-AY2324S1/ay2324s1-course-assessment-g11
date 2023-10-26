@@ -3,12 +3,19 @@ import {
   fetchQuestions as fetchQuestionsApi,
   fetchRandomQuestion as fetchRandomQuestionApi,
   postQuestion as postNewQuestionApi,
+  fetchQuestion as fetchQuestionApi,
 } from "./../pages/api/questionHandler";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Difficulty } from "../types/QuestionTypes";
 
 export const useQuestions = () => {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
+
+  const fetchQuestion = async (qid: string) => {
+    if (authIsReady && currentUser) {
+      return fetchQuestionApi(currentUser, qid);
+    }
+  };
 
   const fetchQuestions = async () => {
     if (authIsReady) {
@@ -31,5 +38,10 @@ export const useQuestions = () => {
     }
   };
 
-  return { fetchQuestions, fetchRandomQuestion, postNewQuestion };
+  return {
+    fetchQuestion,
+    fetchQuestions,
+    fetchRandomQuestion,
+    postNewQuestion,
+  };
 };

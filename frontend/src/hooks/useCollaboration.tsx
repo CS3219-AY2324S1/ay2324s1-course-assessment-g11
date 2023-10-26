@@ -37,7 +37,7 @@ const useCollaboration = ({
     "#Write your solution here".length
   );
   const [room, setRoom] = useState<Room | null>(null); // twilio room
-  const [questionId, setQuestionId] = useState<string>("1");
+  const [questionId, setQuestionId] = useState<string>("");
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
   const prevCursorRef = useRef<number>(cursor);
@@ -59,7 +59,9 @@ const useCollaboration = ({
         setSocket(socketConnection);
 
         socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
-        socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
+        if (questionId !== "") {
+          socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
+        }
 
         socketConnection.on("twilio-token", (token: string) => {
           twilioTokenRef.current = token;
