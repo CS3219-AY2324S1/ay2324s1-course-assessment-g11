@@ -31,7 +31,7 @@ spec:
             - name: WS_COLLABORATION_PROXY_PORT
               value: "4003"
             - name: FRONTEND_ADDRESS
-              value: "http://www.codeparty.org:3000"
+              value: "https://www.codeparty.org"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/gateway:latest
           name: gateway
           ports:
