@@ -24,5 +24,6 @@ spec:
       targetPort: 8080
   selector:
     io.kompose.service: gateway
+  type: LoadBalancer
 status:
   loadBalancer: {}
