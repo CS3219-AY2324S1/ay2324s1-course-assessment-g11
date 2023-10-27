@@ -8,6 +8,7 @@ spec:
     type: HTTP
     requestPath: /healthz
     port: 8080
-  customRequestHeaders:
+  customResponseHeaders:
     headers:
       - "Access-Control-Allow-Origin: https://www.codeparty.org"
+      - "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"
