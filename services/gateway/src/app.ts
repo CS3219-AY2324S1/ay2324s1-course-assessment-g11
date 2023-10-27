@@ -6,6 +6,7 @@ import { setupProxies } from "./proxy/proxy";
 import {http_proxied_routes, wsCollaborationProxiedRoutes, wsMatchProxiedRoutes} from "./proxied_routes/proxied_routes";
 import {frontendAddress} from "./proxied_routes/service_names";
 import {createProxyMiddleware} from "http-proxy-middleware";
+import healthCheck from "express-healthcheck";
 
 
 const httpApp : Express = express();
@@ -24,6 +25,9 @@ const wsCollaborationProxyPort : number = parseInt(process.env.WS_COLLABORATION_
 httpApp.use(cors(corsOptions));
 wsMatchApp.use(cors(corsOptions));
 wsCollaborationApp.use(cors(corsOptions));
+
+// Health check
+httpApp.use('/healthcheck', healthCheck());
 
 /**
  * WARNING: Do not add body parsing middleware to the Gateway.
