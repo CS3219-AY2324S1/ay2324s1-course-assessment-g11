@@ -1,0 +1,14 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: gateway-backend-config
+spec:
+  healthCheck:
+    timeoutSec: 3
+    type: HTTP
+    requestPath: /healthcheck
+    port: 4000
+  customResponseHeaders:
+    headers:
+      - "Access-Control-Allow-Origin: https://www.codeparty.org"
+      - "Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS"

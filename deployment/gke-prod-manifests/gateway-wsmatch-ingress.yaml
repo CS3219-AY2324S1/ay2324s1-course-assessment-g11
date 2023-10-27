@@ -8,6 +8,6 @@ metadata:
 spec:
   defaultBackend:
     service:
-      name: gateway-service
+      name: gateway
       port:
         number: 4002

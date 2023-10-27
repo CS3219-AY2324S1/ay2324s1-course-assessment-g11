@@ -3059,6 +3059,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/express-healthcheck@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@types/express-healthcheck/-/express-healthcheck-0.1.2.tgz#1f1aa8846d5e0fb9f71a9acad8ac2f1806bf6fd6"
+  integrity sha512-enSA1JuIErGJqfCCDmNAq6N8OIBhgdg+mBvHUOTrjy7zdrDEKJ4sJr97MoFZNIDh32bUII1F+uPmqgC9H8b4mQ==
+  dependencies:
+    "@types/express" "*"
+
 "@types/express-serve-static-core@^4.17.33":
   version "4.17.39"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.39.tgz#2107afc0a4b035e6cb00accac3bdf2d76ae408c8"
@@ -6049,6 +6056,11 @@ exponential-backoff@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/exponential-backoff/-/exponential-backoff-3.1.1.tgz#64ac7526fe341ab18a39016cd22c787d01e00bf6"
   integrity sha512-dX7e/LHVJ6W3DE1MHWi9S1EYzDESENfLrYohG2G++ovZrYOkm4Knwa0mc1cn84xJOR4KEU0WSchhLbd0UklbHw==
+
+express-healthcheck@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/express-healthcheck/-/express-healthcheck-0.1.0.tgz#cabec78129c4cb90cd7fb894dfae21b82e27cb07"
+  integrity sha512-FKQVgDo1FMSOYflEq4g6CvNk6stbpkuX0MWXmul8dSICuw/b+3JgoYOq/aiDcYid5k42jh/4HYLYC/M/qDBEuQ==
 
 express-normalize-query-params-middleware@^0.5.0:
   version "0.5.1"
