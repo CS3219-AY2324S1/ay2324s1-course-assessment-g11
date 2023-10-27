@@ -44,6 +44,10 @@ spec:
             - containerPort: 4003
               hostPort: 4003
               protocol: TCP
+            # Needed for health check
+            - containerPort: 8080
+              hostPort: 8080
+              protocol: TCP
           resources: 
             # You must specify requests for CPU to autoscale
             # based on CPU utilization
