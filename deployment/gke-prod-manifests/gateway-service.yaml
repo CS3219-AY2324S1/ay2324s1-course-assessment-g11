@@ -5,6 +5,8 @@ metadata:
     io.kompose.service: gateway
   name: gateway
   namespace: default
+  annotations:
+    cloud.google.com/backend-config: '{"default": "gateway-backend-config"}'
 spec:
   ports:
     - name: "4000"
@@ -16,7 +18,12 @@ spec:
     - name: "4003"
       port: 4003
       targetPort: 4003
+    # Needed for health check
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
   selector:
     io.kompose.service: gateway
+  type: LoadBalancer
 status:
   loadBalancer: {}
