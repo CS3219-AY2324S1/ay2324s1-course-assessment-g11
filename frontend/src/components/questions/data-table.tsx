@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
   columns,
   isEditable = false,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+  const [sorting, setSorting] = useState<SortingState>([{"id": "title", "desc": false}]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const { user: currentUser, authIsReady } = useContext(AuthContext);
@@ -60,19 +60,37 @@ export function DataTable<TData, TValue>({
 
   const [{pageIndex, pageSize}, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize: 10 });
 
+  const [searchTitle, setSearchTitle] = useState("");
+  const [filteredDifficulty, setFilteredDifficulty] = useState({"easy": true, "medium": true, "hard": true});
+  const [localFilteredDifficulty, setLocalFilteredDifficulty] = useState({"easy": true, "medium": true, "hard": true});
+
   const fetchDataOptions = {
     pageIndex,
     pageSize,
+    searchTitle,
+    filteredDifficulty,
+    sorting,
     uid: currentUser?.uid ?? null,
   };
 
   const dataQuery = useQuery({
     queryKey: ["questions", fetchDataOptions],
     queryFn: async ({queryKey}) => {
-      const {uid, pageIndex, pageSize} = queryKey[1] as {uid: string | null, pageIndex: number, pageSize: number};
+      const {uid, pageIndex, pageSize, searchTitle, filteredDifficulty, sorting} = queryKey[1] as typeof fetchDataOptions;
       if (!uid) throw new Error("Unauthenticated user");
       setLoading(true);
-      const response = await fetchQuestions(currentUser, pageIndex, pageSize, (isEditable ? {"author": uid}: {}));
+      let conditions: any = {"difficulty": Object.keys(filteredDifficulty).filter((key) => (filteredDifficulty as any)[key])};
+      if (isEditable) {
+        conditions = {...conditions, "author": uid};
+      }
+      if (searchTitle) {
+        conditions = {...conditions, "searchTitle": searchTitle};
+      }
+      if (sorting.length > 0) {
+        const sortObj = sorting.map(sortState => ({[sortState.id]: sortState.desc ? -1 : 1})).reduce((acc, curr) => ({...acc, ...curr}), {});
+        conditions = {...conditions, "sort": sortObj};
+      }
+      const response = await fetchQuestions(currentUser, pageIndex, pageSize, conditions);
       setLoading(false)
       if (pageIndex > maxPage.current.maxFetchedPage) {
         maxPage.current.maxFetchedPage = pageIndex;
@@ -110,22 +128,71 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       pagination
     },
+    manualSorting: true,
     manualPagination: true,
     onPaginationChange: setPagination,
     pageCount: maxPage.current.isMax ? maxPage.current.maxFetchedPage + 1 : -1,
   });
 
+  
+
   return (
     <div>
       <div className="flex items-center py-4">
-        <Input
-          placeholder="Search questions..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
-        />
+        <div className="flex items-left w-full space-x-2">
+          <Input
+            placeholder="Search questions..."
+            defaultValue={searchTitle}
+            onKeyDown={e => {
+              if (e.key === 'Enter') {
+                setSearchTitle((e.target as EventTarget & HTMLInputElement).value);
+                // reset pagination
+                setPagination({pageIndex: 0, pageSize: 10});
+                maxPage.current = {maxFetchedPage: -1, isMax: false};
+              }
+            }}
+            className="max-w-sm"
+          />
+          <DropdownMenu onOpenChange={open => {
+            if (!open) {
+              if (JSON.stringify(localFilteredDifficulty) !== JSON.stringify(filteredDifficulty)) {
+                setFilteredDifficulty(localFilteredDifficulty);
+                // reset pagination
+                setPagination({pageIndex: 0, pageSize: 10});
+                maxPage.current = {maxFetchedPage: -1, isMax: false};
+              }
+            }
+          }}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="sm" className="ml-auto">
+                Filter by difficulty
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {["easy", "medium", "hard"]
+                .map((difficulty) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={difficulty}
+                      className="capitalize"
+                      checked={(localFilteredDifficulty as any)[difficulty]}
+                      onCheckedChange={(value) =>
+                        setLocalFilteredDifficulty(prevValue => {
+                          const newValue = {...prevValue};
+                          (newValue as any)[difficulty] = !!value;
+                          return newValue;
+                        })
+                      }
+                      onSelect={e => e.preventDefault()}
+                    >
+                      {difficulty}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary" size="sm" className="ml-auto">
