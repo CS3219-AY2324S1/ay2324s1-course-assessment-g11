@@ -6,8 +6,8 @@ spec:
   healthCheck:
     timeoutSec: 3
     type: HTTP
-    requestPath: /healthz
-    port: 8080
+    requestPath: /healthcheck
+    port: 4000
   customResponseHeaders:
     headers:
       - "Access-Control-Allow-Origin: https://www.codeparty.org"
