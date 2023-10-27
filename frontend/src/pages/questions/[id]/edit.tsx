@@ -13,7 +13,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 
 export default function EditQuestion() {
   const [loading, setLoading] = useState(true);
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   
   const router = useRouter();
   const { id: questionId } = router.query;
@@ -34,7 +34,7 @@ export default function EditQuestion() {
     if (!questionId || !authIsReady) {
       return;
     }
-    if (currentUser) {
+    if (currentUser && isAdmin) {
       fetchQuestion(currentUser, questionId as string).then(question => {
         if (question) {
           form.setValue("title", question.title);
@@ -55,7 +55,7 @@ export default function EditQuestion() {
         setLoading(false);
       });
     } else {
-      // if user is not logged in, redirect to home
+      // if user is not logged in or is not admin, redirect to home
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

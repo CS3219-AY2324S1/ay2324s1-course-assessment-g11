@@ -20,6 +20,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 export default function Questions() {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
+  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
 
   const { fetchRandomQuestion } = useQuestions();
 
@@ -40,6 +41,10 @@ export default function Questions() {
     }
   };
 
+  if (!authIsReady) {
+    return <div></div>
+  }
+
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
       <div className="flex justify-between items-center">
@@ -51,7 +56,7 @@ export default function Questions() {
             Practice our questions to ace your coding interview!
           </TypographyBodyHeavy>
         </div>
-        <Link href="/questions/new">
+        <Link href="/questions/new" hidden={!isAdmin}>
           <Button className="gap-2">
             <PlusIcon />
             Contribute question
@@ -76,17 +81,17 @@ export default function Questions() {
         </Link>
       </div>
 
-      <div className="flex-col flex gap-4 py-12">
+      {isAdmin && <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
         <QueryClientProvider client={queryClientMyQuestions}>
           <DataTable columns={getColumnDefs(true)} isEditable />
         </QueryClientProvider>
-      </div>
+      </div>}
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
         <QueryClientProvider client={queryClientAll}>
-          <DataTable columns={getColumnDefs(false)} />
+          <DataTable columns={getColumnDefs(isAdmin)} />
         </QueryClientProvider>
       </div>
     </div>
