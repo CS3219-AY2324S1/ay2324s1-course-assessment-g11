@@ -119,8 +119,8 @@ jobs:
       # Build the Docker images and push to Google Artifact Repository
       - name: Build and push Docker images
         run: |-
-          chmod u+x ./build-prod-images.sh
-          ./build-prod-images.sh
+          chmod u+x ./build-export-prod-images.sh
+          ./build-export-prod-images.sh
         working-directory: ./deployment
 
       # Deploy the Docker images to the GKE cluster
