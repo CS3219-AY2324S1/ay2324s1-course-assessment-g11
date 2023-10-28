@@ -1,4 +1,3 @@
-import "dotenv/config";
 import util from "util";
 import express from "express";
 import sanitizeHtml from "sanitize-html";
