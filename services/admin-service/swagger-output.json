@@ -11,7 +11,7 @@
     }
   ],
   "paths": {
-    "/listUsers": {
+    "/api/admin-service/listUsers": {
       "get": {
         "description": "",
         "responses": {
@@ -24,7 +24,7 @@
         }
       }
     },
-    "/setAdmin/{uid}": {
+    "/api/admin-service/setAdmin/{uid}": {
       "put": {
         "description": "",
         "parameters": [
@@ -50,7 +50,7 @@
         }
       }
     },
-    "/removeAdmin/{uid}": {
+    "/api/admin-service/removeAdmin/{uid}": {
       "put": {
         "description": "",
         "parameters": [
