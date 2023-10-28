@@ -3,7 +3,7 @@ import path from "path";
 import logger from "morgan";
 import indexRouter from "./routes/index";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../openapiDoc.json";
+import swaggerFile from "./swagger-output.json";
 import cors from "cors";
 
 const port: number = parseInt(process.env.PORT || "5001");
@@ -21,7 +21,7 @@ app.use("/api/user-service", indexRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`user-service listening on port ${port}`);
 });
 
 export default app;

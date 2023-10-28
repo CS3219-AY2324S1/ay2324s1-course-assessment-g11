@@ -4,10 +4,8 @@ services:
   user-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.user-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.user-service
     container_name: user-service
-    volumes:
-      - ./services/user-service:/app/services/user-service
     ports:
       - "5001:5001"
     environment:
@@ -17,10 +15,8 @@ services:
   matching-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.matching-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.matching-service
     container_name: matching-service
-    volumes:
-      - ./services/matching-service:/app/services/matching-service
     ports:
       - "5002:5002"
     environment:
@@ -30,11 +26,8 @@ services:
   collaboration-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.collaboration-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.collaboration-service
     container_name: collaboration-service
-    volumes:
-      - ./services/collaboration-service:/app/services/collaboration-service
-      - ./utils:/app/utils
     ports:
       - "5003:5003"
     environment:
@@ -47,10 +40,8 @@ services:
   question-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.question-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.question-service
     container_name: question-service
-    volumes:
-      - ./services/question-service:/app/services/question-service
     ports:
       - "5004:5004"
     environment:
@@ -60,10 +51,8 @@ services:
   admin-service:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.admin-service
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.admin-service
     container_name: admin-service
-    volumes:
-      - ./services/admin-service:/app/services/admin-service
     ports:
       - "5005:5005"
     environment:
@@ -73,10 +62,8 @@ services:
   gateway:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.gateway
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.gateway
     container_name: gateway
-    volumes:
-      - ./services/gateway:/app/services/gateway
     ports:
       - "4000:4000"
       - "4002:4002"
@@ -91,15 +78,12 @@ services:
   frontend:
     build:
       context: .
-      dockerfile: deployment/dev-dockerfiles/Dockerfile.frontend
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}
+        NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4000/"
+        NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4002/"
+        NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4003/"
     container_name: frontend
-    volumes:
-      - ./frontend:/app/frontend
-      - ./utils:/app/utils
     ports:
       - "3000:3000"
-    environment:
-      NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS: "http://localhost:4000/"
-      NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS: "http://localhost:4002/"
-      NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS: "http://localhost:4003/"
-      NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}

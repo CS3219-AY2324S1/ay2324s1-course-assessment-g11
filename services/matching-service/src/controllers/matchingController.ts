@@ -73,6 +73,7 @@ export function handleConnection(socket: Socket) {
 
 export function handleDisconnect(
   socket: Socket,
+  // eslint-disable-next-line no-undef
   timer: NodeJS.Timeout,
   userId: string,
   userMatchReq: UserMatchReq
@@ -122,6 +123,7 @@ export function handleLooking(
   socket: Socket,
   userId: string,
   userMatchReq: UserMatchReq,
+  // eslint-disable-next-line no-undef
   timer: NodeJS.Timeout
 ): (...args: any[]) => void {
   return async (difficulties: string[], programmingLang: string) => {
@@ -269,6 +271,7 @@ export function handleLooking(
 }
 export function handleCancelLooking(
   userId: string,
+  // eslint-disable-next-line no-undef
   timer: NodeJS.Timeout,
   userMatchReq: UserMatchReq
 ): (...args: any[]) => void {

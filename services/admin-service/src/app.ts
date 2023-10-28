@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../openapiDoc.json";
+import swaggerFile from "./swagger-output.json";
 
 const app: Express = express();
 
@@ -13,7 +13,7 @@ app.use("/api/admin-service", router);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`admin-service listening on port ${port}`);
 });
 
 export default app;

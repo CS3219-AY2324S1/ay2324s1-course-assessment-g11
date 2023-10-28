@@ -1,8 +1,6 @@
 import admin from "firebase-admin";
 import { Auth, getAuth } from "firebase-admin/auth";
-import path from "path";
 import process from "process";
-import dotenv from "dotenv";
 import { App } from "firebase-admin/lib/app";
 
 const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT

@@ -3,11 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "lint": "next lint",
     "dev:local": "dotenv -e ../.env -- yarn dev",
     "dev": "next dev",
     "build": "next build",
     "start": "next start -H 0.0.0.0",
-    "lint": "next lint",
     "build:local": "dotenv -e ../.env -- next build",
     "start:local": "dotenv -e ../.env -- next start -H 0.0.0.0"
   },
@@ -59,12 +59,9 @@
   "devDependencies": {
     "@types/diff-match-patch": "^1.0.34",
     "@types/lodash": "^4.14.199",
-    "@types/node": "^20.8.8",
     "@types/react": "^18.2.31",
     "@types/react-dom": "^18.2.14",
     "@types/socket.io-client": "^3.0.0",
-    "eslint": "^8.51.0",
-    "eslint-config-next": "^13.5.6",
-    "typescript": "^5.2.2"
+    "eslint-config-next": "^13.5.6"
   }
 }
