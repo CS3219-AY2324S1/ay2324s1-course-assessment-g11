@@ -1,4 +1,3 @@
-import "dotenv/config";
 import { MongoClient, ServerApiVersion } from 'mongodb';
 import { exit } from "process";
 

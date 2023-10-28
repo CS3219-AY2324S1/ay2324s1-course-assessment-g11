@@ -27,10 +27,7 @@
     "@types/cors": "^2.8.14",
     "@types/morgan": "^1.9.5",
     "@types/supertest": "^2.0.12",
-    "dotenv-cli": "^7.3.0",
     "supertest": "^6.3.3",
-    "swagger-autogen": "^2.23.6",
-    "ts-node-dev": "^2.0.0",
     "vitest": "^0.34.4",
     "vitest-mock-extended": "^1.2.1"
   }
