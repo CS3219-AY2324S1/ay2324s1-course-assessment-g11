@@ -24,15 +24,29 @@ spec:
                 secretKeyRef:
                   name: firebase-service-account
                   key: firebase-service-account
-            - name: PORT
+            - name: HTTP_PROXY_PORT
               value: "4000"
+            - name: WS_MATCH_PROXY_PORT
+              value: "4002"
+            - name: WS_COLLABORATION_PROXY_PORT
+              value: "4003"
             - name: FRONTEND_ADDRESS
-              value: "http://www.codeparty.org:3000"
+              value: "https://www.codeparty.org"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/gateway:latest
           name: gateway
           ports:
             - containerPort: 4000
               hostPort: 4000
+              protocol: TCP
+            - containerPort: 4002
+              hostPort: 4002
+              protocol: TCP
+            - containerPort: 4003
+              hostPort: 4003
+              protocol: TCP
+            # Needed for health check
+            - containerPort: 8080
+              hostPort: 8080
               protocol: TCP
           resources: 
             # You must specify requests for CPU to autoscale

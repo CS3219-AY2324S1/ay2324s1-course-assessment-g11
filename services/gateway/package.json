@@ -15,12 +15,14 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
+    "express-healthcheck": "^0.1.0",
     "firebase-admin": "^11.10.1",
     "http-proxy-middleware": "^2.0.6",
     "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.14",
+    "@types/express-healthcheck": "^0.1.2",
     "@types/morgan": "^1.9.6",
     "swagger-autogen": "^2.23.6",
     "ts-node-dev": "^2.0.0"

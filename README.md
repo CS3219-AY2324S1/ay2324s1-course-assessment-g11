@@ -113,25 +113,53 @@ it in case you forget later on when you have a lot more files to commit.
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```
+1. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
+
+    ```bash
+    ./start-app-no-docker.sh # on mac /linus
+   
+    # You can also use the above command on Windows with Git Bash
+    
+    ```
 
 ### Getting Started - Docker:
+Docker and Docker Compose are used to set up a simulated production build (meaning that the Docker images and 
+containers that will be spun up locally are almost identical to those in the production environment, with the exception
+of some environment variables).
 
-1. **Run the start-app.sh script:** From the root repo, run
-
-```bash
-./start-app.sh # on mac / linus
-
-# or
-
-start-app.sh # on windows
-```
-
-2. Made a change in code? To refresh containers, run
+1. **Run yarn docker:build:** From the root repo, run
 
 ```bash
-docker-compose up --force-recreate --build -d
-docker image prune -f
+yarn docker:build 
 ```
+This will create new Docker images.
+
+1. **Run yarn docker:devup:** From the root repo, run
+```bash
+yarn docker:devup 
+```
+This will start all the containers.
+
+1. **Once done, run yarn docker:devdown:** From the root repo, run
+```bash
+yarn docker:devdown 
+```
+This will stop and delete all the containers.
+
+#### If you want to do all the above steps at once, see the below section
+
+**Run the start-app-with-docker.sh script:** From the root repo, run
+
+```bash
+./start-app-with-docker.sh # on mac / linus
+
+# You can also use the above command on Windows with Git Bash
+```
+This will create new Docker images everytime it is run. Be careful of how much disk space you have left.
+
+Any edits you make to the source code will not be automatically reflected on the site. We recommend using Docker
+Compose to check if your changes are likely to work on the production environment once they have been proven to work
+in your local development environment.
 
 ### Notes:
 

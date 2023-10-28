@@ -7,7 +7,7 @@ import {
   userServiceAddress,
 } from "./service_names";
 
-export const proxied_routes: ProxiedRoute[] = [
+export const http_proxied_routes: ProxiedRoute[] = [
   {
     url: "/api/user-service",
     admin_required_methods: [], // Empty, so no admin verification is done for all methods to the user-service
@@ -58,28 +58,30 @@ export const proxied_routes: ProxiedRoute[] = [
       changeOrigin: true,
     },
   },
+];
+
+export const wsMatchProxiedRoutes: ProxiedRoute[] = [
   {
-    url: "/collaboration/socket.io",
-    admin_required_methods: [],
-    user_match_required_methods: [], // No need for exact user match here
-    proxy: {
-      target: collaborationServiceAddress,
-      changeOrigin: true,
-      pathRewrite: {
-        "^/collaboration/socket.io": "socket.io",
-      },
-    },
-  },
-  {
-    url: "/match/socket.io",
+    url: "/",
     admin_required_methods: [],
     user_match_required_methods: [], // No need for exact user match here
     proxy: {
       target: matchingServiceAddress,
       changeOrigin: true,
-      pathRewrite: {
-        "^/match/socket.io": "socket.io",
-      },
+      ws: true
     },
   },
-];
+]
+
+export const wsCollaborationProxiedRoutes: ProxiedRoute[] = [
+  {
+    url: "/",
+    admin_required_methods: [],
+    user_match_required_methods: [], // No need for exact user match here
+    proxy: {
+      target: collaborationServiceAddress,
+      changeOrigin: true,
+      ws: true
+    },
+  },
+]
