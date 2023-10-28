@@ -18,6 +18,9 @@ env:
   PRISMA_DATABASE_URL: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
   MONGO_ATLAS_URL: ${{ secrets.MONGO_ATLAS_URL_PROD }}
   NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
+  NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS: https://api.codeparty.org/
+  NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS: https://wsmatch.codeparty.org
+  NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS: https://wscollab.codeparty.org
   TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
   TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
   TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
@@ -116,8 +119,8 @@ jobs:
       # Build the Docker images and push to Google Artifact Repository
       - name: Build and push Docker images
         run: |-
-          chmod u+x ./build-prod-images.sh
-          ./build-prod-images.sh
+          chmod u+x ./build-export-prod-images.sh
+          ./build-export-prod-images.sh
         working-directory: ./deployment
 
       # Deploy the Docker images to the GKE cluster
