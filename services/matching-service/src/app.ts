@@ -12,7 +12,7 @@ import { handleLeaveMatch } from "./controllers/matchingController";
 import { handleSendMessage } from "./controllers/matchingController";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../swagger-output.json";
+import swaggerFile from "./swagger-output.json";
 
 const app = express();
 const port = process.env.PORT || 5002;

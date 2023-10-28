@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import http, { Server as HTTPServer } from "http";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../swagger-output.json";
+import swaggerFile from "./swagger-output.json";
 import cors from "cors";
 
 import { router as indexRouter } from "./routes";
