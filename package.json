@@ -10,7 +10,7 @@
     ]
   },
   "scripts": {
-    "docker:build": "docker build --no-cache -t peerprep-base -f Dockerfile . && dotenv -e .env -- docker-compose build --no-cache",
+    "docker:build": "docker build -t peerprep-base -f Dockerfile . && dotenv -e .env -- docker-compose build",
     "docker:devup": "dotenv -e .env -- docker-compose up",
     "docker:devdown": "docker-compose down"
   },

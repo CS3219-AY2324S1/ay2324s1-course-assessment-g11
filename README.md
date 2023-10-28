@@ -127,13 +127,35 @@ Docker and Docker Compose are used to set up a simulated production build (meani
 containers that will be spun up locally are almost identical to those in the production environment, with the exception
 of some environment variables).
 
-1. **Run the start-app.sh script:** From the root repo, run
+1. **Run yarn docker:build:** From the root repo, run
 
 ```bash
-./start-app.sh # on mac / linus
+yarn docker:build 
+```
+This will create new Docker images.
+
+1. **Run yarn docker:devup:** From the root repo, run
+```bash
+yarn docker:devup 
+```
+This will start all the containers.
+
+1. **Once done, run yarn docker:devdown:** From the root repo, run
+```bash
+yarn docker:devdown 
+```
+This will stop and delete all the containers.
+
+#### If you want to do all the above steps at once, see the below section
+
+**Run the start-app-with-docker.sh script:** From the root repo, run
+
+```bash
+./start-app-with-docker.sh # on mac / linus
 
 # You can also use the above command on Windows with Git Bash
 ```
+This will create new Docker images everytime it is run. Be careful of how much disk space you have left.
 
 Any edits you make to the source code will not be automatically reflected on the site. We recommend using Docker
 Compose to check if your changes are likely to work on the production environment once they have been proven to work
