@@ -3,7 +3,7 @@
 ## Pre-requisites:
 1. Install dependencies using `yarn install`
 2. Run `yarn prisma generate`
-3. `yarn workspace matching-service run dev`
+3. `yarn workspace matching-service run dev:local`
 4. Look at [index.html](./src/routes/index.html) to see how to use the API
 
 ## API:

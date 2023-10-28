@@ -36,5 +36,5 @@ app.use("/api/collaboration-service/room", roomRouter(io));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
-  console.log(`Listening on *:${PORT}`);
+  console.log(`collaboration-service listening on port ${PORT}`);
 });

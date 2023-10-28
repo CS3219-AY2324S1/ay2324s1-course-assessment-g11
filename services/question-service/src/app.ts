@@ -27,5 +27,5 @@ app.use("/api/question-service", indexRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
-  console.log(`Listening on *:${PORT}`);
+  console.log(`question-service listening on port ${PORT}`);
 });

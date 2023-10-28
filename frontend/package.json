@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "lint": "eslint src/**/*.{ts,js} next-env.d.ts next.config.js postcss.config.js tailwind.config.ts",
     "dev:local": "dotenv -e ../.env -- yarn dev",
     "dev": "next dev",
     "build": "next build",
@@ -64,7 +65,6 @@
     "@types/react-dom": "^18.2.14",
     "@types/socket.io-client": "^3.0.0",
     "eslint": "^8.51.0",
-    "eslint-config-next": "^13.5.6",
-    "typescript": "^5.2.2"
+    "eslint-config-next": "^13.5.6"
   }
 }

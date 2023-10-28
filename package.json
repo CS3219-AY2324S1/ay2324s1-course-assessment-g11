@@ -25,11 +25,11 @@
     "@typescript-eslint/parser": "^6.7.3",
     "eslint": "^8.49.0",
     "firebase-tools": "^12.6.1",
-    "nodemon": "^3.0.1",
     "prisma": "^5.4.2",
     "shx": "^0.3.4",
     "swagger-autogen": "^2.23.6",
-    "swagger-express-ts": "^1.1.0"
+    "swagger-express-ts": "^1.1.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",

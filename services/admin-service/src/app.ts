@@ -13,7 +13,7 @@ app.use("/api/admin-service", router);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+  console.log(`admin-service listening on port ${port}`);
 });
 
 export default app;

@@ -1,5 +1,5 @@
 import React from "react";
-import { MatchmakingProvider } from "../../../providers/MatchmakingProvider";
+import { MatchmakingProvider } from "../../providers/MatchmakingProvider";
 
 interface InterviewsLayoutProps {
   children: React.ReactNode;

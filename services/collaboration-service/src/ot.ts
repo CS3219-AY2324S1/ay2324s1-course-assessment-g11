@@ -42,16 +42,6 @@ class CircularArray<T> {
     predicate: (value: T) => boolean,
     callbackFn: (previousValue: T, currentValue: T) => T,
     initialValue: T
-  ): T;
-  public reduceFromMatchedPredicateToLatest(
-    predicate: (value: T) => boolean,
-    callbackFn: (
-      previousValue: T,
-      currentValue: T,
-      currentIndex: number,
-      array: T[]
-    ) => T,
-    initialValue: T
   ): T {
     for (let i = 0; i < this.array.length; i++) {
       const index = (this.last - i + this.array.length) % this.array.length;
