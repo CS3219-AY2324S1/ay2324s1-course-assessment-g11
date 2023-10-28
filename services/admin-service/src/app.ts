@@ -1,6 +1,6 @@
 import express, { Express } from "express";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../openapiDoc.json";
+import swaggerFile from "./swagger-output.json";
 
 const app: Express = express();
 
