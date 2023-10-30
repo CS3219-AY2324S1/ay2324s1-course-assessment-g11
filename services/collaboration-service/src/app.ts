@@ -5,7 +5,7 @@ import logger from "morgan";
 import http, { Server as HTTPServer } from "http";
 import { Server as SocketIOServer } from "socket.io";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../swagger-output.json";
+import swaggerFile from "./swagger-output.json";
 import bodyParser from "body-parser";
 import roomRouter from "./routes/room";
 import demoRouter from "./routes/demo";
@@ -36,5 +36,5 @@ app.use("/api/collaboration-service/room", roomRouter(io));
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
-  console.log(`Listening on *:${PORT}`);
+  console.log(`collaboration-service listening on port ${PORT}`);
 });

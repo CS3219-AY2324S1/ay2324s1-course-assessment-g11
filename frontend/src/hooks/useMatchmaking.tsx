@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MatchmakingContext } from "../../providers/MatchmakingProvider";
+import { MatchmakingContext } from "../providers/MatchmakingProvider";
 
 export function useMatchmaking() {
   const context = useContext(MatchmakingContext);

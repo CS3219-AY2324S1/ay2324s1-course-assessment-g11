@@ -10,8 +10,8 @@
     ]
   },
   "scripts": {
-    "docker:build": "docker build --no-cache -t peerprep-base -f Dockerfile . && docker-compose build --no-cache",
-    "docker:devup": "dotenv -e .env docker-compose up",
+    "docker:build": "docker build -t peerprep-base -f Dockerfile . && dotenv -e .env -- docker-compose build",
+    "docker:devup": "dotenv -e .env -- docker-compose up",
     "docker:devdown": "docker-compose down"
   },
   "devDependencies": {
@@ -25,11 +25,11 @@
     "@typescript-eslint/parser": "^6.7.3",
     "eslint": "^8.49.0",
     "firebase-tools": "^12.6.1",
-    "nodemon": "^3.0.1",
     "prisma": "^5.4.2",
     "shx": "^0.3.4",
     "swagger-autogen": "^2.23.6",
-    "swagger-express-ts": "^1.1.0"
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
     "@prisma/client": "^5.4.2",
