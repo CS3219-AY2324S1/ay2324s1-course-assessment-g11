@@ -4,13 +4,13 @@ import app from "../src/app"
 
 import request from 'supertest';
 
-const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 0,
-  matchProgrammingLanguage: "Python" };
+const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: "easy",
+  matchProgrammingLanguage: "python" };
 
-const updatedNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 1,
-  matchProgrammingLanguage: "Python"};
+const updatedNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: "medium",
+  matchProgrammingLanguage: "python"};
 
-const updatePayload = { matchDifficulty: 1 };
+const updatePayload = { matchDifficulty: "medium" };
 
 const userIdHeader = "User-Id";
 

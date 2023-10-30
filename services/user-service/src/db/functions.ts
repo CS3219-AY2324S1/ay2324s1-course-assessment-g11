@@ -111,6 +111,27 @@ const userDatabaseFunctions = {
       throw error;
     }
   },
+
+  async setMatchPreferenceOfUser(uid: string, data: {
+    matchDifficulty: string;
+    matchProgrammingLanguage: string;
+  }) {
+    try {
+      const updatedResult = await prismaClient.appUser.update({
+        where: {
+          uid: uid,
+        },
+        data: {
+          matchDifficulty: data["matchDifficulty"],
+          matchProgrammingLanguage: data["matchProgrammingLanguage"],
+        },
+      });
+      return updatedResult;
+    } catch (error: any) {
+      console.error(`Error setting match preference: ${error.message}`);
+      throw error;
+    }
+  }
 };
 
 export default userDatabaseFunctions;
