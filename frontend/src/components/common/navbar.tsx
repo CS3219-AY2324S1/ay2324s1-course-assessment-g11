@@ -23,7 +23,7 @@ enum TabsOptions {
 }
 
 export default function Navbar() {
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState<TabsOptions>(TabsOptions.NULL);
 
   const { login } = useLogin();
@@ -79,6 +79,7 @@ export default function Navbar() {
             </div>
           )}
         </div>
+        {isAdmin && <p>Admin Page</p>}
         {!currentUser && (
           <div className="grid grid-cols-2 gap-4">
             <Button variant={"outline"} onClick={login}>
