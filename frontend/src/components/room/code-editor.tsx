@@ -39,26 +39,18 @@ type CodeEditorProps = {
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const frameworks = [
+export const languages = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "python",
+    label: "python",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "java",
+    label: "java",
   },
   {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
+    value: "c++",
+    label: "c++",
   },
 ];
 
@@ -128,7 +120,7 @@ export default function CodeEditor({
               className="w-[240px] justify-between"
             >
               {value
-                ? frameworks.find((framework) => framework.value === value)
+                ? languages.find((framework) => framework.value === value)
                     ?.label
                 : "Select framework..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -139,7 +131,7 @@ export default function CodeEditor({
               <CommandInput placeholder="Search framework..." />
               <CommandEmpty>No framework found.</CommandEmpty>
               <CommandGroup>
-                {frameworks.map((framework) => (
+                {languages.map((framework) => (
                   <CommandItem
                     key={framework.value}
                     onSelect={(currentValue) => {
