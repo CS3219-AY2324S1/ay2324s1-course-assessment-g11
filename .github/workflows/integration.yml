@@ -43,9 +43,13 @@ jobs:
 
     - name: Run linting
       run: |
-        yarn workspace user-service lint
         yarn workspace admin-service lint
+        yarn workspace collaboration-service lint
+        yarn workspace frontend lint
         yarn workspace gateway lint
+        yarn workspace matching-service lint
+        yarn workspace question-service lint
+        yarn workspace user-service lint
 
     - name: Run unit tests
       run: |

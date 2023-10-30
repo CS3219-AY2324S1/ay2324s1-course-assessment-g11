@@ -4,4 +4,4 @@ export interface Question extends NewQuestion, Document {
     _id?: ObjectId;
     dateCreated: Date;
     author: string;
-};
+}

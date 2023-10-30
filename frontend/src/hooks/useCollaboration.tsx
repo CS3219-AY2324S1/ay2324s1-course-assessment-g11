@@ -7,7 +7,7 @@ import {
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
 import { Room, connect } from "twilio-video";
-import { collaborationSocketAddress } from "@/gateway-address/gateway-address";
+import { wsCollaborationProxyGatewayAddress } from "@/gateway-address/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 
 type UseCollaborationProps = {
@@ -50,11 +50,10 @@ const useCollaboration = ({
   useEffect(() => {
     if (currentUser) {
       currentUser.getIdToken(true).then((token) => {
-        const socketConnection = io(collaborationSocketAddress, {
+        const socketConnection = io(wsCollaborationProxyGatewayAddress, {
           extraHeaders: {
             "User-Id-Token": token,
           },
-          path: "/collaboration/socket.io",
         });
         setSocket(socketConnection);
 
@@ -73,6 +72,12 @@ const useCollaboration = ({
           })
             .then((room) => {
               console.log("Connected to Room");
+              room.localParticipant.videoTracks.forEach((publication) => {
+                publication.track.disable();
+              });
+              room.localParticipant.audioTracks.forEach((publication) => {
+                publication.track.disable();
+              });
               setRoom(room);
             })
             .catch((err) => {

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import logger from "morgan";
 import http, { Server as HTTPServer } from "http";
 import swaggerUi from "swagger-ui-express";
-import swaggerFile from "../swagger-output.json";
+import swaggerFile from "./swagger-output.json";
 import cors from "cors";
 
 import { router as indexRouter } from "./routes";
@@ -27,5 +27,5 @@ app.use("/api/question-service", indexRouter);
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {
-  console.log(`Listening on *:${PORT}`);
+  console.log(`question-service listening on port ${PORT}`);
 });
