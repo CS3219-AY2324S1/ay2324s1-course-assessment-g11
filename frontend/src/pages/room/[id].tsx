@@ -29,7 +29,7 @@ export default function Room() {
   const [loading, setLoading] = useState(true); // to be used later for loading states
 
   const defaultQuestion: Question = {
-    title: "Example Question",
+    title: "Example Question: Two Sum",
     difficulty: "Easy",
     topics: ["Array", "Hash Table"],
     description:
