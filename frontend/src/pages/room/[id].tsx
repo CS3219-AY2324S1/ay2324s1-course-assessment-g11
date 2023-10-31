@@ -8,8 +8,10 @@ import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
 import { getQuestionIdFromMatch } from "@/hooks/useMatchmaking";
+import { useEffect, useState } from "react";
+import { MrMiyagi } from "@uiball/loaders";
 
-export default async function Room() {
+export default function Room() {
   const router = useRouter();
   const roomId = router.query.id as string;
   const userId = (router.query.userId as string) || "user1";
@@ -22,6 +24,9 @@ export default async function Room() {
       userId,
       disableVideo,
     });
+
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [loading, setLoading] = useState(true); // to be used later for loading states
 
   const defaultQuestion: Question = {
     title: "Example Question",
@@ -36,67 +41,80 @@ export default async function Room() {
     author: "",
   };
 
-  let question: Question | null = null;
-
   const { fetchQuestion } = useQuestions();
 
-  async function getQuestionId() {
-    return await getQuestionIdFromMatch(roomId);
-  }
+  useEffect(() => {
+    getQuestionIdFromMatch(roomId)
+      .then((questionId) => {
+        if (questionId != null) {
+          fetchQuestion(questionId).then((fetchQuestion) => {
+            if (fetchQuestion != null) {
+              setQuestion(fetchQuestion);
+              setQuestionId(fetchQuestion.id);
+              console.log(questionId);
+            }
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        router.push("/");
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [roomId]);
 
-  await getQuestionId()
-    .then((questionId) => {
-      if (questionId != null) {
-        fetchQuestion(questionId).then((fetchQuestion) => {
-          if (fetchQuestion != null) {
-            question = fetchQuestion;
-            setQuestionId(question.id);
-            console.log(questionId);
-          }
-        });
-      }
-    })
-    .then(() => {
-      if (!router.isReady) return null;
-
-      return (
-        <div className="h-[calc(100vh-80px)] px-12 py-6">
-          <div className="flex h-full">
-            <Tabs defaultValue="description" className="flex-1">
-              <TabsList>
-                <TabsTrigger value="description">
-                  <TypographyBody>Description</TypographyBody>
-                </TabsTrigger>
-                <TabsTrigger value="solution">
-                  <TypographyBody>Solution</TypographyBody>
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="description" className="h-[79vh]">
-                {question != null ? (
-                  <Description question={question} />
-                ) : (
-                  <Description question={defaultQuestion} />
-                )}
-              </TabsContent>
-              {question != null && "solution" in question ? (
-                <TabsContent value="solution">{question.solution}</TabsContent>
-              ) : (
-                <TabsContent value="solution">
-                  {defaultQuestion.solution}
-                </TabsContent>
-              )}
-            </Tabs>
-            <div className="flex-1">
-              <CodeEditor
-                text={text}
-                cursor={cursor}
-                onChange={setText}
-                onCursorChange={setCursor}
-              />
-            </div>
-          </div>
-          <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
+  return (
+    <div>
+      {!router.isReady || loading ? (
+        <div className="flex w-full h-full justify-center items-center">
+          <MrMiyagi size={35} lineWeight={3.5} speed={1} color="white" />
         </div>
-      );
-    });
+      ) : (
+        <div>
+          <div className="h-[calc(100vh-80px)] px-12 py-6">
+            <div className="flex h-full">
+              <Tabs defaultValue="description" className="flex-1">
+                <TabsList>
+                  <TabsTrigger value="description">
+                    <TypographyBody>Description</TypographyBody>
+                  </TabsTrigger>
+                  <TabsTrigger value="solution">
+                    <TypographyBody>Solution</TypographyBody>
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="description" className="h-[79vh]">
+                  {question != null ? (
+                    <Description question={question} />
+                  ) : (
+                    <Description question={defaultQuestion} />
+                  )}
+                </TabsContent>
+                {question != null && "solution" in question ? (
+                  <TabsContent value="solution">
+                    {question.solution}
+                  </TabsContent>
+                ) : (
+                  <TabsContent value="solution">
+                    {defaultQuestion.solution}
+                  </TabsContent>
+                )}
+              </Tabs>
+              <div className="flex-1">
+                <CodeEditor
+                  text={text}
+                  cursor={cursor}
+                  onChange={setText}
+                  onCursorChange={setCursor}
+                />
+              </div>
+            </div>
+            <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
