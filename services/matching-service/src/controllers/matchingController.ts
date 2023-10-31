@@ -547,6 +547,18 @@ export const leaveMatch = async (req: Request, res: Response) => {
   res.status(200).json({ message: "Successfully left the match" });
 };
 
-export async function getMatch(room_id: string) {
-  return await prisma.match.findUnique({ where: { roomId: room_id } });
+export async function getMatch(req: Request, res: Response) {
+  const room_id = req.params.room_id as string;
+
+  const match = await prisma.match.findUnique({ where: { roomId: room_id } });
+
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  return res.status(200).json({
+    message: "Match exists",
+    room_id: room_id,
+    info: match,
+  });
 }
