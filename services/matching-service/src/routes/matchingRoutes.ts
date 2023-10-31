@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get("/:userId/findMatch", matchingController.findMatch);
 router.post("/:userId/leave", matchingController.leaveMatch);
-router.get("/", (req, res) => res.sendFile(__dirname + "/index.html"))
+router.get("/match/:roomId", matchingController.getMatch);
+router.get("/", (req, res) => res.sendFile(__dirname + "/index.html"));
 
 export default router;

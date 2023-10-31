@@ -546,3 +546,7 @@ export const leaveMatch = async (req: Request, res: Response) => {
 
   res.status(200).json({ message: "Successfully left the match" });
 };
+
+export async function getMatch(room_id: string) {
+  return await prisma.match.findUnique({ where: { roomId: room_id } });
+}

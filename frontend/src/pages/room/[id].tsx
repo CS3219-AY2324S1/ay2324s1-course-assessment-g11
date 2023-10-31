@@ -7,8 +7,6 @@ import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
 
 export default function Room() {
   const router = useRouter();
@@ -40,7 +38,7 @@ export default function Room() {
   const { fetchQuestion } = useQuestions();
 
   async function getQuestionId() {
-    return await prisma.match.findUnique({ roomId: roomId }).questionId;
+    return "1"; // todo
   }
 
   getQuestionId().then((questionId) =>
