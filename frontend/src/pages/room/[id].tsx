@@ -9,7 +9,7 @@ import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
 import { getQuestionIdFromMatch } from "@/hooks/useMatchmaking";
 
-export default function Room() {
+export default async function Room() {
   const router = useRouter();
   const roomId = router.query.id as string;
   const userId = (router.query.userId as string) || "user1";
@@ -23,7 +23,7 @@ export default function Room() {
       disableVideo,
     });
 
-  let question: Question = {
+  const defaultQuestion: Question = {
     title: "Example Question",
     difficulty: "Easy",
     topics: ["Array", "Hash Table"],
@@ -36,53 +36,67 @@ export default function Room() {
     author: "",
   };
 
+  let question: Question | null = null;
+
   const { fetchQuestion } = useQuestions();
 
   async function getQuestionId() {
-    return getQuestionIdFromMatch(roomId);
+    return await getQuestionIdFromMatch(roomId);
   }
 
-  getQuestionId().then((questionId) => {
-    if (questionId != null) {
-      fetchQuestion(questionId).then((fetchQuestion) => {
-        if (fetchQuestion != null) {
-          question = fetchQuestion;
-          setQuestionId(question.id);
-          console.log(questionId);
-        }
-      });
-    }
-  });
+  await getQuestionId()
+    .then((questionId) => {
+      if (questionId != null) {
+        fetchQuestion(questionId).then((fetchQuestion) => {
+          if (fetchQuestion != null) {
+            question = fetchQuestion;
+            setQuestionId(question.id);
+            console.log(questionId);
+          }
+        });
+      }
+    })
+    .then(() => {
+      if (!router.isReady) return null;
 
-  if (!router.isReady) return null;
-
-  return (
-    <div className="h-[calc(100vh-80px)] px-12 py-6">
-      <div className="flex h-full">
-        <Tabs defaultValue="description" className="flex-1">
-          <TabsList>
-            <TabsTrigger value="description">
-              <TypographyBody>Description</TypographyBody>
-            </TabsTrigger>
-            <TabsTrigger value="solution">
-              <TypographyBody>Solution</TypographyBody>
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="description" className="h-[79vh]">
-            <Description question={question} />
-          </TabsContent>
-          <TabsContent value="solution">{question.solution}</TabsContent>
-        </Tabs>
-        <div className="flex-1">
-          <CodeEditor
-            text={text}
-            cursor={cursor}
-            onChange={setText}
-            onCursorChange={setCursor}
-          />
+      return (
+        <div className="h-[calc(100vh-80px)] px-12 py-6">
+          <div className="flex h-full">
+            <Tabs defaultValue="description" className="flex-1">
+              <TabsList>
+                <TabsTrigger value="description">
+                  <TypographyBody>Description</TypographyBody>
+                </TabsTrigger>
+                <TabsTrigger value="solution">
+                  <TypographyBody>Solution</TypographyBody>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="description" className="h-[79vh]">
+                {question != null ? (
+                  <Description question={question} />
+                ) : (
+                  <Description question={defaultQuestion} />
+                )}
+              </TabsContent>
+              {question != null && "solution" in question ? (
+                <TabsContent value="solution">{question.solution}</TabsContent>
+              ) : (
+                <TabsContent value="solution">
+                  {defaultQuestion.solution}
+                </TabsContent>
+              )}
+            </Tabs>
+            <div className="flex-1">
+              <CodeEditor
+                text={text}
+                cursor={cursor}
+                onChange={setText}
+                onCursorChange={setCursor}
+              />
+            </div>
+          </div>
+          <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
         </div>
-      </div>
-      <VideoRoom className="bottom-0.5 left-0.5 fixed" room={room} />
-    </div>
-  );
+      );
+    });
 }
