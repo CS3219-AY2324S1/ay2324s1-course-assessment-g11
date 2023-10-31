@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
+import { getQuestionIdFromMatch } from "@/hooks/useMatchmaking";
 
 export default function Room() {
   const router = useRouter();
@@ -38,17 +39,19 @@ export default function Room() {
   const { fetchQuestion } = useQuestions();
 
   async function getQuestionId() {
-    return "1"; // todo
+    return getQuestionIdFromMatch(roomId); // todo
   }
 
-  getQuestionId().then((questionId) =>
-    fetchQuestion(questionId).then((fetchQuestion) => {
-      if (fetchQuestion != null) {
-        question = fetchQuestion;
-        setQuestionId(question.id);
-      }
-    })
-  );
+  getQuestionId().then((questionId) => {
+    if (questionId != null) {
+      fetchQuestion(questionId).then((fetchQuestion) => {
+        if (fetchQuestion != null) {
+          question = fetchQuestion;
+          setQuestionId(question.id);
+        }
+      });
+    }
+  });
 
   if (!router.isReady) return null;
 

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { MatchmakingContext } from "../providers/MatchmakingProvider";
+import { getMatchByRoomid } from "@/pages/api/matchHandler";
 
 export function useMatchmaking() {
   const context = useContext(MatchmakingContext);
@@ -8,3 +9,8 @@ export function useMatchmaking() {
   }
   return context;
 }
+
+export const getQuestionIdFromMatch = async (roomId: string) => {
+  const match = await getMatchByRoomid(roomId);
+  return match?.questionId;
+};
