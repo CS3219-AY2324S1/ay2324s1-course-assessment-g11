@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
-import { getQuestionIdFromMatch } from "@/hooks/useMatchmaking";
+import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
 
@@ -42,6 +42,7 @@ export default function Room() {
   };
 
   const { fetchQuestion } = useQuestions();
+  const { getQuestionIdFromMatch } = useMatch();
 
   useEffect(() => {
     getQuestionIdFromMatch(roomId)

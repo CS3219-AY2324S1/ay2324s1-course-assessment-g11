@@ -1,15 +1,17 @@
 import { matchApiPathAddress } from "@/gateway-address/gateway-address";
 import { Match } from "@/types/MatchTypes";
 
-export const getMatchByRoomid = async (roomId: string) => {
+export const getMatchByRoomid = async (user: any, roomId: string) => {
   try {
     const url = `${matchApiPathAddress}match/${roomId}`;
+    const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
       method: "GET",
       mode: "cors",
       headers: {
         "Content-Type": "application/json",
+        "User-Id-Token": idToken,
       },
     });
 
