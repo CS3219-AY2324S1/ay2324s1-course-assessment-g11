@@ -9,10 +9,10 @@ import { useContext } from "react";
 export const useMatch = () => {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
-  const getQuestionIdFromMatch = async (roomId: string) => {
+  const getMatch = async (roomId: string) => {
     if (authIsReady && currentUser) {
       const match = await getMatchByRoomidApi(currentUser, roomId);
-      return match?.questionId;
+      return match;
     }
   };
 
@@ -25,5 +25,5 @@ export const useMatch = () => {
     }
   };
 
-  return { getQuestionIdFromMatch, updateQuestionIdInMatch };
+  return { getMatch, updateQuestionIdInMatch };
 };

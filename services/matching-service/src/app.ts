@@ -26,7 +26,7 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 const socketIoOptions: any = {
   cors: {
     origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PATCH"],
   },
 };
 

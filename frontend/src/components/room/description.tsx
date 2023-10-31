@@ -9,14 +9,18 @@ import { TypographyH2, TypographySmall } from "../ui/typography";
 type DescriptionProps = {
   question: Question;
   className?: string;
+  onSwapQuestionClick?: () => void;
 };
 
 export default function Description({
   question,
   className,
+  onSwapQuestionClick,
 }: DescriptionProps) {
   return (
-    <Card className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}>
+    <Card
+      className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}
+    >
       <div className="flex flex-row items-center justify-between py-2">
         <div className="flex items-center justify-center">
           <TypographyH2 className="w-fit">{question.title}</TypographyH2>
@@ -26,7 +30,9 @@ export default function Description({
             </TypographySmall>
           </Badge>
         </div>
-        <Button variant="secondary">Swap Question</Button>
+        <Button variant="secondary" onClick={onSwapQuestionClick}>
+          Swap Question
+        </Button>
       </div>
       <div className="flex gap-2">
         {question.topics.map((tag) => (
@@ -37,7 +43,10 @@ export default function Description({
       </div>
       <div className="py-6">
         <TypographySmall>
-          <div dangerouslySetInnerHTML={{ __html: question.description }} className="w-[40vw] overflow-x-auto"></div>
+          <div
+            dangerouslySetInnerHTML={{ __html: question.description }}
+            className="w-[40vw] overflow-x-auto"
+          ></div>
         </TypographySmall>
       </div>
     </Card>

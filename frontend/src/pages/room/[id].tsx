@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
-import { Question } from "../../types/QuestionTypes";
+import { Difficulty, Question } from "../../types/QuestionTypes";
 import { useQuestions } from "@/hooks/useQuestions";
 import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
@@ -41,13 +41,16 @@ export default function Room() {
     author: "",
   };
 
-  const { fetchQuestion } = useQuestions();
-  const { getQuestionIdFromMatch } = useMatch();
+  const { fetchQuestion, fetchRandomQuestion } = useQuestions();
+  const { getMatch, updateQuestionIdInMatch } = useMatch();
+  const [match, setMatch] = useState<Match | null>(null);
 
   useEffect(() => {
-    getQuestionIdFromMatch(roomId)
-      .then((questionId) => {
-        if (questionId != null) {
+    getMatch(roomId)
+      .then((match) => {
+        if (match && match.questionId != null) {
+          setMatch(match);
+          const questionId = match.questionId;
           fetchQuestion(questionId).then((fetchQuestion) => {
             if (fetchQuestion != null) {
               setQuestion(fetchQuestion);
@@ -66,6 +69,29 @@ export default function Room() {
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId]);
+
+  function handleSwapQuestionClick(): void {
+    if (match) {
+      setLoading(true);
+      const difficulty = (match.chosenDifficulty || "easy") as Difficulty;
+      fetchRandomQuestion(difficulty)
+        .then((question) => {
+          if (question) {
+            updateQuestionIdInMatch(roomId, question.id);
+            setQuestion(question);
+            setQuestionId(question.id);
+            console.log(question.id);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          router.push("/");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }
 
   return (
     <div>
@@ -88,9 +114,15 @@ export default function Room() {
                 </TabsList>
                 <TabsContent value="description" className="h-[79vh]">
                   {question != null ? (
-                    <Description question={question} />
+                    <Description
+                      question={question}
+                      onSwapQuestionClick={handleSwapQuestionClick}
+                    />
                   ) : (
-                    <Description question={defaultQuestion} />
+                    <Description
+                      question={defaultQuestion}
+                      onSwapQuestionClick={handleSwapQuestionClick}
+                    />
                   )}
                 </TabsContent>
                 {question != null && "solution" in question ? (

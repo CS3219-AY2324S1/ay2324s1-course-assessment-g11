@@ -195,12 +195,9 @@ export function handleLooking(
 
       const questionId = await getRandomQuestionOfDifficulty(
         difficulty! ?? "easy"
-      ).then(
-        // difficulties???? need to intersect difficulties or not
-        (questionId) => {
-          return questionId;
-        }
-      );
+      ).then((questionId) => {
+        return questionId;
+      });
 
       // Inform both users of the match
       const newMatch = await prisma
