@@ -23,18 +23,7 @@ export default function Room() {
       disableVideo,
     });
 
-  let question: Question = {
-    title: "Example Question",
-    difficulty: "Easy",
-    topics: ["Array", "Hash Table"],
-    description:
-      "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
-    solution:
-      "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
-    defaultCode: { python: "var twoSum = function(nums, target) {\n\n};" },
-    id: "",
-    author: "",
-  };
+  let question: Question;
 
   const { fetchQuestion } = useQuestions();
 
@@ -46,7 +35,20 @@ export default function Room() {
     if (questionId != null) {
       fetchQuestion(questionId).then((fetchQuestion) => {
         if (fetchQuestion != null) {
-          question = fetchQuestion;
+          question = fetchQuestion || {
+            title: "Example Question",
+            difficulty: "Easy",
+            topics: ["Array", "Hash Table"],
+            description:
+              "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
+            solution:
+              "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
+            defaultCode: {
+              python: "var twoSum = function(nums, target) {\n\n};",
+            },
+            id: "",
+            author: "",
+          };
           setQuestionId(question.id);
         }
       });

@@ -52,8 +52,8 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       currentUser.getIdToken(true).then((token) => {
         const newSocket = io(SERVER_URL, {
           autoConnect: false,
-          // query: { username: currentUser?.email },
-          query: { username: generateRandomNumber() },
+          query: { username: currentUser?.uid },
+          //query: { username: generateRandomNumber() },
           extraHeaders: {
             "User-Id-Token": token,
           },
