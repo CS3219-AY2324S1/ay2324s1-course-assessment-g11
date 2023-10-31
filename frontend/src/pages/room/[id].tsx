@@ -6,6 +6,7 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Difficulty, Question } from "../../types/QuestionTypes";
+import { Match } from "../../types/MatchTypes";
 import { useQuestions } from "@/hooks/useQuestions";
 import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
