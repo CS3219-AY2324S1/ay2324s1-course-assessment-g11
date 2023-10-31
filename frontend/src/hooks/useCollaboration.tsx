@@ -132,7 +132,7 @@ const useCollaboration = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId, userId]);
+  }, [roomId, userId, questionId]);
 
   useEffect(() => {
     textRef.current = text;
