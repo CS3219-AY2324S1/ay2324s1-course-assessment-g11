@@ -18,14 +18,21 @@ export const getMatchByRoomid = async (roomId: string) => {
     }
 
     const data = await response.json();
+    if (!data) {
+      throw new Error("There was an error fetching the match");
+    } else if (data.error) {
+      throw new Error(data.error);
+    } else if (!data.info) {
+      throw new Error("There was an error fetching the match");
+    }
     return <Match>{
-      roomId: data.roomId,
-      userId1: data.userId1,
-      userId2: data.userId2,
-      chosenDifficulty: data.chosenDifficulty,
-      chosenProgrammingLanguage: data.chosenProgrammingLanguage,
-      questionId: data.questionId,
-      createdAt: data.createdAt,
+      roomId: data.info.roomId,
+      userId1: data.info.userId1,
+      userId2: data.info.userId2,
+      chosenDifficulty: data.info.chosenDifficulty,
+      chosenProgrammingLanguage: data.info.chosenProgrammingLanguage,
+      questionId: data.info.questionId,
+      createdAt: data.info.createdAt,
     };
   } catch (error) {
     console.error("There was an error fetching the match", error);
