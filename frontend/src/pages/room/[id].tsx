@@ -48,6 +48,7 @@ export default function Room() {
         if (fetchQuestion != null) {
           question = fetchQuestion;
           setQuestionId(question.id);
+          console.log(questionId);
         }
       });
     }
