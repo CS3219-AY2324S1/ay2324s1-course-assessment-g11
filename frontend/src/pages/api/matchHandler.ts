@@ -40,3 +40,30 @@ export const getMatchByRoomid = async (user: any, roomId: string) => {
     console.error("There was an error fetching the match", error);
   }
 };
+
+export const patchMatchQuestionByRoomid = async (
+  user: any,
+  roomId: string,
+  questionId: string
+) => {
+  try {
+    const url = `${matchApiPathAddress}match/${roomId}`;
+    const idToken = await user.getIdToken(true);
+
+    const response = await fetch(url, {
+      method: "PATCH",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+        "User-Id-Token": idToken,
+      },
+      body: JSON.stringify({ questionId: questionId }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
+  } catch (error) {
+    console.error("There was an error fetching the match", error);
+  }
+};
