@@ -39,7 +39,7 @@ export default function Room() {
   const { fetchQuestion } = useQuestions();
 
   async function getQuestionId() {
-    return getQuestionIdFromMatch(roomId); // todo
+    return getQuestionIdFromMatch(roomId);
   }
 
   getQuestionId().then((questionId) => {
