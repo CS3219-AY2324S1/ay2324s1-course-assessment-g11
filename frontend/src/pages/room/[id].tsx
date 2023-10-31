@@ -95,7 +95,7 @@ export default function Room() {
 
   return (
     <div>
-      {!router.isReady || loading ? (
+      {!router.isReady ? (
         <div className="flex w-full h-full justify-center items-center">
           <MrMiyagi size={35} lineWeight={3.5} speed={1} color="white" />
         </div>
@@ -113,7 +113,16 @@ export default function Room() {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="description" className="h-[79vh]">
-                  {question != null ? (
+                  {loading ? (
+                    <div className="flex h-full justify-center items-center">
+                      <MrMiyagi
+                        size={35}
+                        lineWeight={3.5}
+                        speed={1}
+                        color="white"
+                      />
+                    </div>
+                  ) : question != null ? (
                     <Description
                       question={question}
                       onSwapQuestionClick={handleSwapQuestionClick}
@@ -125,7 +134,16 @@ export default function Room() {
                     />
                   )}
                 </TabsContent>
-                {question != null && "solution" in question ? (
+                {loading ? (
+                  <div className="flex h-full justify-center items-center">
+                    <MrMiyagi
+                      size={35}
+                      lineWeight={3.5}
+                      speed={1}
+                      color="white"
+                    />
+                  </div>
+                ) : question != null && "solution" in question ? (
                   <TabsContent value="solution">
                     {question.solution}
                   </TabsContent>
