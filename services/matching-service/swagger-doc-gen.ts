@@ -2,11 +2,10 @@ import swaggerAutogen from "swagger-autogen";
 
 const doc = {
   info: {
-    title: "Collaboration Service",
-    description:
-      "Provides the mechanism for real-time collaboration (e.g., concurrent code editing) between the authenticated and matched users in the collaborative space",
+    title: "Matching Service",
+    description: "",
   },
-  host: "localhost:5001",
+  host: "localhost:5002",
   schemes: ["http"],
 };
 
