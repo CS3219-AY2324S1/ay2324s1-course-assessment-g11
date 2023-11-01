@@ -12,8 +12,8 @@ const app = express();
 const userIdHeader = "User-Id";
 app.use(indexRouter);
 
-const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 0,
-  matchProgrammingLanguage: "Python" };
+const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: "easy",
+  matchProgrammingLanguage: "python" };
 
 describe('/index', () => {
   /**

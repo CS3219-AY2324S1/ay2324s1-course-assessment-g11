@@ -4,7 +4,7 @@ import { Label } from "@radix-ui/react-dropdown-menu";
 import { useDeleteOwnAccount } from "@/firebase-client/useDeleteOwnAccount";
 import { useUser } from "@/hooks/useUser";
 import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { TypographyH3 } from "@/components/ui/typography";
 import { EditableUser } from "@/types/UserTypes";
@@ -19,12 +19,15 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { useUpdateProfile } from "../../firebase-client/useUpdateProfile";
 
 
 export default function AccountSettingsCard() {
   const { user: currentUser } = useContext(AuthContext);
   const { deleteOwnAccount } = useDeleteOwnAccount();
-  const { updateUser } = useUser();
+  const { updateUserProfile } = useUpdateProfile();
+  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   console.log(currentUser);
   const [updatedUser, setUpdatedUser] = useState<EditableUser>({ uid: currentUser?.uid ?? '' } as EditableUser);
@@ -63,7 +66,26 @@ export default function AccountSettingsCard() {
               className="max-w-sm"
             />
           </div>
-          <Button className="w-fit" onClick={() => updateUser(updatedUser)}>Save Changes</Button>
+          <div className="flex flex-row items-center gap-x-2">
+            <Button ref={saveButtonRef} className="w-fit" onClick={() => {
+              if (!updatedUser.displayName) {
+                return;
+              }
+              if (saveButtonRef.current) {
+                saveButtonRef.current.setAttribute('disabled', 'true');
+              }
+              updateUserProfile({displayName: updatedUser.displayName}).then(() => {
+                if (saveButtonRef.current) {
+                  saveButtonRef.current.removeAttribute('disabled');
+                }
+                setShowSuccess(true);
+              });
+            }}>Save Changes</Button>
+            {showSuccess && (
+                <span className="text-green-500">Successfully updated user profile!</span>
+            )}
+          </div>
+          
           <div>
             <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
             <AlertDialog>

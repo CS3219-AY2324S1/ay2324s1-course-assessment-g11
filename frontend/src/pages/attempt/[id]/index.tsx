@@ -4,9 +4,51 @@ import { Textarea } from "@/components/ui/textarea";
 import { TypographyBody, TypographyCode, TypographyH2 } from "@/components/ui/typography";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { Attempt } from "@/types/UserTypes";
+import { useHistory } from "@/hooks/useHistory";
+import { useQuestions } from "@/hooks/useQuestions";
+import { Question } from "@/types/QuestionTypes";
+import { DotWave } from "@uiball/loaders";
 
 export default function Page() {
   const router = useRouter();
+  const attemptId = router.query.id;
+  const { fetchAttempt } = useHistory();
+  const { fetchQuestion } = useQuestions();
+  const [attempt, setAttempt] = useState<Attempt>();
+  const [question, setQuestion] = useState<Question>();
+  const [loadingState, setLoadingState] = useState<"loading" | "error" | "success">("loading");
+
+  useEffect(() => {
+    if (attemptId === undefined || Array.isArray(attemptId)) {
+      router.push("/profile");
+      return;
+    }
+    fetchAttempt(attemptId).then((attempt) => {
+      if (attempt) {
+        setAttempt(attempt);
+        return fetchQuestion(attempt.question_id);
+      } else {
+        throw new Error("Attempt not found");
+      }
+    }).then((question) => {
+      if (question) {
+        setQuestion(question);
+        setLoadingState("success");
+      } else {
+        throw new Error("Question not found");
+      }
+    }).catch((err: any) => {
+      setLoadingState("error");
+      console.log(err);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [attemptId]);
+
+  if (attemptId === undefined || Array.isArray(attemptId)) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-3xl flex flex-col gap-8">
@@ -17,27 +59,33 @@ export default function Page() {
         <TypographyH2>Attempt</TypographyH2>
       </div>
 
+      { loadingState === "loading" ? <div className="h-32 flex items-center justify-center">
+        <DotWave
+          size={47}
+          speed={1}
+          color="white"
+        /></div> : loadingState === "error" ? <TypographyBody>Error</TypographyBody> : <>
       <div>
         <Label className="text-primary">Question</Label>
-        <TypographyBody>Two Sum</TypographyBody>
+        <TypographyBody>{question?.title}</TypographyBody>
       </div>
 
       <div>
         <Label className="text-primary">Attempted At</Label>
-        <TypographyBody>23/10/2023 15:00</TypographyBody>
+        <TypographyBody>{attempt?.time_updated.toLocaleString()}</TypographyBody>
       </div>
 
       <div>
         <Label className="text-primary">Mode of Attempt</Label>
-        <TypographyBody>Interview • with Chun Wei</TypographyBody>
+        <TypographyBody>{attempt?.room_id ? "Interview" : "Solo"}</TypographyBody>
       </div>
 
       <div>
         <Label className="text-primary">Solution</Label>
-        <TypographyBody>Solved</TypographyBody>
-        <Textarea disabled={true} className="my-4" defaultValue={'class Solution:  def twoSum(self, nums: List[int], target: int) -> List[int]:        numToIndex = {}        for i in range(len(nums)):            if target - nums[i] in numToIndex:                return [numToIndex[target - nums[i]], i]            numToIndex[nums[i]] = i        return []'}>
+        <TypographyBody>{attempt?.solved ? "Solved": "Unsolved"}</TypographyBody>
+        <Textarea disabled={true} className="my-4" defaultValue={attempt?.answer || ""}>
         </Textarea>
-      </div>
+      </div></>}
     </div> 
   )
 }

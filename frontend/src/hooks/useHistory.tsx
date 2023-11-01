@@ -3,7 +3,8 @@ import { AuthContext } from "@/contexts/AuthContext";
 import {
   getAttemptsOfUser,
   createAttemptOfUser,
-} from "./../pages/api/historyHandler";
+  getAttemptById,
+} from "@/pages/api/historyHandler";
 
 type AttemptData = {
   uid: string;
@@ -27,5 +28,11 @@ export const useHistory = () => {
     }
   };
 
-  return { fetchAttempts, postAttempt };
+  const fetchAttempt = async (attemptId: string) => {
+    if (authIsReady) {
+      return getAttemptById(currentUser, attemptId);
+    }
+  }
+;
+  return { fetchAttempts, fetchAttempt, postAttempt };
 };

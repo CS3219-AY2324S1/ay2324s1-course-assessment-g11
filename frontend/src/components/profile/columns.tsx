@@ -31,7 +31,7 @@ export const columns: ColumnDef<Attempt>[] = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const attemptId = row.id;
+      const attemptId = row.original.id;
       return (
         <Button
           variant="outline"
