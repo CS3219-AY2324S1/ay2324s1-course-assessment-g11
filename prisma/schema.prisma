@@ -20,6 +20,7 @@ model Match {
   userId2                   String
   chosenDifficulty          String
   chosenProgrammingLanguage String
+  questionId                String?
   createdAt                 DateTime @default(now())
   questionId                String?
 }

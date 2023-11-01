@@ -4,6 +4,7 @@ import { io } from "../app";
 import prisma from "../prismaClient";
 import EventEmitter from "events";
 import { Match } from "@prisma/client";
+import { getRandomQuestionOfDifficulty } from "../questionAdapter";
 
 export const MAX_WAITING_TIME = 60 * 1000; // 60 seconds
 
@@ -192,6 +193,12 @@ export function handleLooking(
         `Match found for user ${userId} with user ${matchId} and difficulty ${difficulty}`
       );
 
+      const questionId = await getRandomQuestionOfDifficulty(
+        difficulty! ?? "easy"
+      ).then((questionId) => {
+        return questionId;
+      });
+
       // Inform both users of the match
       const newMatch = await prisma
         .$transaction([
@@ -201,16 +208,17 @@ export function handleLooking(
               userId2: matchId,
               chosenDifficulty: difficulty || "easy",
               chosenProgrammingLanguage: programmingLang,
+              questionId: questionId,
             },
           }),
-          prisma.user.update({
-            where: { id: userId },
-            data: { matchedUserId: matchId },
-          }),
-          prisma.user.update({
-            where: { id: matchId },
-            data: { matchedUserId: userId },
-          }),
+          // prisma.user.update({
+          //   where: { id: userId },
+          //   data: { matchedUserId: matchId },
+          // }),
+          // prisma.user.update({
+          //   where: { id: matchId },
+          //   data: { matchedUserId: userId },
+          // }),
         ])
         .catch((err) => {
           console.log(err);
@@ -487,11 +495,21 @@ export const findMatch = async (req: Request, res: Response) => {
       },
     });
 
-    // Emit match found event to both users
-    io.to(userId.toString()).emit("matchFound", match);
-    io.to(match.id.toString()).emit("matchFound", user);
+    // This function and REST API seems to be not in use
+    const questionId = await getRandomQuestionOfDifficulty(
+      difficulties[0]
+    ).then(
+      // difficulties???? need to intersect difficulties or not
+      (questionId) => {
+        return questionId;
+      }
+    );
 
-    return res.json({ match });
+    // Emit match found event to both users
+    io.to(userId.toString()).emit("matchFound", { match, questionId });
+    io.to(match.id.toString()).emit("matchFound", { user, questionId });
+
+    return res.json({ match, questionId });
   }
 
   // If no immediate match is found, keep the user in the queue
@@ -525,3 +543,54 @@ export const leaveMatch = async (req: Request, res: Response) => {
 
   res.status(200).json({ message: "Successfully left the match" });
 };
+
+export async function getMatch(req: Request, res: Response) {
+  const room_id = req.params.room_id as string;
+
+  const match = await prisma.match.findUnique({ where: { roomId: room_id } });
+
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  return res.status(200).json({
+    message: "Match exists",
+    room_id: room_id,
+    info: match,
+  });
+}
+
+export async function updateMatchQuestion(req: Request, res: Response) {
+  const room_id = req.params.room_id as string;
+
+  const { questionId } = req.body;
+
+  if (!questionId) {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing questionId in the request body" });
+  }
+
+  const match = await prisma.match.findUnique({ where: { roomId: room_id } });
+
+  if (!match) {
+    return res.status(404).json({ error: "Match not found" });
+  }
+
+  try {
+    const updatedMatch = await prisma.match.update({
+      where: { roomId: room_id },
+      data: {
+        questionId,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Match updated successfully",
+      room_id: room_id,
+      info: updatedMatch,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: "Failed to update the match" });
+  }
+}

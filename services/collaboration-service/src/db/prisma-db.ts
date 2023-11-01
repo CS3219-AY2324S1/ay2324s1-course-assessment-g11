@@ -195,6 +195,7 @@ export async function updateRoomText(
   room_id: string,
   text: string
 ): Promise<void> {
+  if (room_id == null) return;
   await prisma.room.update({
     where: {
       room_id: room_id,

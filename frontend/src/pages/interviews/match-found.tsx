@@ -7,6 +7,7 @@ import {
   TypographyH3,
 } from "@/components/ui/typography";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import { query } from "express";
 import Link from "next/link";
 import { useRouter } from "next/router";
 

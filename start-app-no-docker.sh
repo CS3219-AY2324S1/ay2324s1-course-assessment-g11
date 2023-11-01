@@ -6,13 +6,13 @@ prepend() {
     done
 }
 
-(yarn install --frozen-lockfile && yarn prisma generate && \
+(yarnpkg install --frozen-lockfile && yarnpkg prisma generate && \
     trap 'kill 0' INT TERM; \
-    (yarn workspace frontend dev:local | prepend "frontend: ") & \
-    (yarn workspace user-service dev:local | prepend "user-service: ") & \
-    (yarn workspace admin-service dev:local | prepend "admin-service: ") & \
-    (yarn workspace collaboration-service dev | prepend "collaboration-service: ") & \
-    (yarn workspace matching-service dev:local | prepend "matching-service: ") & \
-    (yarn workspace question-service dev:local | prepend "question-service: ") & \
-    (yarn workspace gateway dev:local | prepend "gateway: ") & \
+    (yarnpkg workspace frontend dev:local | prepend "frontend: ") & \
+    (yarnpkg workspace user-service dev:local | prepend "user-service: ") & \
+    (yarnpkg workspace admin-service dev:local | prepend "admin-service: ") & \
+    (yarnpkg workspace collaboration-service dev:local | prepend "collaboration-service: ") & \
+    (yarnpkg workspace matching-service dev:local | prepend "matching-service: ") & \
+    (yarnpkg workspace question-service dev:local | prepend "question-service: ") & \
+    (yarnpkg workspace gateway dev:local | prepend "gateway: ") & \
     wait)
