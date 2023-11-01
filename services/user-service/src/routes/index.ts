@@ -130,6 +130,25 @@ indexRouter.get(
   }
 );
 
+indexRouter.get(
+  "/attempt/:attempt_id",
+  function (req: express.Request, res: express.Response) {
+    userDatabaseFunctions
+      .getAttemptById(req.params.attempt_id)
+      .then((result) => {
+        if (result === null) {
+          res.status(404).end();
+        } else {
+          res.status(200).json(result);
+        }
+      })
+      .catch(() => {
+        // Server side error such as database not being available
+        res.status(500).end();
+      });
+  }
+);
+
 indexRouter.post(
   "/attempt",
   function (req: express.Request, res: express.Response) {

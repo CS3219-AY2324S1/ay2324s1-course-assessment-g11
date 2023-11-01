@@ -75,6 +75,20 @@ const userDatabaseFunctions = {
     }
   },
 
+  async getAttemptById(attemptId: string) {
+    try {
+      const attempt = await prismaClient.attempt.findUnique({
+        where: {
+          id: attemptId,
+        },
+      });
+      return attempt;
+    } catch (error: any) {
+      console.error(`Error retrieving attempt: ${error.message}`);
+      throw error;
+    }
+  },
+
   async createAttemptOfUser(data: {
     uid: string;
     question_id: string;

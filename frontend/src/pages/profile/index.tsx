@@ -18,7 +18,7 @@ export default function Page() {
           setAttempts(attempts);
           setLoadingState("success");
         }
-      }).catch(err => {
+      }).catch((err: any) => {
         setLoadingState("error");
         console.log(err);
       });
