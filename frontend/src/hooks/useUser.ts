@@ -12,11 +12,11 @@ export const useUser = () => {
     }
   };
 
-  const getAppUser = async () => {
+  const getAppUser = async (userId?: string) => {
     if (authIsReady) {
-      return getUserApi(currentUser?.uid || "", currentUser);
+      return getUserApi(userId || currentUser?.uid || "", currentUser);
     }
-  }
+  };
 
   return { updateUser, getAppUser };
 };

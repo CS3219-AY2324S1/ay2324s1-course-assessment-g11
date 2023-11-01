@@ -43,6 +43,7 @@ export default function Page() {
       setLoadingState("error");
       console.log(err);
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [attemptId]);
 
   if (attemptId === undefined || Array.isArray(attemptId)) {
