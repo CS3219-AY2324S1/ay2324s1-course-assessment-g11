@@ -117,7 +117,8 @@ indexRouter.get(
       .getAttemptsOfUser(req.params.uid)
       .then((result) => {
         if (result === null) {
-          res.status(404).end();
+          // res.status(404).end();
+          res.send(200).json([]);
         } else {
           res.status(200).json(result);
         }
