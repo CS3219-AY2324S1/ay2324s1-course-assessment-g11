@@ -36,6 +36,7 @@ export default function NewQuestion() {
     if (!currentUser || !isAdmin) {
       router.push("/");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authIsReady, currentUser])
 
 

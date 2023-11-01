@@ -32,7 +32,8 @@ export default function MatchSettingsCard() {
         setIsLoading(false);
       });
     }
-  }, [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser])
 
   useEffect(() => {
     setUpdatedUser((prev) => ({ ...prev, matchDifficulty: selectedDifficulty }));
