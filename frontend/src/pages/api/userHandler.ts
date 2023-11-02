@@ -19,7 +19,7 @@ export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
       body: JSON.stringify(user),
     });
 
-    if (response.status === 201) {
+    if (response.status === 200) {
       const data = await response.json();
       return data;
     } else {
