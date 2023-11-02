@@ -1,5 +1,8 @@
 import { useContext } from "react";
-import { updateUserByUid as updateUserApi, getUserByUid as getUserApi } from "./../pages/api/userHandler";
+import {
+  updateUserByUid as updateUserApi,
+  getUserByUid as getUserApi,
+} from "./../pages/api/userHandler";
 import { AuthContext } from "@/contexts/AuthContext";
 import { EditableUser } from "@/types/UserTypes";
 
@@ -12,9 +15,13 @@ export const useUser = () => {
     }
   };
 
-  const getAppUser = async (userId?: string) => {
+  const getAppUser = async (userId?: string, fetchSelf: boolean = true) => {
     if (authIsReady) {
-      return getUserApi(userId || currentUser?.uid || "", currentUser);
+      if (fetchSelf) {
+        return getUserApi(currentUser?.uid || "", currentUser);
+      } else {
+        return getUserApi(userId || "", currentUser);
+      }
     }
   };
 

@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { useDeleteOwnAccount } from "@/firebase-client/useDeleteOwnAccount";
@@ -18,9 +24,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import { useUpdateProfile } from "../../firebase-client/useUpdateProfile";
-
 
 export default function AccountSettingsCard() {
   const { user: currentUser } = useContext(AuthContext);
@@ -28,9 +33,10 @@ export default function AccountSettingsCard() {
   const { updateUserProfile } = useUpdateProfile();
   const saveButtonRef = useRef<HTMLButtonElement>(null);
   const [showSuccess, setShowSuccess] = useState(false);
-
-  console.log(currentUser);
-  const [updatedUser, setUpdatedUser] = useState<EditableUser>({ uid: currentUser?.uid ?? '' } as EditableUser);
+  const { updateUser } = useUser();
+  const [updatedUser, setUpdatedUser] = useState<EditableUser>({
+    uid: currentUser?.uid ?? "",
+  } as EditableUser);
 
   useEffect(() => {
     console.log(updatedUser);
@@ -47,9 +53,15 @@ export default function AccountSettingsCard() {
             <Label className="mb-2">Display Name</Label>
             <Input
               placeholder="Name"
-              defaultValue={currentUser?.displayName ?? ''}
+              defaultValue={currentUser?.displayName ?? ""}
               onChange={(event) =>
-                setUpdatedUser((prev: any) => ({ ...prev, displayName: event.target.value } as EditableUser))
+                setUpdatedUser(
+                  (prev: any) =>
+                    ({
+                      ...prev,
+                      displayName: event.target.value,
+                    } as EditableUser)
+                )
               }
               className="max-w-sm"
             />
@@ -58,39 +70,51 @@ export default function AccountSettingsCard() {
             <Label className="mb-2">Email</Label>
             <Input
               placeholder="Email"
-              value={currentUser?.email ?? ''}
+              value={currentUser?.email ?? ""}
               disabled={true}
-              onChange={(event) =>
-                console.log(event.target.value)
-              }
+              onChange={(event) => console.log(event.target.value)}
               className="max-w-sm"
             />
           </div>
           <div className="flex flex-row items-center gap-x-2">
-            <Button ref={saveButtonRef} className="w-fit" onClick={() => {
-              if (!updatedUser.displayName) {
-                return;
-              }
-              if (saveButtonRef.current) {
-                saveButtonRef.current.setAttribute('disabled', 'true');
-              }
-              updateUserProfile({displayName: updatedUser.displayName}).then(() => {
-                if (saveButtonRef.current) {
-                  saveButtonRef.current.removeAttribute('disabled');
+            <Button
+              ref={saveButtonRef}
+              className="w-fit"
+              onClick={() => {
+                if (!updatedUser.displayName) {
+                  return;
                 }
-                setShowSuccess(true);
-              });
-            }}>Save Changes</Button>
+                if (saveButtonRef.current) {
+                  saveButtonRef.current.setAttribute("disabled", "true");
+                }
+                updateUser(updatedUser);
+                updateUserProfile({
+                  displayName: updatedUser.displayName,
+                }).then(() => {
+                  if (saveButtonRef.current) {
+                    saveButtonRef.current.removeAttribute("disabled");
+                  }
+                  setShowSuccess(true);
+                });
+              }}
+            >
+              Save Changes
+            </Button>
             {showSuccess && (
-                <span className="text-green-500">Successfully updated user profile!</span>
+              <span className="text-green-500">
+                Successfully updated user profile!
+              </span>
             )}
           </div>
-          
+
           <div>
             <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
             <AlertDialog>
               <AlertDialogTrigger>
-                <Button variant="outline" className="border-destructive text-destructive w-fit">
+                <Button
+                  variant="outline"
+                  className="border-destructive text-destructive w-fit"
+                >
                   Delete Account
                 </Button>
               </AlertDialogTrigger>
@@ -98,13 +122,16 @@ export default function AccountSettingsCard() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your account
-                    and remove your data from our servers. Please log in to GitHub again to continue.
+                    This action cannot be undone. This will permanently delete
+                    your account and remove your data from our servers. Please
+                    log in to GitHub again to continue.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={deleteOwnAccount}>Delete Account</AlertDialogAction>
+                  <AlertDialogAction onClick={deleteOwnAccount}>
+                    Delete Account
+                  </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
@@ -112,5 +139,5 @@ export default function AccountSettingsCard() {
         </CardDescription>
       </CardContent>
     </Card>
-  )
+  );
 }
