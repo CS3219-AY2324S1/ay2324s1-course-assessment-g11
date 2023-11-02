@@ -99,7 +99,7 @@ export default function AccountSettingsCard() {
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
                     This action cannot be undone. This will permanently delete your account
-                    and remove your data from our servers.
+                    and remove your data from our servers. Please log in to GitHub again to continue.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
