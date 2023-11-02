@@ -14,14 +14,19 @@ export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
-        "User-Id": currentUser.uid
+        "User-Id": currentUser.uid,
       },
       body: JSON.stringify(user),
     });
 
-    const data = await response.json();
     if (response.status === 201) {
+      const data = await response.json();
       return data;
+    } else {
+      const text = await response.text();
+      throw new Error(
+        `Unexpected response (status: ${response.status}): ${text}`
+      );
     }
   } catch (error) {
     console.error("There was an error updating the user", error);
@@ -40,15 +45,23 @@ export const getUserByUid = async (uid: string, currentUser: any) => {
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
-        "User-Id": currentUser.uid
+        "User-Id": currentUser.uid,
       },
     });
 
-    const data = await response.json();
-    if (response.status === 200) {
+    if (
+      response.ok &&
+      response.headers.get("Content-Type")?.includes("application/json")
+    ) {
+      const data = await response.json();
       return data;
+    } else if (response.status === 204) {
+      return null;
     } else {
-      throw new Error(response.statusText);
+      const text = await response.text();
+      throw new Error(
+        `Unexpected response (status: ${response.status}): ${text}`
+      );
     }
   } catch (error) {
     console.error("There was an error getting the user", error);
