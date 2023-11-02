@@ -14,6 +14,14 @@ model User {
   lastConnected     DateTime?
 }
 
+model WaitingUser {
+  userId     String   @id
+  user       AppUser  @relation(fields: [userId], references: [uid])
+  createdAt  DateTime @default(now())
+  progLang   String
+  difficulty String[]
+}
+
 model Match {
   roomId                    String   @id @default(uuid())
   userId1                   String
@@ -25,12 +33,13 @@ model Match {
 }
 
 model AppUser {
-  uid                      String    @id
+  uid                      String        @id
   displayName              String?
   photoUrl                 String?
   matchDifficulty          String?
   matchProgrammingLanguage String?
-  attempts                 Attempt[] @relation("AppUserToAttempt")
+  attempts                 Attempt[]     @relation("AppUserToAttempt")
+  WaitingUser              WaitingUser[]
 }
 
 model Room {
