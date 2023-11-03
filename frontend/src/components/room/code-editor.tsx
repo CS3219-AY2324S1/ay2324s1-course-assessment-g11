@@ -68,11 +68,12 @@ export default function CodeEditor({
   onChange,
   onCursorChange,
   hasRoom = true,
-  onSubmitClick = () => {},
+  onSubmitClick = (value) => {},
   onLeaveRoomClick = () => {},
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [monacoInstance, setMonacoInstance] =
     React.useState<editor.IStandaloneCodeEditor | null>(null);
@@ -113,6 +114,21 @@ export default function CodeEditor({
     },
     [onChange, onCursorChange, monacoInstance]
   );
+
+  const handleOnSubmitClick = async () => {
+    if (isSubmitting) {
+      return; // Do nothing if a submission is already in progress.
+    }
+    setIsSubmitting(true);
+    try {
+      onChange(value);
+      onSubmitClick(value);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className={className}>
@@ -193,7 +209,7 @@ export default function CodeEditor({
               Leave Room
             </Button>
           ) : (
-            <Button variant="default" onClick={onSubmitClick}>
+            <Button variant="default" onClick={handleOnSubmitClick}>
               Submit
             </Button>
           )}

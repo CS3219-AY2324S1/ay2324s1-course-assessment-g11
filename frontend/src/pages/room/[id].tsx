@@ -19,7 +19,7 @@ export default function Room() {
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
-  const { text, setText, cursor, setCursor, room, setQuestionId } =
+  const { text, setText, cursor, setCursor, room, setQuestionId, disconnect } =
     useCollaboration({
       roomId: roomId as string,
       userId,
@@ -94,6 +94,11 @@ export default function Room() {
     }
   }
 
+  function onLeaveRoomClick(): void {
+    disconnect();
+    router.push("/");
+  }
+
   return (
     <div>
       {!router.isReady ? (
@@ -160,6 +165,7 @@ export default function Room() {
                   cursor={cursor}
                   onChange={setText}
                   onCursorChange={setCursor}
+                  onLeaveRoomClick={onLeaveRoomClick}
                 />
               </div>
             </div>

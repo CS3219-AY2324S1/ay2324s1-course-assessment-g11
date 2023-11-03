@@ -42,22 +42,22 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  function onSubmitClick() {
+  function onSubmitClick(value: string) {
     postAttempt({
       uid: currentUser ? currentUser.uid : "user",
       question_id: questionId,
-      answer: answer,
+      answer: value || answer,
       solved: true, // assume true
-    }).catch((err: any) => {
-      console.log(err);
-    });
-    // redirect back
-    router.back();
+    })
+      .catch((err: any) => {
+        console.log(err);
+      })
+      .finally(() => {
+        router.push("/profile");
+      });
   }
 
   if (question === null && !loading) return <p>Question not found</p>;
-
-  // implement some on change solo save logic here - user side most likely
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
