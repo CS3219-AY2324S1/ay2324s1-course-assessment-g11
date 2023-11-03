@@ -37,6 +37,7 @@ type CodeEditorProps = {
   cursor?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
+  hasRoom?: boolean;
 };
 
 export const languages = [
@@ -64,6 +65,7 @@ export default function CodeEditor({
   cursor,
   onChange,
   onCursorChange,
+  hasRoom = true,
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -178,11 +180,13 @@ export default function CodeEditor({
           <TypographyBodyHeavy>Console</TypographyBodyHeavy>
         </div>
         <div className="flex justify-end gap-2">
+          (true) ? () : (
           <Button variant="outline">
             <Play className="mr-1" />
             Run
           </Button>
-          <Button variant="default">Leave Room</Button>
+          ) (hasRoom) ? (<Button variant="default">Leave Room</Button>) : (
+          <Button variant="default">Submit</Button>)
         </div>
       </Card>
     </div>
