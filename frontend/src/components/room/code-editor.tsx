@@ -38,6 +38,8 @@ type CodeEditorProps = {
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
   hasRoom?: boolean;
+  onSubmitClick?: () => void;
+  onLeaveRoomClick?: () => void;
 };
 
 export const languages = [
@@ -66,6 +68,8 @@ export default function CodeEditor({
   onChange,
   onCursorChange,
   hasRoom = true,
+  onSubmitClick = () => {},
+  onLeaveRoomClick = () => {},
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -180,13 +184,19 @@ export default function CodeEditor({
           <TypographyBodyHeavy>Console</TypographyBodyHeavy>
         </div>
         <div className="flex justify-end gap-2">
-          (true) ? () : (
-          <Button variant="outline">
-            <Play className="mr-1" />
-            Run
-          </Button>
-          ) (hasRoom) ? (<Button variant="default">Leave Room</Button>) : (
-          <Button variant="default">Submit</Button>)
+          {/* <Button variant="outline">
+              <Play className="mr-1" />
+              Run
+            </Button> */}
+          {hasRoom ? (
+            <Button variant="default" onClick={onLeaveRoomClick}>
+              Leave Room
+            </Button>
+          ) : (
+            <Button variant="default" onClick={onSubmitClick}>
+              Submit
+            </Button>
+          )}
         </div>
       </Card>
     </div>

@@ -8,9 +8,11 @@ import { Question } from "../../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
+import { useHistory } from "@/hooks/useHistory";
 
 export default function Questions() {
   const router = useRouter();
+  const { postAttempt } = useHistory();
   const questionId = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
@@ -40,6 +42,19 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
+  function onSubmitClick() {
+    postAttempt({
+      uid: currentUser ? currentUser.uid : "user",
+      question_id: questionId,
+      answer: answer,
+      solved: true, // assume true
+    }).catch((err: any) => {
+      console.log(err);
+    });
+    // redirect back
+    router.back();
+  }
+
   if (question === null && !loading) return <p>Question not found</p>;
 
   // implement some on change solo save logic here - user side most likely
@@ -62,7 +77,11 @@ export default function Questions() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="description" className="h-[79vh]">
-              <Description question={question} className="h-full" />
+              <Description
+                question={question}
+                className="h-full"
+                hasRoom={false}
+              />
             </TabsContent>
             <TabsContent value="solution">{question.solution}</TabsContent>
           </Tabs>
@@ -72,6 +91,7 @@ export default function Questions() {
               onChange={setAnswer}
               text={answer}
               hasRoom={false}
+              onSubmitClick={onSubmitClick}
             />
           </div>
         </div>
