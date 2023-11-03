@@ -38,7 +38,7 @@ type CodeEditorProps = {
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
   hasRoom?: boolean;
-  onSubmitClick?: (value: string) => void;
+  onSubmitClick?: (param: string) => void;
   onLeaveRoomClick?: () => void;
 };
 
@@ -121,8 +121,7 @@ export default function CodeEditor({
     }
     setIsSubmitting(true);
     try {
-      await onChange(value);
-      await onSubmitClick(value);
+      onSubmitClick(monacoInstance?.getValue() ?? value);
     } catch (error) {
       console.log(error);
     }
