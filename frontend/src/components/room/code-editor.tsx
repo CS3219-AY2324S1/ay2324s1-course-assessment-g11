@@ -38,7 +38,7 @@ type CodeEditorProps = {
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
   hasRoom?: boolean;
-  onSubmitClick?: () => void;
+  onSubmitClick?: (value: string) => void;
   onLeaveRoomClick?: () => void;
 };
 
@@ -68,7 +68,7 @@ export default function CodeEditor({
   onChange,
   onCursorChange,
   hasRoom = true,
-  onSubmitClick = (value) => {},
+  onSubmitClick = () => {},
   onLeaveRoomClick = () => {},
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
@@ -121,12 +121,10 @@ export default function CodeEditor({
     }
     setIsSubmitting(true);
     try {
-      onChange(value);
-      onSubmitClick(value);
+      await onChange(value);
+      await onSubmitClick(value);
     } catch (error) {
       console.log(error);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -209,7 +207,11 @@ export default function CodeEditor({
               Leave Room
             </Button>
           ) : (
-            <Button variant="default" onClick={handleOnSubmitClick}>
+            <Button
+              variant="default"
+              onClick={handleOnSubmitClick}
+              disabled={isSubmitting}
+            >
               Submit
             </Button>
           )}
