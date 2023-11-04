@@ -80,8 +80,14 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     socket.on("matchFound", (match: Match) => {
       console.log("Match found:", match);
       console.log("QuestionId:", match.questionId);
+      socket.emit("joinRoom", match.roomId);
       setMatch(match);
     });
+
+    socket.on("matchLeft", (match: Match) => {
+      console.log("Match left:", match);
+      setMatch(null);
+    })
 
     socket.on("receiveMessage", (message: string) => {
       console.log("Message received:", message);
@@ -100,6 +106,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     return () => {
       socket.off("connect");
       socket.off("matchFound");
+      socket.off("matchLeft");
       socket.off("receiveMessage");
       socket.off("error");
       socket.off("disconnect");

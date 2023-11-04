@@ -20,6 +20,7 @@ model WaitingUser {
   createdAt  DateTime @default(now())
   progLang   String
   difficulty String[]
+  socketId   String
 }
 
 model Match {
