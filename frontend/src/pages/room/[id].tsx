@@ -11,6 +11,7 @@ import { useQuestions } from "@/hooks/useQuestions";
 import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function Room() {
   const router = useRouter();
@@ -44,6 +45,7 @@ export default function Room() {
 
   const { fetchQuestion, fetchRandomQuestion } = useQuestions();
   const { getMatch, updateQuestionIdInMatch } = useMatch();
+  const { leaveMatch } = useMatchmaking();
   const [match, setMatch] = useState<Match | null>(null);
 
   useEffect(() => {
@@ -96,6 +98,7 @@ export default function Room() {
 
   function onLeaveRoomClick(): void {
     disconnect();
+    leaveMatch();
     router.push("/");
   }
 
