@@ -4,18 +4,18 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { TypographyH2, TypographySmall } from "../ui/typography";
 
-// todo change this
-
 type DescriptionProps = {
   question: Question;
   className?: string;
   onSwapQuestionClick?: () => void;
+  hasRoom?: boolean;
 };
 
 export default function Description({
   question,
   className,
   onSwapQuestionClick,
+  hasRoom = true,
 }: DescriptionProps) {
   return (
     <Card
@@ -30,9 +30,11 @@ export default function Description({
             </TypographySmall>
           </Badge>
         </div>
-        <Button variant="secondary" onClick={onSwapQuestionClick}>
-          Swap Question
-        </Button>
+        {hasRoom ? (
+          <Button variant="secondary" onClick={onSwapQuestionClick}>
+            Swap Question
+          </Button>
+        ) : null}
       </div>
       <div className="flex gap-2">
         {question.topics.map((tag) => (

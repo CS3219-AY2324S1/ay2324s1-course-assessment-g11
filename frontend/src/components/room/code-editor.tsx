@@ -37,6 +37,9 @@ type CodeEditorProps = {
   cursor?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
+  hasRoom?: boolean;
+  onSubmitClick?: (param: string) => void;
+  onLeaveRoomClick?: () => void;
 };
 
 export const languages = [
@@ -64,9 +67,13 @@ export default function CodeEditor({
   cursor,
   onChange,
   onCursorChange,
+  hasRoom = true,
+  onSubmitClick = () => {},
+  onLeaveRoomClick = () => {},
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [monacoInstance, setMonacoInstance] =
     React.useState<editor.IStandaloneCodeEditor | null>(null);
@@ -107,6 +114,18 @@ export default function CodeEditor({
     },
     [onChange, onCursorChange, monacoInstance]
   );
+
+  const handleOnSubmitClick = async () => {
+    if (isSubmitting) {
+      return; // Do nothing if a submission is already in progress.
+    }
+    setIsSubmitting(true);
+    try {
+      onSubmitClick(monacoInstance?.getValue() ?? value);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className={className}>
@@ -178,11 +197,23 @@ export default function CodeEditor({
           <TypographyBodyHeavy>Console</TypographyBodyHeavy>
         </div>
         <div className="flex justify-end gap-2">
-          <Button variant="outline">
-            <Play className="mr-1" />
-            Run
-          </Button>
-          <Button variant="default">Leave Room</Button>
+          {/* <Button variant="outline">
+              <Play className="mr-1" />
+              Run
+            </Button> */}
+          {hasRoom ? (
+            <Button variant="default" onClick={onLeaveRoomClick}>
+              Leave Room
+            </Button>
+          ) : (
+            <Button
+              variant="default"
+              onClick={handleOnSubmitClick}
+              disabled={isSubmitting}
+            >
+              Submit
+            </Button>
+          )}
         </div>
       </Card>
     </div>
