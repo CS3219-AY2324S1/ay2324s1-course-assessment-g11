@@ -11,6 +11,7 @@ import { useQuestions } from "@/hooks/useQuestions";
 import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
+import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function Room() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function Room() {
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
-  const { text, setText, cursor, setCursor, room, setQuestionId } =
+  const { text, setText, cursor, setCursor, room, setQuestionId, disconnect } =
     useCollaboration({
       roomId: roomId as string,
       userId,
@@ -44,6 +45,7 @@ export default function Room() {
 
   const { fetchQuestion, fetchRandomQuestion } = useQuestions();
   const { getMatch, updateQuestionIdInMatch } = useMatch();
+  const { leaveMatch } = useMatchmaking();
   const [match, setMatch] = useState<Match | null>(null);
 
   useEffect(() => {
@@ -92,6 +94,12 @@ export default function Room() {
           setLoading(false);
         });
     }
+  }
+
+  function onLeaveRoomClick(): void {
+    disconnect();
+    leaveMatch();
+    router.push("/");
   }
 
   return (
@@ -160,6 +168,7 @@ export default function Room() {
                   cursor={cursor}
                   onChange={setText}
                   onCursorChange={setCursor}
+                  onLeaveRoomClick={onLeaveRoomClick}
                 />
               </div>
             </div>
