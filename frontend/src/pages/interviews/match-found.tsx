@@ -38,7 +38,12 @@ export default function MatchFound() {
         match?.userId1 === user?.uid ? match?.userId2 : match?.userId1;
 
       const other = await getAppUser(otherUserId, false);
-      setOtherUser(other);
+      if (other) {
+        setOtherUser({
+          displayName: other.displayName || "Anonymous",
+          photoUrl: other.photoUrl || defaultUser.photoUrl,
+        });
+      }
 
       console.log(other);
     };

@@ -3,6 +3,7 @@ import { Server, Socket } from "socket.io";
 import { io } from "../app";
 import prisma from "../prismaClient";
 import { getRandomQuestionOfDifficulty } from "../questionAdapter";
+import { EnumRoomStatus } from "@prisma/client";
 
 export const MAX_WAITING_TIME = 60 * 1000; // 60 seconds
 
@@ -140,6 +141,13 @@ export function handleLooking(
             userId2: userId,
             chosenDifficulty: commonDifficulty || "easy",
             chosenProgrammingLanguage: programmingLang,
+          },
+        });
+        await tx.room.create({
+          data: {
+            room_id: newMatch.roomId,
+            status: EnumRoomStatus.active,
+            text: ""
           },
         });
         await tx.waitingUser.deleteMany({

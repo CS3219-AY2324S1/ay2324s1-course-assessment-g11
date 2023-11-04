@@ -27,7 +27,6 @@ export async function getRandomQuestionOfDifficulty(
       response.on("end", () => {
         try {
           const parsedData = JSON.parse(data);
-          console.log(parsedData);
           const qnId = parsedData[0]._id;
           if (qnId) {
             resolve(qnId);
