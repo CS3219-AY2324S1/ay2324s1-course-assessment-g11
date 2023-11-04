@@ -74,7 +74,9 @@ const leaderboardData = [
 
 export default function Interviews() {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState(
+    languages.length > 0 ? languages[0].value : ""
+  );
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const router = useRouter();
@@ -134,7 +136,13 @@ export default function Interviews() {
                 </PopoverTrigger>
                 <PopoverContent className="w-[240px] p-0">
                   <Command>
-                    <CommandInput placeholder="Search Language..." />
+                    <CommandInput
+                      placeholder={
+                        languages.length > 0
+                          ? languages[0].label
+                          : "Search Language..."
+                      }
+                    />
                     <CommandEmpty>No language found.</CommandEmpty>
                     <CommandGroup>
                       {languages.map((language) => (
