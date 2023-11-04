@@ -83,7 +83,7 @@ export function handleDisconnect(
 export function handleLooking(
   socket: Socket,
   userId: string,
-): (...args: any[]) => void {
+): (difficulties: string[], programmingLang: string) => Promise<void> {
   return async (difficulties: string[], programmingLang: string) => {
     if (!difficulties || !programmingLang) {
       console.log(`Invalid request from user ${userId}`);
@@ -196,7 +196,7 @@ export function handleLooking(
 
 export function handleCancelLooking(
   userId: string
-): (...args: any[]) => void {
+): () => Promise<void> {
   return async () => {
     console.log(`User ${userId} is no longer looking for a match`);
     await prisma.waitingUser.deleteMany({
@@ -207,7 +207,7 @@ export function handleCancelLooking(
   };
 }
 
-export function handleJoinRoom(userId: string, socket: Socket): (...args: any[]) => void {
+export function handleJoinRoom(userId: string, socket: Socket): (roomId: string) => void {
   return (roomId: string) => {
     // TODO: Check if the user is in a match with relevant room id
     console.log(`User ${socket.id} is joining room ${roomId}`);
@@ -218,7 +218,7 @@ export function handleJoinRoom(userId: string, socket: Socket): (...args: any[])
 export function handleLeaveMatch(
   userId: string,
   socket: Socket
-): (...args: any[]) => void {
+): () => Promise<void> {
   return async () => {
     console.log(`User ${userId} has left the match`);
 
@@ -250,7 +250,7 @@ export function handleLeaveMatch(
 export function handleSendMessage(
   userId: string,
   socket: Socket
-): (...args: any[]) => void {
+): (message: string) => Promise<void> {
   return async (message: string) => {
     if (!userId || !message) {
       console.log(`Invalid request from user ${userId}`);
