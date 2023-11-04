@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
 
-import { Room } from "@prisma/client";
 import {
   createOrUpdateRoomWithUser,
   removeUserFromRoom,
