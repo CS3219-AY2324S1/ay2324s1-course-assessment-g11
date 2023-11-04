@@ -4,3 +4,4 @@ node_modules
 .env.firebase_emulators_test
 secrets/
 yarn-error.log
+bash.exe.stackdump
