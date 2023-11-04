@@ -8,9 +8,11 @@ import { Question } from "../../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
+import { useHistory } from "@/hooks/useHistory";
 
 export default function Questions() {
   const router = useRouter();
+  const { postAttempt } = useHistory();
   const questionId = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
@@ -20,16 +22,19 @@ export default function Questions() {
 
   useEffect(() => {
     if (currentUser) {
-      fetchQuestion(currentUser, questionId).then(question => {
-        if (question) {
-          setQuestion(question);
-        }
-      }).catch(err => {
-        console.log(err);
-        router.push("/");
-      }).finally(() => {
-        setLoading(false);
-      });
+      fetchQuestion(currentUser, questionId)
+        .then((question) => {
+          if (question) {
+            setQuestion(question);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          router.push("/");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     } else {
       // if user is not logged in, redirect to home
       router.push("/");
@@ -37,49 +42,60 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  if (question === null && !loading) return (<p>Question not found</p>);
+  function onSubmitClick(value: string) {
+    postAttempt({
+      uid: currentUser ? currentUser.uid : "user",
+      question_id: questionId,
+      answer: value || answer,
+      solved: true, // assume true
+    })
+      .catch((err: any) => {
+        console.log(err);
+      })
+      .finally(() => {
+        router.push("/profile");
+      });
+  }
 
-  // implement some on change solo save logic here - user side most likely
+  if (question === null && !loading) return <p>Question not found</p>;
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
-      {!router.isReady || question === null || loading ?
+      {!router.isReady || question === null || loading ? (
         <div className="flex w-full h-full justify-center items-center">
-          <MrMiyagi
-            size={35}
-            lineWeight={3.5}
-            speed={1}
-            color="white"
-          />
-        </div> :
-        (
-          <div className="flex h-full">
-            <Tabs defaultValue="description" className="flex-1">
-              <TabsList>
-                <TabsTrigger value="description">
-                  <TypographyBody>Description</TypographyBody>
-                </TabsTrigger>
-                <TabsTrigger value="solution">
-                  <TypographyBody>Solution</TypographyBody>
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="description" className="h-[79vh]">
-                <Description
-                  question={question}
-                  className="h-full"
-                />
-              </TabsContent>
-              <TabsContent value="solution">{question.solution}</TabsContent>
-            </Tabs>
-            <div className="flex-1">
-              <CodeEditor
-                defaultValue={question.defaultCode.python}
-                onChange={setAnswer}
-                text={answer}
+          <MrMiyagi size={35} lineWeight={3.5} speed={1} color="white" />
+        </div>
+      ) : (
+        <div className="flex h-full">
+          <Tabs defaultValue="description" className="flex-1">
+            <TabsList>
+              <TabsTrigger value="description">
+                <TypographyBody>Description</TypographyBody>
+              </TabsTrigger>
+              <TabsTrigger value="solution">
+                <TypographyBody>Solution</TypographyBody>
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="description" className="h-[79vh]">
+              <Description
+                question={question}
+                className="h-full"
+                hasRoom={false}
               />
-            </div>
+            </TabsContent>
+            <TabsContent value="solution">{question.solution}</TabsContent>
+          </Tabs>
+          <div className="flex-1">
+            <CodeEditor
+              defaultValue={question.defaultCode.python}
+              onChange={setAnswer}
+              text={answer}
+              hasRoom={false}
+              onSubmitClick={onSubmitClick}
+            />
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }

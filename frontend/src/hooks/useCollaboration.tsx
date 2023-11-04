@@ -174,7 +174,13 @@ const useCollaboration = ({
     });
   }, [text, socket]);
 
-  return { text, setText, cursor, setCursor, room, setQuestionId };
+  const disconnect = () => {
+    if (socket) {
+      socket.disconnect();
+    }
+  };
+
+  return { text, setText, cursor, setCursor, room, setQuestionId, disconnect };
 };
 
 export default useCollaboration;
