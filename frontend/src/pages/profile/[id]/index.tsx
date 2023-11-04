@@ -1,22 +1,20 @@
-import Profile from "../_profile";
+import Profile, {UserProfile} from "../_profile";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/contexts/AuthContext";
 import { Attempt } from "@/types/UserTypes";
 import { useHistory } from "@/hooks/useHistory";
 import { useRouter } from "next/router";
-import { User } from "firebase/auth";
 import { useUser } from "@/hooks/useUser";
 
 export default function Page() {
   const router = useRouter();
   const id = router.query.id;
-  const { user: authUser, authIsReady } = useContext(AuthContext);
   const { getAppUser } = useUser();
   const { user: currentUser } = useContext(AuthContext);
   const { fetchAttempts } = useHistory();
 
   const [attempts, setAttempts] = useState<Attempt[]>([]);
-  const [user, setUser] = useState<User>();
+  const [user, setUser] = useState<UserProfile>();
   const [loadingState, setLoadingState] = useState<
     "loading" | "error" | "success"
   >("loading");
@@ -26,9 +24,8 @@ export default function Page() {
       Promise.all([getAppUser(id), fetchAttempts(id)])
         .then(([user, attempts]) => {
           if (user && attempts) {
-            user["photoURL"] = user["photoUrl"];
             console.log(user);
-            setUser(user);
+            setUser({...user, photoURL: user.photoUrl});
             setAttempts(attempts);
             setLoadingState("success");
           } else {

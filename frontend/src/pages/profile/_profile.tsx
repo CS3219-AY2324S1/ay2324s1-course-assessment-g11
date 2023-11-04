@@ -15,8 +15,15 @@ import { DataTable } from "@/components/profile/data-table";
 import { columns } from "@/components/profile/columns";
 import { DotWave } from "@uiball/loaders";
 
+export type UserProfile = {
+  uid: string;
+  displayName?: string | null;
+  photoURL?: string | null;
+  email?: string | null;
+};
+
 type ProfileProps = {
-  selectedUser: User;
+  selectedUser: UserProfile;
   loadingState: "loading" | "error" | "success";
   attempts?: Attempt[];
   isCurrentUser: boolean;
