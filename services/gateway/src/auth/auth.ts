@@ -33,7 +33,6 @@ export const setupUserIdMatch = (app : Express, routes : any[]) => {
   routes.forEach(r => {
     app.use(r.url, function(req : express.Request, res : express.Response, next : express.NextFunction) {
       if (r.user_match_required_methods.includes(req.method)) {
-        console.log(req.params)
         const idToken = req.get(userIdTokenHeader);
         const paramUid = req.get(userIdHeader);
         if (!idToken || !paramUid) {

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import { io } from "../app";
 import prisma from "../prismaClient";
 import EventEmitter from "events";
@@ -211,14 +211,6 @@ export function handleLooking(
               questionId: questionId,
             },
           }),
-          // prisma.user.update({
-          //   where: { id: userId },
-          //   data: { matchedUserId: matchId },
-          // }),
-          // prisma.user.update({
-          //   where: { id: matchId },
-          //   data: { matchedUserId: userId },
-          // }),
         ])
         .catch((err) => {
           console.log(err);
