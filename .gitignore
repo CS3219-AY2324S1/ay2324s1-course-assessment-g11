@@ -5,3 +5,4 @@ node_modules
 secrets/
 yarn-error.log
 bash.exe.stackdump
+sh.exe.stackdump

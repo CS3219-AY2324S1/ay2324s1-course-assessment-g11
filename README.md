@@ -4,19 +4,19 @@
 
 Prerequisites for PeerPrep Monorepo:
 
-1.  **Yarn:** Ensure you have the latest version of Yarn installed. Yarn
+1. **Yarn:** Ensure you have the latest version of Yarn installed. Yarn
     Workspaces is available in Yarn v1.0 and later.
-2.  Installation (if not already installed):
+2. Installation (if not already installed):
 
     ```bash
     npm install -g yarn
     ```
 
-3.  **Node.js:** Check each application's documentation for the recommended
+3. **Node.js:** Check each application's documentation for the recommended
     Node.js version.
-4.  **Git (Optional but Recommended):**
-5.  **Docker (If deploying with Docker):**
-6.  **Kubernetes Tools (If deploying with Kubernetes):**
+4. **Git (Optional but Recommended):**
+5. **Docker (If deploying with Docker):**
+6. **Kubernetes Tools (If deploying with Kubernetes):**
 
 ---
 
@@ -52,10 +52,19 @@ your services / frontend.
     MONGO_ATLAS_URL=<redacted>
     FIREBASE_SERVICE_ACCOUNT=<redacted>
     NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
+    TWILIO_ACCOUNT_SID=<redacted>
+    TWILIO_API_KEY=<redacted>
+    TWILIO_API_SECRET=<redacted>
     ```
 Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
+The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
 
-1. **Installing secret detection hooks:** From the root directory, run:
+| Variable | Purpose |
+| -------- | ------- |
+| FIREBASE_SERVICE_ACCOUNT | For backend verification and administrative tasks |
+| NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG | For the frontend to connect to Firebase |
+
+2. **Installing secret detection hooks:** From the root directory, run:
     ```bash
     pip install pre-commit
     pre-commit install
@@ -66,7 +75,7 @@ As a tip, if you think a file will eventually store secrets, immediately add it 
 it in case you forget later on when you have a lot more files to commit.
 
 
-1. **Installing Dependencies:** From the root directory (`/peerprep`), run:
+3. **Installing Dependencies:** From the root directory (`/peerprep`), run:
 
    ```bash
    yarn install
@@ -83,27 +92,27 @@ it in case you forget later on when you have a lot more files to commit.
    This command will install dependencies for all services and the frontend in a
    centralized `node_modules` directory at the root.
 
-1. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
+4. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
    `user-service`), use:
 
    ```bash
    yarn workspace user-service add [dependency-name]
    ```
 
-1. **Initializing Prisma:** In the root file, run the following:
+5. **Initializing Prisma:** In the root file, run the following:
 
    ```bash
    yarn prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
-1. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
+6. **Running Backend Scripts:** To run a script specific to a workspace (e.g.,
    the `start` script for `user-service`), use:
 
    ```bash
    yarn workspace user-service start
    ```
 
-1. **Running Frontend Scripts:** To run the frontend cod, use:
+7. **Running Frontend Scripts:** To run the frontend cod, use:
 
    ```bash
    yarn workspace frontend dev ## For development
@@ -113,7 +122,7 @@ it in case you forget later on when you have a lot more files to commit.
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```
-1. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
+8. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
 
     ```bash
     ./start-app-no-docker.sh # on mac /linus
@@ -134,13 +143,13 @@ yarn docker:build
 ```
 This will create new Docker images.
 
-1. **Run yarn docker:devup:** From the root repo, run
+2. **Run yarn docker:devup:** From the root repo, run
 ```bash
 yarn docker:devup 
 ```
 This will start all the containers.
 
-1. **Once done, run yarn docker:devdown:** From the root repo, run
+3. **Once done, run yarn docker:devdown:** From the root repo, run
 ```bash
 yarn docker:devdown 
 ```

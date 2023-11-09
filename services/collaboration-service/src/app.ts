@@ -14,7 +14,7 @@ const app: Express = express();
 const server: HTTPServer = http.createServer(app);
 const socketIoOptions: any = {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.FRONTEND_ADDRESS || "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 };

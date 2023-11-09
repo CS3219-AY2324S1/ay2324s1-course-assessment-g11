@@ -180,20 +180,10 @@ export function transformPosition(cursor: number, op: TextOp): number {
 
 function test() {
   const text1 = "hello world";
-  // console.log(type.apply(text1, remove(6, 1)));
-  // console.log(
-  //   type.apply(type.apply(text1, remove(6, "w")), insert(9, "asdadasdk"))
-  // );
-  // console.log(
-  //   type.apply(text1, (remove(6, "w") as TextOp).concat(insert(3, "asdadasdk")))
-  // );
   const text2 = "good day hi everyone and the world";
   const text3 = "good morning to the world and all who are in it";
   const expected =
     "hi everyone good morning to the world and all who are in it"; /// or some gibberish similiar to this
-  // const textOp = createTextOpFromTexts(text1, text2);
-  // console.log(textOp);
-  // console.log(type.apply(text1, textOp));
 
   const history_db = new OpHistoryMap();
 
@@ -219,14 +209,6 @@ function test() {
   const newOp = type.transform(text1to3op, text1to2op, "left");
   console.log(newOp);
   console.log(type.apply(text2, newOp));
-
-  // console.log(
-  //   type.transform(
-  //     (remove(0, "w") as TextOp).concat(insert(3, "asdadasdk")),
-  //     (insert(1, "hello") as TextOp).concat(remove(3, "ak")),
-  //     "left"
-  //   )
-  // );
 
   const newOp2 = type.transform(text1to2op, text1to3op, "right");
   console.log(newOp2);

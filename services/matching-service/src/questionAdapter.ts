@@ -6,7 +6,7 @@ export async function getRandomQuestionOfDifficulty(
   const requestBody = JSON.stringify({ difficulty });
 
   const options = {
-    hostname: "localhost",
+    hostname: process.env.QUESTION_SERVICE_HOSTNAME || "localhost",
     port: 5004, // Port of the question service
     path: "/api/question-service/random-question",
     method: "POST",

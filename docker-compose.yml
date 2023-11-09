@@ -22,6 +22,7 @@ services:
     environment:
       PORT: 5002
       PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
+      QUESTION_SERVICE_HOSTNAME: "question-service"
 
   collaboration-service:
     build:

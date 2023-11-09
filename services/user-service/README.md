@@ -14,6 +14,8 @@ dotenv -e .env {insert the command here}
 
 ## How to run and develop locally:
 
+Steps 1 and 2 are only compulsory if you are using a database on a locally-hosted Docker container:
+
 1) Start the database with the below command:
 
 ```
@@ -27,18 +29,18 @@ For the port mapping, `-p 5432:5432`, if you are running a local instance of Pos
 ```
 The host port of 5431 is mapped to container port of 5432. Note that your host port must match the database URL you are using for your Prisma schema.
 
-1) Access the database using:
+2) Access the database using:
 
 ```
 docker exec -it some-postgres psql -u {insert username here} -D {insert database name here}
 ```
 
-1) To start the user-service, from the root of the entire project, run the command:
+3) To start the user-service, from the root of the entire project, run the command:
 ```
 yarn workspace user-service dev:local
 ```
 
-1) The user-service will run on port 5001. You can test the API using Postman
+4) The user-service will run on port 5001. You can test the API using Postman
 
 ## How to run automated tests:
 
@@ -87,7 +89,7 @@ This also means that you need to pass in the environment variables to the CI wor
 #### Warning about system tests
 During system testing, a live database is used (although it only exists for the duration of the test).
 
-In the current implementation of system test, the database is never cleared during, meaning that each test depends on the state of the previous test.
+In the current implementation of system test, the database is never cleared during the entire testing process, meaning that each test depends on the state of the previous test.
 
 This also means that if you abort the system test (or it fails), re-running the system test is not guaranteed to succeed again after fixing the failure cause.
 

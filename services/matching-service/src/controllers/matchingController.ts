@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
 import { io } from "../app";
 import prisma from "../prismaClient";
 import { getRandomQuestionOfDifficulty } from "../questionAdapter";
