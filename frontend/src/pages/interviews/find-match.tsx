@@ -8,11 +8,19 @@ import { useMatchmaking } from "@/hooks/useMatchmaking";
 export default function FindMatch() {
   const router = useRouter();
   const { match, cancelLooking } = useMatchmaking();
+  const { query } = router;
+  const { retry } = query;
 
   const onClickCancel = () => {
     cancelLooking();
     router.push("/interviews");
   };
+
+  useEffect(() => {
+    if (retry) {
+      router.push("/interviews");
+    }
+  }, [retry, router]);
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout> | null = null;
@@ -25,9 +33,8 @@ export default function FindMatch() {
       }, 30000);
     }
     return () => {
-      if (timeout)
-      clearTimeout(timeout);
-    }
+      if (timeout) clearTimeout(timeout);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match, router]);
 

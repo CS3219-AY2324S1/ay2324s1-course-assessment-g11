@@ -40,50 +40,50 @@ export async function handleConnection(socket: Socket) {
   return userId;
 }
 
-export function handleDisconnect(
-  socket: Socket,
-  userId: string
-) {
+export function handleDisconnect(socket: Socket, userId: string) {
   return () => {
     console.log(`User disconnected: ${socket.id}`);
     // Remove user from queue if they disconnect
-    prisma.waitingUser.deleteMany({
-      where: {
-        userId: userId,
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
+    prisma.waitingUser
+      .deleteMany({
+        where: {
+          userId: userId,
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
     // Match should not be cancelled since the user might reconnect but we can notify the other user
-    prisma.match.findFirst({
+    prisma.match
+      .findFirst({
         where: {
           OR: [{ userId1: userId }, { userId2: userId }],
         },
-    }).then((match) => {
-      if (match) {
-        const matchingUserId =
-          match?.userId1 === userId ? match?.userId2 : match?.userId1;
-        console.log(
-          `Notifying user ${matchingUserId} that user ${userId} has disconnected`
-        );
-        io.to(match?.roomId || "").emit(
-          "receiveMessage",
-          "Server",
-          "Your partner has disconnected"
-        );
-      }
-    }).catch((err) => {
-      console.log(err);
-    });
-    
-    
+      })
+      .then((match) => {
+        if (match) {
+          const matchingUserId =
+            match?.userId1 === userId ? match?.userId2 : match?.userId1;
+          console.log(
+            `Notifying user ${matchingUserId} that user ${userId} has disconnected`
+          );
+          io.to(match?.roomId || "").emit(
+            "receiveMessage",
+            "Server",
+            "Your partner has disconnected"
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 }
 
 export function handleLooking(
   socket: Socket,
-  userId: string,
+  userId: string
 ): (difficulties: string[], programmingLang: string) => Promise<void> {
   return async (difficulties: string[], programmingLang: string) => {
     if (!difficulties || !programmingLang) {
@@ -93,15 +93,17 @@ export function handleLooking(
     }
 
     let hasError = false;
-    const existingMatch = await prisma.match.findFirst({
-      where: {
-        OR: [{ userId1: userId }, { userId2: userId }],
-      },
-    }).catch((err) => {
-      console.log(err);
-      socket.emit("error", "An error occurred in lookingForMatch.");
-      hasError = true;
-    });
+    const existingMatch = await prisma.match
+      .findFirst({
+        where: {
+          OR: [{ userId1: userId }, { userId2: userId }],
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+        socket.emit("error", "An error occurred in lookingForMatch.");
+        hasError = true;
+      });
 
     if (hasError) {
       return;
@@ -121,65 +123,71 @@ export function handleLooking(
       return;
     }
 
-    let {newMatch: foundMatch, matchingUser} = await prisma.$transaction(async (tx) => {
-      const matchingUser = await tx.waitingUser.findFirst({
-        where: {
-          progLang: programmingLang,
-          difficulty: {
-            hasSome: difficulties,
-          },
-          createdAt: {
-            gte: new Date(Date.now() - MAX_WAITING_TIME),
-          }
-        },
-      });
-      if (matchingUser) {
-        const commonDifficulty = matchingUser.difficulty.find((v) => difficulties.includes(v));
-        const newMatch = await tx.match.create({
-          data: {
-            userId1: matchingUser.userId,
-            userId2: userId,
-            chosenDifficulty: commonDifficulty || "easy",
-            chosenProgrammingLanguage: programmingLang,
-          },
-        });
-        await tx.room.create({
-          data: {
-            room_id: newMatch.roomId,
-            status: EnumRoomStatus.active,
-            text: ""
-          },
-        });
-        await tx.waitingUser.deleteMany({
+    let { newMatch: foundMatch, matchingUser } = await prisma.$transaction(
+      async (tx) => {
+        const matchingUser = await tx.waitingUser.findFirst({
           where: {
-            userId: {
-              in: [matchingUser.userId, userId],
+            progLang: programmingLang,
+            difficulty: {
+              hasSome: difficulties,
+            },
+            createdAt: {
+              gte: new Date(Date.now() - MAX_WAITING_TIME),
             },
           },
         });
-        return {newMatch, matchingUser};
-      } else {
-        await tx.waitingUser.create({
-          data: {
-            userId: userId,
-            progLang: programmingLang,
-            difficulty: difficulties,
-            socketId: socket.id,
-          },
-        });
-        return {
-          newMatch: null,
-          matchingUser: null,
-        };
+        if (matchingUser) {
+          const commonDifficulty = matchingUser.difficulty.find((v) =>
+            difficulties.includes(v)
+          );
+          const newMatch = await tx.match.create({
+            data: {
+              userId1: matchingUser.userId,
+              userId2: userId,
+              chosenDifficulty: commonDifficulty || "easy",
+              chosenProgrammingLanguage: programmingLang,
+            },
+          });
+          await tx.room.create({
+            data: {
+              room_id: newMatch.roomId,
+              status: EnumRoomStatus.active,
+              text: "",
+            },
+          });
+          await tx.waitingUser.deleteMany({
+            where: {
+              userId: {
+                in: [matchingUser.userId, userId],
+              },
+            },
+          });
+          return { newMatch, matchingUser };
+        } else {
+          await tx.waitingUser.create({
+            data: {
+              userId: userId,
+              progLang: programmingLang,
+              difficulty: difficulties,
+              socketId: socket.id,
+            },
+          });
+          return {
+            newMatch: null,
+            matchingUser: null,
+          };
+        }
       }
-    });
+    );
 
     if (!foundMatch) {
       console.log(`Queued user ${userId}.`);
       return;
     }
 
-    const qnId = await getRandomQuestionOfDifficulty(foundMatch.chosenDifficulty);
+    const qnId = await getRandomQuestionOfDifficulty(
+      foundMatch.chosenDifficulty
+    );
     foundMatch = await prisma.match.update({
       where: {
         roomId: foundMatch.roomId,
@@ -198,13 +206,10 @@ export function handleLooking(
     // Inform both users of the match
     socket.emit("matchFound", foundMatch);
     io.to(matchingUser?.socketId || "").emit("matchFound", foundMatch);
-
   };
 }
 
-export function handleCancelLooking(
-  userId: string
-): () => Promise<void> {
+export function handleCancelLooking(userId: string): () => Promise<void> {
   return async () => {
     console.log(`User ${userId} is no longer looking for a match`);
     await prisma.waitingUser.deleteMany({
@@ -215,7 +220,10 @@ export function handleCancelLooking(
   };
 }
 
-export function handleJoinRoom(userId: string, socket: Socket): (roomId: string) => void {
+export function handleJoinRoom(
+  userId: string,
+  socket: Socket
+): (roomId: string) => void {
   return (roomId: string) => {
     // TODO: Check if the user is in a match with relevant room id
     console.log(`User ${socket.id} is joining room ${roomId}`);
@@ -229,6 +237,7 @@ export function handleLeaveMatch(
 ): () => Promise<void> {
   return async () => {
     console.log(`User ${userId} has left the match`);
+    // socket.emit("userLeft", userId);
 
     const deletedRoom = await prisma.$transaction(async (tx) => {
       const match = await tx.match.findFirst({

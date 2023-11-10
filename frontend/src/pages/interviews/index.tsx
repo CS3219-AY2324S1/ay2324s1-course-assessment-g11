@@ -102,6 +102,8 @@ export default function Interviews() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
 
+  // sync leaderboard data
+
   const onClickSearch = () => {
     try {
       joinQueue(

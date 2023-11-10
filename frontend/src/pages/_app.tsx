@@ -5,6 +5,8 @@ import { Noto_Sans } from "next/font/google";
 import AuthContextProvider from "@/contexts/AuthContext";
 import { MatchmakingProvider } from "../providers/MatchmakingProvider";
 import AuthChecker from "@/components/common/auth-checker";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const notoSans = Noto_Sans({
   weight: ["400", "500", "600", "700", "800", "900"],
@@ -23,6 +25,18 @@ export default function App({ Component, pageProps }: AppProps) {
         <AuthContextProvider>
           <AuthChecker>
             <MatchmakingProvider>
+              <ToastContainer
+                position="bottom-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+              />
               <Layout>
                 <Component {...pageProps} />
               </Layout>

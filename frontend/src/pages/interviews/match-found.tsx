@@ -1,3 +1,4 @@
+import { languages } from "@/components/room/code-editor";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -9,10 +10,12 @@ import {
 import { AuthContext } from "@/contexts/AuthContext";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 import { useUser } from "@/hooks/useUser";
+import { Difficulty } from "@/types/QuestionTypes";
 import { query } from "express";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 type UserInfo = {
   displayName: string;
@@ -31,37 +34,57 @@ export default function MatchFound() {
   const [otherUser, setOtherUser] = useState<UserInfo>(defaultUser);
 
   const { getAppUser } = useUser();
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [difficulty, setDifficulty] = useState<Difficulty[]>(["medium"]);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    languages.length > 0 ? languages[0].value : "c++"
+  );
 
   useEffect(() => {
-    const fetchOtherUser = async () => {
-      const otherUserId =
-        match?.userId1 === user?.uid ? match?.userId2 : match?.userId1;
+    if (user) {
+      getAppUser().then((user) => {
+        if (user) {
+          setDifficulty([user.matchDifficulty as Difficulty] || difficulty);
+          setSelectedLanguage(
+            user.matchProgrammingLanguage || selectedLanguage
+          );
+        }
+        setIsLoading(false);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
-      const other = await getAppUser(otherUserId, false);
-      if (other) {
-        setOtherUser({
-          displayName: other.displayName || "Anonymous",
-          photoUrl: other.photoUrl || defaultUser.photoUrl,
-        });
+  useEffect(() => {
+    if (!match) {
+      toast("Other user has left");
+      router.push("/interviews");
+    } else {
+      const fetchOtherUser = async () => {
+        const otherUserId =
+          match?.userId1 === user?.uid ? match?.userId2 : match?.userId1;
+
+        const other = await getAppUser(otherUserId, false);
+        if (other) {
+          setOtherUser({
+            displayName: other.displayName || "Anonymous",
+            photoUrl: other.photoUrl || defaultUser.photoUrl,
+          });
+        }
+
+        console.log(other);
+      };
+
+      if (user && authIsReady) {
+        fetchOtherUser();
       }
-
-      console.log(other);
-    };
-
-    if (user && authIsReady) {
-      fetchOtherUser();
     }
   }, [user, authIsReady, match]);
 
   const onClickCancel = () => {
     leaveMatch();
     router.push("/interviews");
-  };
-
-  const onClickRetry = () => {
-    cancelLooking();
-    joinQueue(["easy", "medium", "hard"], "python");
-    router.push("/interviews/find-match");
   };
 
   const onClickAccept = () => {
@@ -91,9 +114,9 @@ export default function MatchFound() {
         <Button variant="secondary" onClick={onClickCancel}>
           Cancel Search
         </Button>
-        <Button variant="secondary" onClick={onClickRetry}>
+        {/* <Button variant="secondary" onClick={onClickRetry}>
           Retry Match
-        </Button>
+        </Button> */}
         <Button variant="default" onClick={onClickAccept}>
           Accept Interview
         </Button>

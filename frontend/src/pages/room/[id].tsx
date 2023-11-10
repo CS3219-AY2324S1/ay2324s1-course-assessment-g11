@@ -83,7 +83,7 @@ export default function Room() {
             updateQuestionIdInMatch(roomId, question.id);
             setQuestion(question);
             setQuestionId(question.id);
-            console.log(question.id);
+            console.log("rin");
           }
         })
         .catch((err) => {
@@ -99,7 +99,7 @@ export default function Room() {
   function onLeaveRoomClick(): void {
     disconnect();
     leaveMatch();
-    router.push("/");
+    router.push("/interviews");
   }
 
   return (
@@ -131,7 +131,7 @@ export default function Room() {
                         color="white"
                       />
                     </div>
-                  ) : question != null ? (
+                  ) : question !== null ? (
                     <Description
                       question={question}
                       onSwapQuestionClick={handleSwapQuestionClick}
