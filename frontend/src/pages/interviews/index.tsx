@@ -21,11 +21,13 @@ import {
   TypographyH2,
   TypographySmall,
 } from "@/components/ui/typography";
+import { AuthContext } from "@/contexts/AuthContext";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import { useUser } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 type Difficulty = "easy" | "medium" | "hard" | "any";
 
@@ -73,20 +75,39 @@ const leaderboardData = [
 ];
 
 export default function Interviews() {
+  const { user: currentUser } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(
-    languages.length > 0 ? languages[0].value : ""
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    languages.length > 0 ? languages[0].value : "c++"
   );
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
 
   const router = useRouter();
   const { joinQueue } = useMatchmaking();
+  const { getAppUser } = useUser();
+  const [isLoading, setIsLoading] = useState(true);
 
-  // const { id } = router.query;
+  useEffect(() => {
+    if (currentUser) {
+      getAppUser().then((user) => {
+        if (user) {
+          setDifficulty((user.matchDifficulty as Difficulty) || difficulty);
+          setSelectedLanguage(
+            user.matchProgrammingLanguage || selectedLanguage
+          );
+        }
+        setIsLoading(false);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   const onClickSearch = () => {
     try {
-      joinQueue(difficulty === "any" ? ["easy", "medium", "hard"] : [difficulty], value);
+      joinQueue(
+        difficulty === "any" ? ["easy", "medium", "hard"] : [difficulty],
+        selectedLanguage
+      );
       console.log("Joined queue");
       router.push(`/interviews/find-match`);
     } catch (error) {
@@ -113,6 +134,7 @@ export default function Interviews() {
               onChange={(value) => setDifficulty(value)}
               showAny={true}
               value={difficulty}
+              isLoading={isLoading}
             />
           </div>
 
@@ -127,9 +149,10 @@ export default function Interviews() {
                     aria-expanded={open}
                     className="w-[240px] justify-between"
                   >
-                    {value
-                      ? languages.find((language) => language.value === value)
-                          ?.label
+                    {selectedLanguage
+                      ? languages.find(
+                          (language) => language.value === selectedLanguage
+                        )?.label
                       : "Select Language..."}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                   </Button>
@@ -149,8 +172,10 @@ export default function Interviews() {
                         <CommandItem
                           key={language.value}
                           onSelect={(currentValue) => {
-                            setValue(
-                              currentValue === value ? "" : currentValue
+                            setSelectedLanguage(
+                              currentValue === selectedLanguage
+                                ? ""
+                                : currentValue
                             );
                             setOpen(false);
                           }}
@@ -158,7 +183,7 @@ export default function Interviews() {
                           <Check
                             className={cn(
                               "mr-2 h-4 w-4",
-                              value === language.value
+                              selectedLanguage === language.value
                                 ? "opacity-100"
                                 : "opacity-0"
                             )}
