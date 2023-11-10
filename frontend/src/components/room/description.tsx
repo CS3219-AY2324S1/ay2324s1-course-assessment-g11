@@ -3,6 +3,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { TypographyH2, TypographySmall } from "../ui/typography";
+import sanitizeHtml from "sanitize-html";
 
 type DescriptionProps = {
   question: Question;
@@ -17,6 +18,8 @@ export default function Description({
   onSwapQuestionClick,
   hasRoom = true,
 }: DescriptionProps) {
+  const cleanDescription = sanitizeHtml(question.description)
+
   return (
     <Card
       className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}
@@ -46,7 +49,7 @@ export default function Description({
       <div className="py-6">
         <TypographySmall>
           <div
-            dangerouslySetInnerHTML={{ __html: question.description }}
+            dangerouslySetInnerHTML={{ __html: cleanDescription }}
             className="w-[40vw] overflow-x-auto"
           ></div>
         </TypographySmall>
