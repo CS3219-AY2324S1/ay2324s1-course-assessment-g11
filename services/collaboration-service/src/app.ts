@@ -7,7 +7,7 @@ import { Server as SocketIOServer } from "socket.io";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./swagger-output.json";
 import bodyParser from "body-parser";
-import roomRouter from "./routes/room";
+import roomRouter, { roomApiRouter } from "./routes/room";
 import demoRouter from "./routes/demo";
 
 const app: Express = express();
@@ -33,6 +33,8 @@ app.use(express.static(path.join(__dirname, "public")));
 /* Routers */
 app.use("/demo", demoRouter);
 app.use("/api/collaboration-service/room", roomRouter(io));
+app.use("/api/collaboration-service/room", roomApiRouter);
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 server.listen(PORT, () => {

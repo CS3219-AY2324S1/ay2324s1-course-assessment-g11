@@ -9,6 +9,10 @@ import { TextOp } from "ot-text-unicode";
 import { Room, connect } from "twilio-video";
 import { wsCollaborationProxyGatewayAddress } from "@/gateway-address/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
+import { collaborationServiceAddress } from "./../../../services/gateway/src/proxied_routes/service_names";
+import { useRouter } from "next/router";
+import { fetchRoomData } from "@/pages/api/collaborationHandler";
 
 type UseCollaborationProps = {
   roomId: string;
@@ -45,7 +49,26 @@ const useCollaboration = ({
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
   const twilioTokenRef = useRef<string>("");
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser } = useContext(AuthContext);
+
+  const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    if (id && currentUser) {
+      try {
+        const response = fetchRoomData(id?.toString(), currentUser);
+        response.then((res) => {
+          if (res.message === "Room exists") {
+            console.log(res);
+            setQuestionId(res.questionId);
+          }
+        });
+      } catch (err) {
+        toast.error((err as Error).message);
+      }
+    }
+  }, [id, currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -58,7 +81,11 @@ const useCollaboration = ({
         setSocket(socketConnection);
 
         socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
-        if (questionId !== "") {
+        if (
+          questionId !== "" &&
+          questionId !== undefined &&
+          questionId !== null
+        ) {
           socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
         }
 
@@ -180,7 +207,16 @@ const useCollaboration = ({
     }
   };
 
-  return { text, setText, cursor, setCursor, room, setQuestionId, disconnect };
+  return {
+    text,
+    setText,
+    cursor,
+    setCursor,
+    room,
+    questionId,
+    setQuestionId,
+    disconnect,
+  };
 };
 
 export default useCollaboration;

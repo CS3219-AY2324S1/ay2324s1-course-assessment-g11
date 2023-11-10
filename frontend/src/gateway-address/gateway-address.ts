@@ -20,3 +20,5 @@ export const questionApiPathAddress =
   httpProxyGatewayAddress + "api/question-service/";
 export const matchApiPathAddress =
   httpProxyGatewayAddress + "api/matching-service/";
+export const collaborationApiPathAddress =
+  httpProxyGatewayAddress + "api/collaboration-service/";

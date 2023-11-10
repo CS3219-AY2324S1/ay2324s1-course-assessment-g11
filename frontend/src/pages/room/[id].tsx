@@ -20,58 +20,58 @@ export default function Room() {
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
-  const { text, setText, cursor, setCursor, room, setQuestionId, disconnect } =
-    useCollaboration({
-      roomId: roomId as string,
-      userId,
-      disableVideo,
-    });
+  const {
+    text,
+    setText,
+    cursor,
+    setCursor,
+    room,
+    questionId,
+    setQuestionId,
+    disconnect,
+  } = useCollaboration({
+    roomId: roomId as string,
+    userId,
+    disableVideo,
+  });
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
 
-  const defaultQuestion: Question = {
-    title: "Example Question: Two Sum",
-    difficulty: "Easy",
-    topics: ["Array", "Hash Table"],
-    description:
-      "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
-    solution:
-      "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
-    defaultCode: { python: "var twoSum = function(nums, target) {\n\n};" },
-    id: "",
-    author: "",
-  };
+  // const defaultQuestion: Question = {
+  //   title: "Example Question: Two Sum",
+  //   difficulty: "Easy",
+  //   topics: ["Array", "Hash Table"],
+  //   description:
+  //     "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
+  //   solution:
+  //     "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
+  //   defaultCode: { python: "var twoSum = function(nums, target) {\n\n};" },
+  //   id: "",
+  //   author: "",
+  // };
 
   const { fetchQuestion, fetchRandomQuestion } = useQuestions();
-  const { getMatch, updateQuestionIdInMatch } = useMatch();
-  const { leaveMatch } = useMatchmaking();
-  const [match, setMatch] = useState<Match | null>(null);
+  const { updateQuestionIdInMatch } = useMatch();
+  const { match, leaveMatch } = useMatchmaking();
 
   useEffect(() => {
-    getMatch(roomId)
-      .then((match) => {
-        if (match && match.questionId != null) {
-          setMatch(match);
-          const questionId = match.questionId;
-          fetchQuestion(questionId).then((fetchQuestion) => {
-            if (fetchQuestion != null) {
-              setQuestion(fetchQuestion);
-              setQuestionId(fetchQuestion.id);
-              console.log(questionId);
-            }
-          });
+    if (match && match.questionId !== null) {
+      const questionId = match.questionId;
+      setQuestionId(questionId);
+    }
+
+    if (questionId !== "") {
+      fetchQuestion(questionId).then((fetchQuestion) => {
+        if (fetchQuestion != null) {
+          setQuestion(fetchQuestion);
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        router.push("/");
-      })
-      .finally(() => {
-        setLoading(false);
       });
+    }
+
+    setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId]);
+  }, [match, questionId]);
 
   function handleSwapQuestionClick(): void {
     if (match) {
@@ -83,7 +83,6 @@ export default function Room() {
             updateQuestionIdInMatch(roomId, question.id);
             setQuestion(question);
             setQuestionId(question.id);
-            console.log("rin");
           }
         })
         .catch((err) => {
@@ -137,10 +136,14 @@ export default function Room() {
                       onSwapQuestionClick={handleSwapQuestionClick}
                     />
                   ) : (
-                    <Description
-                      question={defaultQuestion}
-                      onSwapQuestionClick={handleSwapQuestionClick}
-                    />
+                    <div className="flex h-full justify-center items-center">
+                      <MrMiyagi
+                        size={35}
+                        lineWeight={3.5}
+                        speed={1}
+                        color="white"
+                      />
+                    </div>
                   )}
                 </TabsContent>
                 {loading ? (
@@ -157,9 +160,14 @@ export default function Room() {
                     {question.solution}
                   </TabsContent>
                 ) : (
-                  <TabsContent value="solution">
-                    {defaultQuestion.solution}
-                  </TabsContent>
+                  <div className="flex h-full justify-center items-center">
+                    <MrMiyagi
+                      size={35}
+                      lineWeight={3.5}
+                      speed={1}
+                      color="white"
+                    />
+                  </div>
                 )}
               </Tabs>
               <div className="flex-1">
