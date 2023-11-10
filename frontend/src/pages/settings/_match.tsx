@@ -40,8 +40,8 @@ export default function MatchSettingsCard() {
     if (currentUser) {
       getAppUser().then((user) => {
         if (user) {
-          setSelectedDifficulty(user.matchDifficulty);
-          setSelectedLanguage(user.matchProgrammingLanguage);
+          setSelectedDifficulty(user.matchDifficulty as Difficulty || selectedDifficulty);
+          setSelectedLanguage(user.matchProgrammingLanguage || selectedLanguage);
         }
         setIsLoading(false);
       });

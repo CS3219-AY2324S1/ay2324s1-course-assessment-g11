@@ -1,5 +1,6 @@
 import { userApiPathAddress } from "@/gateway-address/gateway-address";
 import { EditableUser } from "@/types/UserTypes";
+import { AppUser } from "@prisma/client";
 
 export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
   try {
@@ -34,7 +35,7 @@ export const updateUserByUid = async (user: EditableUser, currentUser: any) => {
   }
 };
 
-export const getUserByUid = async (uid: string, currentUser: any) => {
+export const getUserByUid = async (uid: string, currentUser: any) : Promise<AppUser | null> => {
   try {
     const url = `${userApiPathAddress}${uid}`;
     const idToken = await currentUser.getIdToken(true);
