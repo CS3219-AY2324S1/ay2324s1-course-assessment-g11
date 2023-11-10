@@ -20,6 +20,10 @@ export default function Description({
 }: DescriptionProps) {
   const cleanDescription = sanitizeHtml(question.description)
 
+  const testCases = question?.testCasesInputs?.map((input, index) => {
+    return { input: input, output: question?.testCasesOutputs && question.testCasesOutputs[index] };
+  }) ?? [];
+
   return (
     <Card
       className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}
@@ -52,6 +56,26 @@ export default function Description({
             dangerouslySetInnerHTML={{ __html: cleanDescription }}
             className="w-[40vw] overflow-x-auto"
           ></div>
+          <br />
+          { testCases.length > 0 && (
+          <div>
+            <table className="table-auto">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2">Test Case Input</th>
+                  <th className="px-4 py-2">Test Case Output</th>
+                </tr>
+              </thead>
+              <tbody>
+                {testCases.map((testCase, index) => (
+                  <tr key={index}>
+                    <td className="border px-4 py-2">{testCase.input}</td>
+                    <td className="border px-4 py-2">{testCase.output}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>)}
         </TypographySmall>
       </div>
     </Card>
