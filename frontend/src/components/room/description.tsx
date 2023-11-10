@@ -4,6 +4,8 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { TypographyH2, TypographySmall } from "../ui/typography";
 import sanitizeHtml from "sanitize-html";
+import Markdown from 'react-markdown'
+import rehypeRaw from 'rehype-raw'
 
 type DescriptionProps = {
   question: Question;
@@ -52,10 +54,9 @@ export default function Description({
       </div>
       <div className="py-6">
         <TypographySmall>
-          <div
-            dangerouslySetInnerHTML={{ __html: cleanDescription }}
-            className="w-[40vw] overflow-x-auto"
-          ></div>
+          <div className="w-[40vw] overflow-x-auto">
+            <Markdown rehypePlugins={[rehypeRaw]}>{cleanDescription}</Markdown>
+          </div>
           <br />
           { testCases.length > 0 && (
           <div>
