@@ -24,7 +24,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card } from "../ui/card";
-import { TypographyBody, TypographyBodyHeavy } from "../ui/typography";
 import { editor } from "monaco-editor";
 
 type CodeEditorProps = {
@@ -60,7 +59,7 @@ export const languages = [
 export default function CodeEditor({
   theme = "vs-dark",
   language = "python",
-  height = "60vh",
+  height = "70vh",
   defaultValue = "#Write your solution here",
   className,
   text,
@@ -193,20 +192,14 @@ export default function CodeEditor({
         onMount={editorMount}
       />
       <Card className="flex-1 p-2 mt-2">
-        <div className="h-[9vh] p-2">
-          <TypographyBodyHeavy>Console</TypographyBodyHeavy>
-        </div>
         <div className="flex justify-end gap-2">
-          {/* <Button variant="outline">
-              <Play className="mr-1" />
-              Run
-            </Button> */}
           {hasRoom ? (
             <Button variant="default" onClick={onLeaveRoomClick}>
               Leave Room
             </Button>
           ) : (
             <Button
+              size={"sm"}
               variant="default"
               onClick={handleOnSubmitClick}
               disabled={isSubmitting}
