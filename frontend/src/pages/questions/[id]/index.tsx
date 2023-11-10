@@ -9,6 +9,7 @@ import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
 import { useHistory } from "@/hooks/useHistory";
+import Solution from "@/components/room/solution";
 
 export default function Questions() {
   const router = useRouter();
@@ -83,7 +84,13 @@ export default function Questions() {
                 hasRoom={false}
               />
             </TabsContent>
-            <TabsContent value="solution">{question.solution}</TabsContent>
+            <TabsContent value="solution">
+              <Solution
+                question={question}
+                className="h-full"
+                hasRoom={false}
+              />
+            </TabsContent>
           </Tabs>
           <div className="flex-1">
             <CodeEditor

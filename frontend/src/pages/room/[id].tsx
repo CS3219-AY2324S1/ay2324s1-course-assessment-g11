@@ -12,6 +12,7 @@ import { useMatch } from "@/hooks/useMatch";
 import { useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
+import Solution from "@/components/room/solution";
 
 export default function Room() {
   const router = useRouter();
@@ -37,19 +38,6 @@ export default function Room() {
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
-
-  // const defaultQuestion: Question = {
-  //   title: "Example Question: Two Sum",
-  //   difficulty: "Easy",
-  //   topics: ["Array", "Hash Table"],
-  //   description:
-  //     "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\n\nYou may assume that each input would have exactly one solution, and you may not use the same element twice.\n\nYou can return the answer in any order.",
-  //   solution:
-  //     "var twoSum = function(nums, target) {\n    for (let i = 0; i < nums.length; i++) {\n        for (let j = i + 1; j < nums.length; j++) {\n            if (nums[i] + nums[j] === target) {\n                return [i, j];\n            }\n        }\n    }\n};",
-  //   defaultCode: { python: "var twoSum = function(nums, target) {\n\n};" },
-  //   id: "",
-  //   author: "",
-  // };
 
   const { fetchQuestion, fetchRandomQuestion } = useQuestions();
   const { updateQuestionIdInMatch } = useMatch();
@@ -157,7 +145,9 @@ export default function Room() {
                   </div>
                 ) : question != null && "solution" in question ? (
                   <TabsContent value="solution">
-                    {question.solution}
+                    <Solution
+                      question={question}
+                    />
                   </TabsContent>
                 ) : (
                   <div className="flex h-full justify-center items-center">
