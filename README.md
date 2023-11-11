@@ -122,6 +122,7 @@ it in case you forget later on when you have a lot more files to commit.
    yarn workspace frontend build ## For first time setup run the build command
    yarn workspace frontend start ## For subsequent runs
    ```
+
 8. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
 
     ```bash
