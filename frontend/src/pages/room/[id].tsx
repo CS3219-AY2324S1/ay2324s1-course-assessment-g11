@@ -9,15 +9,18 @@ import { Difficulty, Question } from "../../types/QuestionTypes";
 import { Match } from "../../types/MatchTypes";
 import { useQuestions } from "@/hooks/useQuestions";
 import { useMatch } from "@/hooks/useMatch";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 import Solution from "@/components/room/solution";
+import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Room() {
   const router = useRouter();
   const roomId = router.query.id as string;
-  const userId = (router.query.userId as string) || "user1";
+  const { user: currentUser } = useContext(AuthContext);
+  const userId = (currentUser?.uid as string) || "user1";
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
@@ -55,6 +58,13 @@ export default function Room() {
           setQuestion(fetchQuestion);
         }
       });
+    }
+
+    if (!match) {
+      // leave room and redirect to interviews page
+      leaveMatch();
+      toast.info("Other user has left");
+      router.push("/interviews");
     }
 
     setLoading(false);
@@ -145,9 +155,7 @@ export default function Room() {
                   </div>
                 ) : question != null && "solution" in question ? (
                   <TabsContent value="solution">
-                    <Solution
-                      question={question}
-                    />
+                    <Solution question={question} />
                   </TabsContent>
                 ) : (
                   <div className="flex h-full justify-center items-center">
