@@ -53,21 +53,21 @@ const useCollaboration = ({
   const router = useRouter();
   const { id } = router.query;
 
-  useEffect(() => {
-    if (id && currentUser) {
-      try {
-        const response = fetchRoomData(id?.toString(), currentUser);
-        response.then((res) => {
-          if (res.message === "Room exists") {
-            console.log(res);
-            setQuestionId(res.questionId);
-          }
-        });
-      } catch (err) {
-        toast.error((err as Error).message);
-      }
-    }
-  }, [id, currentUser]);
+  // useEffect(() => {
+  //   if (id && currentUser) {
+  //     try {
+  //       const response = fetchRoomData(id?.toString(), currentUser);
+  //       response.then((res) => {
+  //         if (res.message === "Room exists") {
+  //           console.log(res);
+  //           setQuestionId(res.questionId);
+  //         }
+  //       });
+  //     } catch (err) {
+  //       toast.error((err as Error).message);
+  //     }
+  //   }
+  // }, [id, currentUser]);
 
   useEffect(() => {
     if (currentUser) {

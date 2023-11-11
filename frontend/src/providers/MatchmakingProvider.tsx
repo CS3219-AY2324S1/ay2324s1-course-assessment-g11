@@ -9,6 +9,8 @@ import { io, Socket } from "socket.io-client";
 import { Match } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthContext";
 import { wsMatchProxyGatewayAddress } from "@/gateway-address/gateway-address";
+import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
 const SERVER_URL = wsMatchProxyGatewayAddress;
 
@@ -40,6 +42,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   const [error, setError] = useState<string>("");
 
   const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const router = useRouter();
 
   const generateRandomNumber = () => {
     // Return a random number either 0 or 1 as a string
@@ -73,6 +76,20 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   useEffect(() => {
     if (!socket) return;
 
+    // else we should join the room if they are in an exsiting match
+    // (i.e. they refreshed the page)
+    if (
+      match &&
+      router.route !== "/interviews/match-found" &&
+      router.route !== "/interviews/find-match"
+    ) {
+      router.push(`/room/${match?.roomId}`);
+    }
+  }, [match]);
+
+  useEffect(() => {
+    if (!socket) return;
+
     socket.on("connect", () => {
       console.log("Connected to server");
     });
@@ -87,7 +104,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     socket.on("matchLeft", (match: Match) => {
       console.log("Match left:", match);
       setMatch(null);
-    })
+    });
 
     socket.on("receiveMessage", (message: string) => {
       console.log("Message received:", message);
