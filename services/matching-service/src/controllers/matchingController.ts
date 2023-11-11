@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Socket } from "socket.io";
+import { Server, Socket } from "socket.io";
 import { io } from "../app";
 import prisma from "../prismaClient";
 import { getRandomQuestionOfDifficulty } from "../questionAdapter";
@@ -307,6 +307,72 @@ export function handleSendMessage(
   };
 }
 
+export function handleChangeQuestion(userId: string, socket: Socket, io: Server) {
+  return async (questionId: string, questionName: string, room_id: string) => {
+    if (!questionId || !userId || !questionName || !room_id) {
+      console.log(`Invalid request from user ${userId}`);
+      socket.emit("error", "Invalid request");
+      return;
+    }
+
+    console.log(`User ${userId} intends to change the question to ${questionName}`);
+
+    let hasError = false;
+    const match = await prisma.match
+      .findFirst({
+        where: {
+          roomId: room_id,
+          OR: [{ userId1: userId }, { userId2: userId }], // Ensures that the user is really part of the match
+        },
+      })
+      .catch((err) => {
+        console.log(err);
+        socket.emit("error", "An error occurred in sendMessage.");
+        hasError = true;
+      });
+
+    if (hasError) {
+      return;
+    }
+
+    const otherSockets = (await io.in(room_id).fetchSockets()).filter(sock => socket.id !== sock.id);
+
+    console.log(`There are ${otherSockets.length} other sockets in the room`);
+
+    if (otherSockets.length !== 1) {
+      socket.emit("error", "The number of users in the room is not correct.");
+      return;
+    }
+
+    otherSockets[0].timeout(30*1000).emit("changeQuestion", questionName, (err: any, ok: any) => {
+      if (err) {
+        socket.emit("error", "Your partner has not provided a valid acknowledgement, you cannot change questions.");
+        return;
+      }
+      if (!ok) {
+        socket.emit("error", "Your partner does not agree to change questions.");
+        return;
+      }
+      prisma.match.update({
+        where: {
+          roomId: room_id,
+        },
+        data: {
+          questionId: questionId,
+        },
+      }).then((match) => {
+        io.to(room_id).emit("questionChanged", questionId);
+      }).catch((err) => {
+        console.log(err);
+        io.to(room_id).emit("error", "Unable to change questions");
+      });
+    });
+  };
+}
+
+/**
+ * @deprecated Use the handleChangeQuestion function instead with socket.io
+ */
 export async function updateMatchQuestion(req: Request, res: Response) {
   const room_id = req.params.room_id as string;
 

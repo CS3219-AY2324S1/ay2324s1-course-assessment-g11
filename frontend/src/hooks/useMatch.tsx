@@ -18,10 +18,11 @@ export const useMatch = () => {
 
   const updateQuestionIdInMatch = async (
     roomId: string,
-    questionId: string
+    questionTitle: string,
+    questionId: string,
   ) => {
     if (authIsReady && currentUser) {
-      await patchMatchQuestionByRoomidApi(currentUser, roomId, questionId);
+      await patchMatchQuestionByRoomidApi(currentUser, roomId, questionId, questionTitle);
     }
   };
 

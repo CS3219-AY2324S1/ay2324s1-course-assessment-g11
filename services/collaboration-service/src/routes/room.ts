@@ -285,7 +285,7 @@ export const roomRouter = (io: Server) => {
   });
 
   // WebSocket style API
-  io.on("connection", (socket: Socket) => {
+  io.once("connection", (socket: Socket) => {
     console.log("Room.ts: User connected:", socket.id);
 
     socket.on(SocketEvents.ROOM_JOIN, (room_id: string, user_id: string) => {
