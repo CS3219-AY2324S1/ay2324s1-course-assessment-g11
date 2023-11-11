@@ -7,7 +7,7 @@ interface DifficultySelectorProps {
   onChange: (value: Difficulty) => void;
   showAny: boolean;
   value: Difficulty;
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 export default function DifficultySelector({
