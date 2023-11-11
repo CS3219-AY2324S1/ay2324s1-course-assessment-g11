@@ -70,7 +70,7 @@ const useCollaboration = ({
   // }, [id, currentUser]);
 
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && roomId) {
       currentUser.getIdToken(true).then((token) => {
         const socketConnection = io(wsCollaborationProxyGatewayAddress, {
           extraHeaders: {
