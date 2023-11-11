@@ -14,12 +14,13 @@ import { MrMiyagi } from "@uiball/loaders";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 import Solution from "@/components/room/solution";
 import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
 
 export default function Room() {
   const router = useRouter();
   const roomId = router.query.id as string;
   const { user: currentUser } = useContext(AuthContext);
-  const userId = (currentUser.uid as string) || "user1";
+  const userId = (currentUser?.uid as string) || "user1";
   const disableVideo =
     (router.query.disableVideo as string)?.toLowerCase() === "true";
 
@@ -57,6 +58,13 @@ export default function Room() {
           setQuestion(fetchQuestion);
         }
       });
+    }
+
+    if (!match) {
+      // leave room and redirect to interviews page
+      leaveMatch();
+      toast.info("Other user has left");
+      router.push("/interviews");
     }
 
     setLoading(false);
