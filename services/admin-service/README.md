@@ -32,9 +32,9 @@ This corresponds to the service account for the project's development environmen
 
 ## How to add/remove admin rights for users on the application
 
-1. Run the command below. This will start up the admin service locally:
+1. Run the command below from the root of the entire project. This will start up the admin service locally:
 ```shell
-dotenv -e <insert full path of env file> -c development -- yarn dev
+dotenv -e <insert full path of env file without quotes> -- yarn workspace admin-service dev
 ```
 
 Although the command is `dev`, the Firebase admin rights can also be added to/removed from the users on the production
