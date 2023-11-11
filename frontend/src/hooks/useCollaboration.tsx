@@ -10,7 +10,6 @@ import { Room, connect } from "twilio-video";
 import { wsCollaborationProxyGatewayAddress } from "@/gateway-address/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
-import { collaborationServiceAddress } from "./../../../services/gateway/src/proxied_routes/service_names";
 import { useRouter } from "next/router";
 import { fetchRoomData } from "@/pages/api/collaborationHandler";
 
