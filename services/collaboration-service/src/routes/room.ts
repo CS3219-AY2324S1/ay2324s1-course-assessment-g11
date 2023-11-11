@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
 
-import { Room } from "@prisma/client";
 import {
   createOrUpdateRoomWithUser,
   removeUserFromRoom,
@@ -40,7 +39,6 @@ enum SocketEvents {
 
 const socketMap: Record<string, SocketDetails> = {};
 const opMap: OpHistoryMap = new OpHistoryMap();
-
 
 const AccessToken = require("twilio").jwt.AccessToken;
 const VideoGrant = AccessToken.VideoGrant;
@@ -220,11 +218,30 @@ function getTwilioAccessToken(room_id: string, user_id: string): string {
     TWILIO_ACCOUNT_SID,
     TWILIO_API_KEY,
     TWILIO_API_SECRET,
-    { identity: user_id, ttl: 60*60*12 }
+    { identity: user_id, ttl: 60 * 60 * 12 }
   );
   token.addGrant(videoGrant);
   return token.toJwt();
 }
+
+export const roomApiRouter = () => {
+  const router = express.Router();
+
+  router.get("/:room_id", async (req: Request, res: Response) => {
+    const room_id = req.params.room_id as string;
+
+    if (!isRoomExists(room_id)) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+
+    return res.status(200).json({
+      message: "Room exists",
+      room_id: room_id,
+      questionId: await getRoom(room_id).then((room) => room.question_id),
+      info: await getRoom(room_id),
+    });
+  });
+};
 
 export const roomRouter = (io: Server) => {
   const router = express.Router();
@@ -239,6 +256,7 @@ export const roomRouter = (io: Server) => {
     return res.status(200).json({
       message: "Room exists",
       room_id: room_id,
+      questionId: await getRoom(room_id).then((room) => room.question_id),
       info: await getRoom(room_id),
     });
   });
@@ -276,7 +294,7 @@ export const roomRouter = (io: Server) => {
       createOrUpdateRoomWithUser(room_id, user_id);
       mapSocketToRoomAndUser(socket.id, room_id, user_id);
       roomUpdateWithTextFromDb(io, socket, room_id);
-      socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id))
+      socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id));
 
       initSocketListeners(io, socket, room_id);
     });

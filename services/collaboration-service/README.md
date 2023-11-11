@@ -28,7 +28,8 @@ To reconnect, simply join the same room again.
 
 ### Demo
 
-To test out or see implementation example: See `demo.html`.
+To test out or see implementation example: See `demo.html`. The steps below assume you are doing localhost development
+and testing.
 
 Visit http://localhost:5003/demo/?room=1&user=user1
 to set room and user. Open multiple tabs, and those with the same room will have same content.

@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,12 +7,20 @@ datasource db {
   url      = env("PRISMA_DATABASE_URL")
 }
 
-// todo rename for colalboration service
 model User {
   id                String    @id @default(uuid())
   isLookingForMatch Boolean
   matchedUserId     String?   @unique
   lastConnected     DateTime?
+}
+
+model WaitingUser {
+  userId     String   @id
+  user       AppUser  @relation(fields: [userId], references: [uid])
+  createdAt  DateTime @default(now())
+  progLang   String
+  difficulty String[]
+  socketId   String
 }
 
 model Match {
@@ -24,44 +29,46 @@ model Match {
   userId2                   String
   chosenDifficulty          String
   chosenProgrammingLanguage String
+  questionId                String?
   createdAt                 DateTime @default(now())
 }
 
 model AppUser {
-  uid                      String    @id
+  uid                      String        @id
   displayName              String?
   photoUrl                 String?
-  matchDifficulty          Int?
+  matchDifficulty          String?
   matchProgrammingLanguage String?
-  attempts                 Attempt[]
+  attempts                 Attempt[]     @relation("AppUserToAttempt")
+  WaitingUser              WaitingUser[]
 }
 
 model Room {
   room_id      String         @id
-  active_users String[] // Array of user_id strings still active
-  users        String[] // Array of user_id strings
+  users        String[]
   status       EnumRoomStatus
   text         String
   saved_text   String?
   question_id  String?
-  attempt      Attempt?       @relation(fields: [attempt_id], references: [id])
   attempt_id   String?        @unique
+  active_users String[]
+  attempt      Attempt?       @relation(fields: [attempt_id], references: [id])
+}
+
+model Attempt {
+  id            String    @id @default(uuid())
+  question_id   String
+  answer        String?
+  solved        Boolean   @default(false)
+  time_saved_at DateTime  @default(now())
+  room_id       String?
+  time_updated  DateTime  @updatedAt
+  time_created  DateTime  @default(now())
+  room          Room?
+  users         AppUser[] @relation("AppUserToAttempt")
 }
 
 enum EnumRoomStatus {
   active
   inactive
-}
-
-model Attempt {
-  id            String    @id @default(uuid())
-  users         AppUser[]
-  question_id   String
-  answer        String?
-  solved        Boolean   @default(false)
-  time_created  DateTime  @default(now())
-  time_saved_at DateTime  @default(now()) // when answers are updated
-  time_updated  DateTime  @updatedAt // any field change
-  room_id       String? // may be inactive
-  room          Room?
 }

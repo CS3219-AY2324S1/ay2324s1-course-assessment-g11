@@ -1,4 +1,4 @@
-import {useEffect, useState, useRef, use, useContext} from "react";
+import { useEffect, useState, useRef, use, useContext } from "react";
 import { io, Socket } from "socket.io-client";
 import { debounce } from "lodash";
 import {
@@ -7,8 +7,12 @@ import {
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
 import { Room, connect } from "twilio-video";
-import {wsCollaborationProxyGatewayAddress} from "@/gateway-address/gateway-address";
-import {AuthContext} from "@/contexts/AuthContext";
+import { wsCollaborationProxyGatewayAddress } from "@/gateway-address/gateway-address";
+import { AuthContext } from "@/contexts/AuthContext";
+import { toast } from "react-toastify";
+import { collaborationServiceAddress } from "./../../../services/gateway/src/proxied_routes/service_names";
+import { useRouter } from "next/router";
+import { fetchRoomData } from "@/pages/api/collaborationHandler";
 
 type UseCollaborationProps = {
   roomId: string;
@@ -26,13 +30,18 @@ enum SocketEvents {
 
 var vers = 0;
 
-const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProps) => {
+const useCollaboration = ({
+  roomId,
+  userId,
+  disableVideo,
+}: UseCollaborationProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [text, setText] = useState<string>("#Write your solution here");
   const [cursor, setCursor] = useState<number>(
     "#Write your solution here".length
   );
   const [room, setRoom] = useState<Room | null>(null); // twilio room
+  const [questionId, setQuestionId] = useState<string>("");
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
   const prevCursorRef = useRef<number>(cursor);
@@ -40,86 +49,117 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
   const twilioTokenRef = useRef<string>("");
-  const questionId = "1";
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
+  const { user: currentUser } = useContext(AuthContext);
+
+  const router = useRouter();
+  const { id } = router.query;
+
+  useEffect(() => {
+    if (id && currentUser) {
+      try {
+        const response = fetchRoomData(id?.toString(), currentUser);
+        response.then((res) => {
+          if (res.message === "Room exists") {
+            console.log(res);
+            setQuestionId(res.questionId);
+          }
+        });
+      } catch (err) {
+        toast.error((err as Error).message);
+      }
+    }
+  }, [id, currentUser]);
 
   useEffect(() => {
     if (currentUser) {
-      currentUser.getIdToken(true).then(
-        (token) => {
-          const socketConnection = io(wsCollaborationProxyGatewayAddress, {
-            extraHeaders: {
-              "User-Id-Token": token
-            },
-          });
-          setSocket(socketConnection);
+      currentUser.getIdToken(true).then((token) => {
+        const socketConnection = io(wsCollaborationProxyGatewayAddress, {
+          extraHeaders: {
+            "User-Id-Token": token,
+          },
+        });
+        setSocket(socketConnection);
 
-          socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
+        socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
+        if (
+          questionId !== "" &&
+          questionId !== undefined &&
+          questionId !== null
+        ) {
           socketConnection.emit(SocketEvents.QUESTION_SET, questionId);
+        }
 
-          socketConnection.on("twilio-token", (token: string) => {
-            twilioTokenRef.current = token;
-            if (disableVideo) return;
-            connect(token, {
-              name: roomId, audio: true,
-              video: {width: 640, height: 480, frameRate: 24}
-            }).then((room) => {
+        socketConnection.on("twilio-token", (token: string) => {
+          twilioTokenRef.current = token;
+          if (disableVideo) return;
+          connect(token, {
+            name: roomId,
+            audio: true,
+            video: { width: 640, height: 480, frameRate: 24 },
+          })
+            .then((room) => {
               console.log("Connected to Room");
+              room.localParticipant.videoTracks.forEach((publication) => {
+                publication.track.disable();
+              });
+              room.localParticipant.audioTracks.forEach((publication) => {
+                publication.track.disable();
+              });
               setRoom(room);
-            }).catch(err => {
+            })
+            .catch((err) => {
               console.log(err, token, userId, roomId);
             });
-          });
+        });
 
-          socketConnection.on(
-            SocketEvents.ROOM_UPDATE,
-            ({
-               version,
-               text,
-               cursor,
-             }: {
-              version: number;
-              text: string;
-              cursor: number | undefined | null;
-            }) => {
-              prevCursorRef.current = cursorRef.current;
-              console.log("prevCursor: " + prevCursorRef.current);
+        socketConnection.on(
+          SocketEvents.ROOM_UPDATE,
+          ({
+            version,
+            text,
+            cursor,
+          }: {
+            version: number;
+            text: string;
+            cursor: number | undefined | null;
+          }) => {
+            prevCursorRef.current = cursorRef.current;
+            console.log("prevCursor: " + prevCursorRef.current);
 
-              console.log("cursor: " + cursor);
+            console.log("cursor: " + cursor);
 
-              console.log("Update vers to " + version);
-              vers = version;
+            console.log("Update vers to " + version);
+            vers = version;
 
-              if (awaitingAck.current) return;
+            if (awaitingAck.current) return;
 
-              textRef.current = text;
-              prevTextRef.current = text;
-              setText(text);
-              if (cursor && cursor > -1) {
-                console.log("Update cursor to " + cursor);
-                cursorRef.current = cursor;
-                setCursor(cursor);
-              } else {
-                cursorRef.current = prevCursorRef.current;
-                cursor = prevCursorRef.current;
-                console.log("Update cursor to " + prevCursorRef.current);
-                setCursor(prevCursorRef.current);
-              }
-              awaitingSync.current = false;
+            textRef.current = text;
+            prevTextRef.current = text;
+            setText(text);
+            if (cursor && cursor > -1) {
+              console.log("Update cursor to " + cursor);
+              cursorRef.current = cursor;
+              setCursor(cursor);
+            } else {
+              cursorRef.current = prevCursorRef.current;
+              cursor = prevCursorRef.current;
+              console.log("Update cursor to " + prevCursorRef.current);
+              setCursor(prevCursorRef.current);
             }
-          );
-
-          return () => {
-            socketConnection.disconnect();
-            if (room) {
-              room.disconnect();
-            }
+            awaitingSync.current = false;
           }
-        }
-      );
+        );
+
+        return () => {
+          socketConnection.disconnect();
+          if (room) {
+            room.disconnect();
+          }
+        };
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [roomId, userId]);
+  }, [roomId, userId, questionId]);
 
   useEffect(() => {
     textRef.current = text;
@@ -161,7 +201,22 @@ const useCollaboration = ({ roomId, userId, disableVideo }: UseCollaborationProp
     });
   }, [text, socket]);
 
-  return { text, setText, cursor, setCursor, room };
+  const disconnect = () => {
+    if (socket) {
+      socket.disconnect();
+    }
+  };
+
+  return {
+    text,
+    setText,
+    cursor,
+    setCursor,
+    room,
+    questionId,
+    setQuestionId,
+    disconnect,
+  };
 };
 
 export default useCollaboration;

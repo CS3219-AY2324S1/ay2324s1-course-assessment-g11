@@ -1,15 +1,21 @@
+import Loader from "../interviews/loader";
 import { Button } from "../ui/button";
 
-type Difficulty = 'easy' | 'medium' | 'hard' | 'any';
+type Difficulty = "easy" | "medium" | "hard" | "any";
 
 interface DifficultySelectorProps {
   onChange: (value: Difficulty) => void;
   showAny: boolean;
   value: Difficulty;
+  isLoading?: boolean;
 }
 
-export default function DifficultySelector({ onChange, showAny, value }: DifficultySelectorProps) {
-
+export default function DifficultySelector({
+  onChange,
+  showAny,
+  value,
+  isLoading = false,
+}: DifficultySelectorProps) {
   const difficulties = [
     { label: "Easy", value: "easy" },
     { label: "Medium", value: "medium" },
@@ -22,23 +28,22 @@ export default function DifficultySelector({ onChange, showAny, value }: Difficu
 
   return (
     <div className="mt-2 mb-6 flex gap-2 bg-popover w-min rounded-lg">
-      {
-        difficulties.map((difficulty) => (
-          <Button
-            key={difficulty.value}
-            className="w-32"
-            variant={value == difficulty.value ? "outline" : "secondary"}
-            value={difficulty.value}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onChange(e.currentTarget.value as Difficulty);
-            }}
-          >
-            {difficulty.label}
-          </Button>
-        ))
-      }
+      {difficulties.map((difficulty) => (
+        <Button
+          disabled={isLoading}
+          key={difficulty.value}
+          className="w-32"
+          variant={value == difficulty.value ? "outline" : "secondary"}
+          value={difficulty.value}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onChange(e.currentTarget.value as Difficulty);
+          }}
+        >
+          {difficulty.label}
+        </Button>
+      ))}
     </div>
-  )
+  );
 }

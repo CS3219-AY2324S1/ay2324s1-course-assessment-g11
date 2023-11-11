@@ -5,6 +5,7 @@ import matchingRoutes from "./routes/matchingRoutes";
 import {
   handleConnection,
   handleDisconnect,
+  handleJoinRoom,
   handleLooking,
 } from "./controllers/matchingController";
 import { handleCancelLooking } from "./controllers/matchingController";
@@ -25,8 +26,8 @@ app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
 const socketIoOptions: any = {
   cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
+    origin: process.env.FRONTEND_ADDRESS || "http://localhost:3000",
+    methods: ["GET", "POST", "PATCH"],
   },
 };
 
@@ -35,28 +36,27 @@ export const io = new Server(httpServer, socketIoOptions);
 
 app.set("io", io);
 
-io.on("connection", (socket) => {
-  let { userId, userMatchReq, timer } = handleConnection(socket);
+io.on("connection", async (socket) => {
+  let userId = await handleConnection(socket);
 
   socket.on(
     "disconnect",
-    handleDisconnect(socket, timer, userId, userMatchReq)
+    handleDisconnect(socket, userId)
   );
 
   socket.on(
     "lookingForMatch",
-    handleLooking(socket, userId, userMatchReq, timer)
+    handleLooking(socket, userId)
   );
 
-  socket.on("cancelLooking", handleCancelLooking(userId, timer, userMatchReq));
+  socket.on("cancelLooking", handleCancelLooking(userId));
 
   socket.on("leaveMatch", handleLeaveMatch(userId, socket));
 
   socket.on("sendMessage", handleSendMessage(userId, socket));
 
-  socket.on("matchFound", async (userId: string, matchedUserId: string) => {
-    // todo - in the FE handle this
-  });
+  socket.on("joinRoom", handleJoinRoom(userId, socket));
+
 });
 
 httpServer.listen(port, () => {

@@ -24,7 +24,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Card } from "../ui/card";
-import { TypographyBody, TypographyBodyHeavy } from "../ui/typography";
 import { editor } from "monaco-editor";
 
 type CodeEditorProps = {
@@ -37,44 +36,43 @@ type CodeEditorProps = {
   cursor?: number;
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
+  hasRoom?: boolean;
+  onSubmitClick?: (param: string) => void;
+  onLeaveRoomClick?: () => void;
 };
 
-const frameworks = [
+export const languages = [
   {
-    value: "next.js",
-    label: "Next.js",
+    value: "python",
+    label: "python",
   },
   {
-    value: "sveltekit",
-    label: "SvelteKit",
+    value: "java",
+    label: "java",
   },
   {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
+    value: "c++",
+    label: "c++",
   },
 ];
 
 export default function CodeEditor({
   theme = "vs-dark",
   language = "python",
-  height = "60vh",
+  height = "70vh",
   defaultValue = "#Write your solution here",
   className,
   text,
   cursor,
   onChange,
   onCursorChange,
+  hasRoom = true,
+  onSubmitClick = () => {},
+  onLeaveRoomClick = () => {},
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [monacoInstance, setMonacoInstance] =
     React.useState<editor.IStandaloneCodeEditor | null>(null);
@@ -116,6 +114,18 @@ export default function CodeEditor({
     [onChange, onCursorChange, monacoInstance]
   );
 
+  const handleOnSubmitClick = async () => {
+    if (isSubmitting) {
+      return; // Do nothing if a submission is already in progress.
+    }
+    setIsSubmitting(true);
+    try {
+      onSubmitClick(monacoInstance?.getValue() ?? value);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className={className}>
       <div className="mb-2 flex justify-between">
@@ -128,7 +138,7 @@ export default function CodeEditor({
               className="w-[240px] justify-between"
             >
               {value
-                ? frameworks.find((framework) => framework.value === value)
+                ? languages.find((framework) => framework.value === value)
                     ?.label
                 : "Select framework..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -139,7 +149,7 @@ export default function CodeEditor({
               <CommandInput placeholder="Search framework..." />
               <CommandEmpty>No framework found.</CommandEmpty>
               <CommandGroup>
-                {frameworks.map((framework) => (
+                {languages.map((framework) => (
                   <CommandItem
                     key={framework.value}
                     onSelect={(currentValue) => {
@@ -182,15 +192,21 @@ export default function CodeEditor({
         onMount={editorMount}
       />
       <Card className="flex-1 p-2 mt-2">
-        <div className="h-[9vh] p-2">
-          <TypographyBodyHeavy>Console</TypographyBodyHeavy>
-        </div>
         <div className="flex justify-end gap-2">
-          <Button variant="outline">
-            <Play className="mr-1" />
-            Run
-          </Button>
-          <Button variant="default">Leave Room</Button>
+          {hasRoom ? (
+            <Button variant="default" onClick={onLeaveRoomClick}>
+              Leave Room
+            </Button>
+          ) : (
+            <Button
+              size={"sm"}
+              variant="default"
+              onClick={handleOnSubmitClick}
+              disabled={isSubmitting}
+            >
+              Submit
+            </Button>
+          )}
         </div>
       </Card>
     </div>

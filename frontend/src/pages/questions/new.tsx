@@ -8,12 +8,14 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "./_form";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useQuestions } from "../../hooks/useQuestions";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function NewQuestion() {
   const {postNewQuestion} = useQuestions();
   const [loading, setLoading] = useState(false);
+  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -26,6 +28,16 @@ export default function NewQuestion() {
       testCasesOutputs: [],
     },
   });
+
+  useEffect(() => {
+    if (!authIsReady) {
+      return;
+    }
+    if (!currentUser || !isAdmin) {
+      router.push("/");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authIsReady, currentUser])
 
 
   function onSubmit(values: z.infer<typeof formSchema>) {

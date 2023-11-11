@@ -4,7 +4,6 @@ import sanitizeHtml from "sanitize-html";
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import { NewQuestion, isDifficulty } from "../models/new_question.model";
 import { Question } from "../models/question.model";
-import { kebabToProperCase } from "./utils";
 
 export const router = express.Router();
 

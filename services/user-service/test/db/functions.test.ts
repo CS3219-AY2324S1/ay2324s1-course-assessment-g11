@@ -4,8 +4,8 @@ import prismaMock from '../../src/db/__mocks__/prismaClient'
 
 vi.mock('../../src/db/prismaClient')
 
-const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: 0,
-  matchProgrammingLanguage: "Python" };
+const fullNewUser = { uid: '1', displayName: 'Test User', photoUrl: "fakeUrl", matchDifficulty: "easy",
+  matchProgrammingLanguage: "python" };
 
 const partialNewUser = { uid: '1'};
 

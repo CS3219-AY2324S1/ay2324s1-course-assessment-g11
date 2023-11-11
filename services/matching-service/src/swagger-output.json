@@ -1,51 +1,22 @@
 {
   "openapi": "3.0.0",
   "info": {
-    "title": "Collaboration Service",
-    "description": "Provides the mechanism for real-time collaboration (e.g., concurrent code editing) between the authenticated and matched users in the collaborative space",
+    "title": "Matching Service",
+    "description": "",
     "version": "1.0.0"
   },
   "servers": [
     {
-      "url": "http://localhost:5001/"
+      "url": "http://localhost:5002/"
     }
   ],
   "paths": {
-    "/api/matching-service/{userId}/findMatch": {
-      "get": {
+    "/api/matching-service/match/{room_id}": {
+      "patch": {
         "description": "",
         "parameters": [
           {
-            "name": "userId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "202": {
-            "description": "Accepted"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/api/matching-service/{userId}/leave": {
-      "post": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "userId",
+            "name": "room_id",
             "in": "path",
             "required": true,
             "schema": {
@@ -62,11 +33,28 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "questionId": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
           }
         }
       }
     },
-    "/api/matching-service/": {
+    "/api/matching-service/demo": {
       "get": {
         "description": "",
         "responses": {

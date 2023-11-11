@@ -19,6 +19,8 @@ spec:
     spec:
       containers:
         - env:
+            - name: FRONTEND_ADDRESS
+              value: "https://www.codeparty.org"
             - name: PRISMA_DATABASE_URL
               valueFrom:
                 secretKeyRef:

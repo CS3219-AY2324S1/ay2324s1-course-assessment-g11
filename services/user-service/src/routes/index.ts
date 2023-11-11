@@ -31,8 +31,9 @@ indexRouter.get(
           res.status(200).json(result);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         // Server side error such as database not being available
+        console.log(err);
         res.status(500).end();
       });
   }
@@ -63,6 +64,7 @@ indexRouter.put(
           res.status(200).json(result);
         })
         .catch((error) => {
+          console.log(error);
           if (error.code === "P2025") {
             res.status(404).end();
           } else {
@@ -99,6 +101,7 @@ indexRouter.delete(
           res.status(204).end();
         })
         .catch((error) => {
+          console.log(error);
           if (error.code === "P2025") {
             res.status(404).end();
           } else {
@@ -117,12 +120,34 @@ indexRouter.get(
       .getAttemptsOfUser(req.params.uid)
       .then((result) => {
         if (result === null) {
+          // res.status(404).end();
+          res.send(200).json([]);
+        } else {
+          res.status(200).json(result);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        // Server side error such as database not being available
+        res.status(500).end();
+      });
+  }
+);
+
+indexRouter.get(
+  "/attempt/:attempt_id",
+  function (req: express.Request, res: express.Response) {
+    userDatabaseFunctions
+      .getAttemptById(req.params.attempt_id)
+      .then((result) => {
+        if (result === null) {
           res.status(404).end();
         } else {
           res.status(200).json(result);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        console.log(err);
         // Server side error such as database not being available
         res.status(500).end();
       });

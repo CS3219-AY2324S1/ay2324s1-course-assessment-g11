@@ -8,7 +8,7 @@ import React, {
 import { io, Socket } from "socket.io-client";
 import { Match } from "@prisma/client";
 import { AuthContext } from "@/contexts/AuthContext";
-import {wsMatchProxyGatewayAddress} from "@/gateway-address/gateway-address";
+import { wsMatchProxyGatewayAddress } from "@/gateway-address/gateway-address";
 
 const SERVER_URL = wsMatchProxyGatewayAddress;
 
@@ -49,26 +49,24 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   // Initialize socket connection
   useEffect(() => {
     if (currentUser) {
-      currentUser.getIdToken(true).then(
-        (token) => {
-          const newSocket = io(SERVER_URL, {
-            autoConnect: false,
-            // query: { username: currentUser?.email },
-            query: { username: generateRandomNumber() },
-            extraHeaders: {
-              "User-Id-Token": token
-            }
-          });
-          setSocket(newSocket);
-          newSocket.connect();
+      currentUser.getIdToken(true).then((token) => {
+        const newSocket = io(SERVER_URL, {
+          autoConnect: false,
+          query: { username: currentUser?.uid },
+          //query: { username: generateRandomNumber() },
+          extraHeaders: {
+            "User-Id-Token": token,
+          },
+        });
+        setSocket(newSocket);
+        newSocket.connect();
 
-          console.log("Socket connected");
+        console.log("Socket connected");
 
-          return () => {
-            newSocket.close();
-          };
-        }
-      )
+        return () => {
+          newSocket.close();
+        };
+      });
     }
   }, [currentUser]);
 
@@ -81,8 +79,15 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
 
     socket.on("matchFound", (match: Match) => {
       console.log("Match found:", match);
+      console.log("QuestionId:", match.questionId);
+      socket.emit("joinRoom", match.roomId);
       setMatch(match);
     });
+
+    socket.on("matchLeft", (match: Match) => {
+      console.log("Match left:", match);
+      setMatch(null);
+    })
 
     socket.on("receiveMessage", (message: string) => {
       console.log("Message received:", message);
@@ -101,6 +106,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     return () => {
       socket.off("connect");
       socket.off("matchFound");
+      socket.off("matchLeft");
       socket.off("receiveMessage");
       socket.off("error");
       socket.off("disconnect");
