@@ -7,12 +7,10 @@ import { Question } from "../../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
-import { useHistory } from "@/hooks/useHistory";
 import Solution from "@/components/room/solution";
 
 export default function Questions() {
   const router = useRouter();
-  const { postAttempt } = useHistory();
   const questionId = router.query.id as string;
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true); // to be used later for loading states
@@ -41,21 +39,6 @@ export default function Questions() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
-
-  function onSubmitClick(value: string) {
-    postAttempt({
-      uid: currentUser ? currentUser.uid : "user",
-      question_id: questionId,
-      answer: value || answer,
-      solved: true, // assume true
-    })
-      .catch((err: any) => {
-        console.log(err);
-      })
-      .finally(() => {
-        router.push("/profile");
-      });
-  }
 
   if (question === null && !loading) return <p>Question not found</p>;
 
