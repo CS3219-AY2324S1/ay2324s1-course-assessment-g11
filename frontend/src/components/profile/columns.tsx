@@ -1,5 +1,5 @@
-import { Attempt } from "@/types/UserTypes"
-import { ColumnDef } from "@tanstack/react-table"
+import { Attempt } from "@/types/UserTypes";
+import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "../ui/button";
 
 export const columns: ColumnDef<Attempt>[] = [
@@ -16,7 +16,7 @@ export const columns: ColumnDef<Attempt>[] = [
     header: "Status",
     cell: ({ row }) => {
       const solved = row.getValue("solved") as boolean;
-      return (solved ? <div className="text-green-500">Solved</div> : "Unsolved");
+      return solved ? <div className="text-green-500">Solved</div> : "Unsolved";
     },
   },
   {
@@ -26,6 +26,8 @@ export const columns: ColumnDef<Attempt>[] = [
       const timeCreated = row.getValue("time_created") as Date;
       return timeCreated.toLocaleString();
     },
+    enableSorting: true,
+    sortDescFirst: true,
   },
   {
     id: "actions",
@@ -46,4 +48,4 @@ export const columns: ColumnDef<Attempt>[] = [
       );
     },
   },
-]
+];

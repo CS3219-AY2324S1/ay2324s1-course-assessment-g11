@@ -2,7 +2,7 @@ import Loader from "@/components/interviews/loader";
 import { Button } from "@/components/ui/button";
 import { TypographyBody, TypographyH2 } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { use, useEffect, useState } from "react";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 
 export default function FindMatch() {
@@ -10,11 +10,21 @@ export default function FindMatch() {
   const { match, cancelLooking } = useMatchmaking();
   const { query } = router;
   const { retry } = query;
+  const [timeElapsed, setTimeElapsed] = useState(0);
 
   const onClickCancel = () => {
     cancelLooking();
     router.push("/interviews");
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeElapsed((prev) => prev + 1);
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     if (retry) {
@@ -43,7 +53,7 @@ export default function FindMatch() {
       <div className="gap-y-6 flex flex-col justify-center items-center">
         <TypographyH2>Finding a match for your interview prep...</TypographyH2>
 
-        <TypographyBody>Estimated time: 25 secs</TypographyBody>
+        <TypographyBody>Time elapsed: {timeElapsed} secs</TypographyBody>
       </div>
 
       <Loader />
