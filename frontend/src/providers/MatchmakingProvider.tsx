@@ -21,7 +21,7 @@ interface RequestToChangeQuestion {
 
 interface MatchmakingContextValue {
   socket: Socket | null;
-  match?: Match | null;
+  match: Match | null;
   message: string;
   error: string;
   joinQueue: (difficulties: string[], programmingLang: string) => void;
@@ -46,7 +46,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   // undefined if is loading, null if not in a match, otherwise Match
-  const [match, setMatch] = useState<Match | null | undefined>(undefined);
+  const [match, setMatch] = useState<Match | null>(null);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
   const [requestToChangeQuestion, setRequestToChangeQuestion] = useState<RequestToChangeQuestion | null>(null);
