@@ -10,6 +10,7 @@ import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
 import { useHistory } from "@/hooks/useHistory";
 import Solution from "@/components/room/solution";
+import { useUser } from "@/hooks/useUser";
 
 export default function Questions() {
   const router = useRouter();
@@ -94,6 +95,7 @@ export default function Questions() {
           </Tabs>
           <div className="flex-1">
             <CodeEditor
+              language="python"
               defaultValue={question.defaultCode.python}
               onChange={setAnswer}
               text={answer}
