@@ -10,7 +10,7 @@ import { DataTable } from "../components/questions/data-table";
 import { PlusIcon } from "lucide-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-export default function QuestionPage() {
+export default function AllQuestionsPage() {
   const queryClientAll = new QueryClient();
 
   return (

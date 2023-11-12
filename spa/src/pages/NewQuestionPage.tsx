@@ -20,8 +20,7 @@ export default function NewQuestion() {
       title: "",
       difficulty: "easy",
       description: "",
-      testCasesInputs: [],
-      testCasesOutputs: [],
+      category: "",
     },
   });
 
