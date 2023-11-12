@@ -7,7 +7,6 @@ import {
 } from "../../../utils/shared-ot";
 import { TextOp } from "ot-text-unicode";
 import { Room, connect } from "twilio-video";
-import { wsCollaborationProxyGatewayAddress } from "@/gateway-address/gateway-address";
 import { AuthContext } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";

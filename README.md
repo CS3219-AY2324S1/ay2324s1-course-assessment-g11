@@ -32,7 +32,6 @@ your services / frontend.
 │   ├── /user-service (express application)
 │   ├── /matching-service (express application)
 │   ├── /question-service (express application)
-│   ├── /collaboration-service (express application)
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
@@ -47,14 +46,14 @@ your services / frontend.
 
 1. Ensure that you have an `.env` file at the root directory with the following variables:
    `bash
-    PRISMA_DATABASE_URL=<redacted>
-    MONGO_ATLAS_URL=<redacted>
-    FIREBASE_SERVICE_ACCOUNT=<redacted>
-    NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
-    TWILIO_ACCOUNT_SID=<redacted>
-    TWILIO_API_KEY=<redacted>
-    TWILIO_API_SECRET=<redacted>
-    `
+ PRISMA_DATABASE_URL=<redacted>
+ MONGO_ATLAS_URL=<redacted>
+ FIREBASE_SERVICE_ACCOUNT=<redacted>
+ NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
+ TWILIO_ACCOUNT_SID=<redacted>
+ TWILIO_API_KEY=<redacted>
+ TWILIO_API_SECRET=<redacted>
+ `
    Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
    The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
 
