@@ -7,20 +7,17 @@ on:
     workflows: ["Continuous Integration"] # Run only after CI passes
     types: [completed]
     branches:
-      - prod 
+      - prod
 
 env:
   PROJECT_ID: peerprep-group11-prod
   ARTIFACT_REPOSITORY_NAME: codeparty-prod-images
-  GKE_CLUSTER: codeparty-g11-prod    # Add your cluster name here.
-  GKE_REGION: asia-southeast1   # Add your cluster zone here.
+  GKE_CLUSTER: codeparty-g11-prod # Add your cluster name here.
+  GKE_REGION: asia-southeast1 # Add your cluster zone here.
   FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROD }}
   PRISMA_DATABASE_URL: ${{ secrets.PRISMA_DATABASE_URL_PROD }}
   MONGO_ATLAS_URL: ${{ secrets.MONGO_ATLAS_URL_PROD }}
   NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG: ${{ secrets.FRONTEND_FIREBASE_CONFIG_PROD }}
-  NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS: https://api.codeparty.org/
-  NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS: https://wsmatch.codeparty.org
-  NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS: https://wscollab.codeparty.org
   TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
   TWILIO_API_KEY: ${{ secrets.TWILIO_API_KEY }}
   TWILIO_API_SECRET: ${{ secrets.TWILIO_API_SECRET }}
@@ -32,20 +29,20 @@ jobs:
     environment: production
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     permissions:
-      contents: 'read'
-      id-token: 'write'
+      contents: "read"
+      id-token: "write"
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - id: 'auth'
+      - id: "auth"
         name: Authenticate to Google Cloud
-        uses: 'google-github-actions/auth@v1'
+        uses: "google-github-actions/auth@v1"
         with:
-          token_format: 'access_token'
+          token_format: "access_token"
           workload_identity_provider: projects/345207492413/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-oidc
-          service_account: 'github-actions-service@peerprep-group11-prod.iam.gserviceaccount.com'
+          service_account: "github-actions-service@peerprep-group11-prod.iam.gserviceaccount.com"
 
       # Setup gcloud CLI
       - name: Setup Google Cloud SDK

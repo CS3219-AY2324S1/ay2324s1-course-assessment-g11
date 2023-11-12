@@ -17,8 +17,5 @@ RUN yarn prisma generate
 # Compile service from TypeScript to JavaScript
 RUN yarn build
 
-# Re-install production-only dependencies
-RUN yarn install --frozen-lockfile --production --cwd /app
-
 # Run service
 CMD [ "yarn", "workspace", "matching-service", "start" ]
