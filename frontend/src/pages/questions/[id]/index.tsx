@@ -1,4 +1,3 @@
-import CodeEditor from "@/components/room/code-editor";
 import Description from "@/components/room/description";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
@@ -92,15 +91,6 @@ export default function Questions() {
               />
             </TabsContent>
           </Tabs>
-          <div className="flex-1">
-            <CodeEditor
-              defaultValue={question.defaultCode.python}
-              onChange={setAnswer}
-              text={answer}
-              hasRoom={false}
-              onSubmitClick={onSubmitClick}
-            />
-          </div>
         </div>
       )}
     </div>
