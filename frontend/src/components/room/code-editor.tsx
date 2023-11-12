@@ -37,7 +37,7 @@ type CodeEditorProps = {
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
   hasRoom?: boolean;
-  onSubmitClick?: (param: string) => void;
+  onSubmitClick?: (param: string, solved: boolean) => void;
   onLeaveRoomClick?: () => void;
 };
 
@@ -114,13 +114,13 @@ export default function CodeEditor({
     [onChange, onCursorChange, monacoInstance]
   );
 
-  const handleOnSubmitClick = async () => {
+  const handleOnSubmitClick = async (solved: boolean) => {
     if (isSubmitting) {
       return; // Do nothing if a submission is already in progress.
     }
     setIsSubmitting(true);
     try {
-      onSubmitClick(monacoInstance?.getValue() ?? value);
+      onSubmitClick(monacoInstance?.getValue() ?? value, solved);
     } catch (error) {
       console.log(error);
     }
@@ -198,14 +198,24 @@ export default function CodeEditor({
               Leave Room
             </Button>
           ) : (
-            <Button
-              size={"sm"}
-              variant="default"
-              onClick={handleOnSubmitClick}
-              disabled={isSubmitting}
-            >
-              Submit
-            </Button>
+            <div className="flex flex-row space-x-4">
+              <Button
+                size={"sm"}
+                variant="secondary"
+                onClick={() => handleOnSubmitClick(false)}
+                disabled={isSubmitting}
+              >
+                Submit as unsolved
+              </Button>
+              <Button
+                size={"sm"}
+                variant="default"
+                onClick={() => handleOnSubmitClick(true)}
+                disabled={isSubmitting}
+              >
+                Submit as Solved
+              </Button>
+            </div>
           )}
         </div>
       </Card>
