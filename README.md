@@ -1,6 +1,6 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/6BOvYMwN)
 
-## PeerPrep Monorepo User Guide
+## Assignment 1
 
 Prerequisites for PeerPrep Monorepo:
 
@@ -27,20 +27,8 @@ your services / frontend.
 
 ```
 /peerprep
-├── /services
-│   ├── /admin-service (express application)
-│   ├── /user-service (express application)
-│   ├── /matching-service (express application)
-│   ├── /question-service (express application)
-│   ├── /collaboration-service (express application)
-│   └── /gateway (express application)
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
-├── /deployment
-│   ├── /docker
-│   └── /kubernetes
-├── .env (not in git)
-├── .env.firebase_emulators_test (not in git)
 └── README.md (and other root-level files & docs)
 ```
 
