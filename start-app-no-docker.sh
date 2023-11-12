@@ -14,5 +14,4 @@ prepend() {
     (yarnpkg workspace collaboration-service dev:local | prepend "collaboration-service: ") & \
     (yarnpkg workspace matching-service dev:local | prepend "matching-service: ") & \
     (yarnpkg workspace question-service dev:local | prepend "question-service: ") & \
-    (yarnpkg workspace gateway dev:local | prepend "gateway: ") & \
     wait)

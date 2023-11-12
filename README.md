@@ -5,15 +5,15 @@
 Prerequisites for PeerPrep Monorepo:
 
 1. **Yarn:** Ensure you have the latest version of Yarn installed. Yarn
-    Workspaces is available in Yarn v1.0 and later.
+   Workspaces is available in Yarn v1.0 and later.
 2. Installation (if not already installed):
 
-    ```bash
-    npm install -g yarn
-    ```
+   ```bash
+   npm install -g yarn
+   ```
 
 3. **Node.js:** Check each application's documentation for the recommended
-    Node.js version.
+   Node.js version.
 4. **Git (Optional but Recommended):**
 5. **Docker (If deploying with Docker):**
 6. **Kubernetes Tools (If deploying with Kubernetes):**
@@ -33,7 +33,6 @@ your services / frontend.
 │   ├── /matching-service (express application)
 │   ├── /question-service (express application)
 │   ├── /collaboration-service (express application)
-│   └── /gateway (express application)
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
@@ -47,7 +46,7 @@ your services / frontend.
 ### Getting Started - Local Development:
 
 1. Ensure that you have an `.env` file at the root directory with the following variables:
-    ```bash
+   `bash
     PRISMA_DATABASE_URL=<redacted>
     MONGO_ATLAS_URL=<redacted>
     FIREBASE_SERVICE_ACCOUNT=<redacted>
@@ -55,25 +54,24 @@ your services / frontend.
     TWILIO_ACCOUNT_SID=<redacted>
     TWILIO_API_KEY=<redacted>
     TWILIO_API_SECRET=<redacted>
-    ```
-Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
-The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
+    `
+   Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
+   The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
 
-| Variable | Purpose |
-| -------- | ------- |
-| FIREBASE_SERVICE_ACCOUNT | For backend verification and administrative tasks |
-| NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG | For the frontend to connect to Firebase |
+| Variable                             | Purpose                                           |
+| ------------------------------------ | ------------------------------------------------- |
+| FIREBASE_SERVICE_ACCOUNT             | For backend verification and administrative tasks |
+| NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG | For the frontend to connect to Firebase           |
 
 2. **Installing secret detection hooks:** From the root directory, run:
-    ```bash
-    pip install pre-commit
-    pre-commit install
-    ```
-   
+   ```bash
+   pip install pre-commit
+   pre-commit install
+   ```
+
 **Disclaimer:** There is no guarantee that all secrets will be detected.
 As a tip, if you think a file will eventually store secrets, immediately add it to .gitignore upon creating
 it in case you forget later on when you have a lot more files to commit.
-
 
 3. **Installing Dependencies:** From the root directory (`/peerprep`), run:
 
@@ -125,35 +123,41 @@ it in case you forget later on when you have a lot more files to commit.
 
 8. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
 
-    ```bash
-    ./start-app-no-docker.sh # on mac /linus
-   
-    # You can also use the above command on Windows with Git Bash
-    
-    ```
+   ```bash
+   ./start-app-no-docker.sh # on mac /linus
+
+   # You can also use the above command on Windows with Git Bash
+
+   ```
 
 ### Getting Started - Docker:
-Docker and Docker Compose are used to set up a simulated production build (meaning that the Docker images and 
+
+Docker and Docker Compose are used to set up a simulated production build (meaning that the Docker images and
 containers that will be spun up locally are almost identical to those in the production environment, with the exception
 of some environment variables).
 
 1. **Run yarn docker:build:** From the root repo, run
 
 ```bash
-yarn docker:build 
+yarn docker:build
 ```
+
 This will create new Docker images.
 
 2. **Run yarn docker:devup:** From the root repo, run
+
 ```bash
-yarn docker:devup 
+yarn docker:devup
 ```
+
 This will start all the containers.
 
 3. **Once done, run yarn docker:devdown:** From the root repo, run
+
 ```bash
-yarn docker:devdown 
+yarn docker:devdown
 ```
+
 This will stop and delete all the containers.
 
 #### If you want to do all the above steps at once, see the below section
@@ -165,6 +169,7 @@ This will stop and delete all the containers.
 
 # You can also use the above command on Windows with Git Bash
 ```
+
 This will create new Docker images everytime it is run. Be careful of how much disk space you have left.
 
 Any edits you make to the source code will not be automatically reflected on the site. We recommend using Docker
@@ -195,19 +200,23 @@ Next steps:
 ```
 
 ### Firebase Local Emulator Suite
+
 The [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite) is used to support
 automated testing of any Firebase-related functionality.
 
 The following files at the project root define the Firebase project as well as the emulators used:
-* `.firebaserc` - The Firebase project definitions
-* `firebase.json` - The emulators that are used
+
+- `.firebaserc` - The Firebase project definitions
+- `firebase.json` - The emulators that are used
 
 For local testing, the file used for passing in environment variables has to be named:
+
 ```
 .env.firebase_emulators_test
 ```
 
 This file should contain the following environment variables:
+
 ```
 FIREBASE_AUTH_EMULATOR_HOST="127.0.0.1:9099"
 FIREBASE_SERVICE_ACCOUNT={insert secret JSON value here}
