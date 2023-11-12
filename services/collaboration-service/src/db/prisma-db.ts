@@ -161,18 +161,18 @@ export async function createOrUpdateRoomWithUser(
     users = room.users;
     active_users = room.active_users;
     if (users.indexOf(user_id) === -1) {
-      users.push(user_id);
+      throw new Error("User is not authorized to be in the room");
     }
     if (active_users.indexOf(user_id) === -1) {
       active_users.push(user_id);
     }
   }
 
-  await prisma.room.upsert({
+  await prisma.room.update({
     where: {
       room_id: room_id,
     },
-    update: {
+    data: {
       status: "active",
       users: {
         set: users,
@@ -180,14 +180,7 @@ export async function createOrUpdateRoomWithUser(
       active_users: {
         set: active_users,
       },
-    },
-    create: {
-      room_id: room_id,
-      text: "",
-      status: "active",
-      users: [user_id],
-      active_users: [user_id],
-    },
+    }
   });
 }
 
