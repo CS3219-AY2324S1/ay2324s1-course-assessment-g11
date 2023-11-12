@@ -108,72 +108,8 @@ indexRouter.delete(
             // Server side error such as database not being available
             res.status(500).end();
           }
-        })
+        });
     }
-  }
-);
-
-indexRouter.get(
-  "/:uid/attempts",
-  function (req: express.Request, res: express.Response) {
-    userDatabaseFunctions
-      .getAttemptsOfUser(req.params.uid)
-      .then((result) => {
-        if (result === null) {
-          // res.status(404).end();
-          res.send(200).json([]);
-        } else {
-          res.status(200).json(result);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // Server side error such as database not being available
-        res.status(500).end();
-      });
-  }
-);
-
-indexRouter.get(
-  "/attempt/:attempt_id",
-  function (req: express.Request, res: express.Response) {
-    userDatabaseFunctions
-      .getAttemptById(req.params.attempt_id)
-      .then((result) => {
-        if (result === null) {
-          res.status(404).end();
-        } else {
-          res.status(200).json(result);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        // Server side error such as database not being available
-        res.status(500).end();
-      });
-  }
-);
-
-indexRouter.post(
-  "/attempt",
-  function (req: express.Request, res: express.Response) {
-    const uid = req.body.uid as string;
-    const question_id = req.body.question_id as string;
-    const answer = req.body.answer as string;
-    const solved = (req.body.solved as boolean) ?? false;
-    userDatabaseFunctions
-      .createAttemptOfUser(req.body)
-      .then((result) => {
-        if (result === null) {
-          res.status(404).append("No-Such-User", "true").end();
-        } else {
-          res.status(201).json(result);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        res.status(500).end();
-      });
   }
 );
 
