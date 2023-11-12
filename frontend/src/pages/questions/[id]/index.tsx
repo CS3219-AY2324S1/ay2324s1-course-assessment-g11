@@ -43,12 +43,12 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  function onSubmitClick(value: string) {
+  function onSubmitClick(value: string, solved: boolean) {
     postAttempt({
       uid: currentUser ? currentUser.uid : "user",
       question_id: questionId,
       answer: value || answer,
-      solved: true, // assume true
+      solved: solved, // assume true
     })
       .catch((err: any) => {
         console.log(err);
