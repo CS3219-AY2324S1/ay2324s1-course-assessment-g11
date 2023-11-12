@@ -35,9 +35,6 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchQuestions } from "../../pages/api/questionHandler";
-import { AuthContext } from "../../contexts/AuthContext";
-import { User } from "firebase/auth";
-
 
 import { DotWave } from '@uiball/loaders'
 
@@ -53,7 +50,6 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([{"id": "title", "desc": false}]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-  const { user: currentUser, authIsReady } = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
 
   const maxPage = useRef({maxFetchedPage: -1, isMax: false});
@@ -69,19 +65,17 @@ export function DataTable<TData, TValue>({
     pageSize,
     searchTitle,
     filteredDifficulty,
-    sorting,
-    uid: currentUser?.uid ?? null,
+    sorting
   };
 
   const dataQuery = useQuery({
     queryKey: ["questions", fetchDataOptions],
     queryFn: async ({queryKey}) => {
-      const {uid, pageIndex, pageSize, searchTitle, filteredDifficulty, sorting} = queryKey[1] as typeof fetchDataOptions;
-      if (!uid) throw new Error("Unauthenticated user");
+      const {pageIndex, pageSize, searchTitle, filteredDifficulty, sorting} = queryKey[1] as typeof fetchDataOptions;
       setLoading(true);
       let conditions: any = {"difficulty": Object.keys(filteredDifficulty).filter((key) => (filteredDifficulty as any)[key])};
       if (isEditable) {
-        conditions = {...conditions, "author": uid};
+        conditions = {...conditions};
       }
       if (searchTitle) {
         conditions = {...conditions, "searchTitle": searchTitle};
@@ -90,14 +84,10 @@ export function DataTable<TData, TValue>({
         const sortObj = sorting.map(sortState => ({[sortState.id]: sortState.desc ? -1 : 1})).reduce((acc, curr) => ({...acc, ...curr}), {});
         conditions = {...conditions, "sort": sortObj};
       }
-      const response = await fetchQuestions(currentUser, pageIndex, pageSize, conditions);
+      const response = await fetchQuestions(pageIndex, pageSize, conditions);
       setLoading(false)
-      if (pageIndex > maxPage.current.maxFetchedPage) {
-        maxPage.current.maxFetchedPage = pageIndex;
-        maxPage.current.isMax = !response.hasNextPage;
-      }
       console.log("fetched response", response)
-      return response.questions as TData[];
+      return response;
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
   })

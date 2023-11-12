@@ -38,22 +38,6 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
     },
   },
   {
-    accessorKey: "topics",
-    header: "Topics",
-    cell: ({ row }) => {
-      const topics = row.getValue("topics") as string[];
-      return (
-        <div className="flex gap-2 flex-wrap">
-          {topics.map((topic) => (
-            <Badge variant="outline" className="" key={topic}>
-              <TypographySmall>{topic}</TypographySmall>
-            </Badge>
-          ))}
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "id",
     id: "actions",
     header: "Actions",
@@ -63,7 +47,7 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
         <div className="flex gap-2 justify-between">
           {isEditable &&
             <Button variant="secondary" size="icon" className="h-8 w-8" onClick={() => {
-              window.location.href = `/questions/${questionId}/edit`;
+              window.location.href = `${questionId}/edit`;
             }}>
               <EditIcon size={20} />
             </Button>}
@@ -72,7 +56,7 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
             size="sm"
             className="h-8 gap-2"
             onClick={() => {
-              window.location.href = `/questions/${questionId}`;
+              window.location.href = `${questionId}`;
             }}
           >
             Practice

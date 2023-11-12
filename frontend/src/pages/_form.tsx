@@ -19,7 +19,6 @@ import { UseFormReturn } from "react-hook-form";
 export const formSchema = z.object({
   title: z.string().min(2).max(100),
   difficulty: z.enum(['easy', 'medium', 'hard']),
-  topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(10000),
   testCasesInputs: z.array(z.string().min(2).max(10000)),
   testCasesOutputs: z.array(z.string().min(2).max(10000)),
@@ -108,10 +107,6 @@ export default function QuestionsForm({
   const {testCasesInputs, testCasesOutputs} = form.getValues();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
-
-  const topics = ["Algorithms", "Arrays", "Bit Manipulation", "Brainteaser", "Data Structures", "Databases", "Graph", "Recursion", "Strings"].map(createTopic);
-
   useEffect(() => {
     form.setValue('defaultCode', defaultCodes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -148,22 +143,6 @@ export default function QuestionsForm({
                   value={form.getValues().difficulty}
                 />
               </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="topics"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Select topics</FormLabel>
-              <MultiSelect
-                selected={field.value}
-                options={topics}
-                className="sm:w-[510px]"
-                onChange={field.onChange}
-              />
               <FormMessage />
             </FormItem>
           )}

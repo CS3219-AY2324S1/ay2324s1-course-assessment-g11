@@ -6,7 +6,6 @@ export type Question = {
   id: string;
   title: string;
   difficulty: string;
-  topics: string[];
   description: string;
   solution?: string;
   author: string;
