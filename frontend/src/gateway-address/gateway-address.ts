@@ -6,12 +6,9 @@
  *   - For prod, pass in a separate address to NEXT_PUBLIC_GATEWAY_ADDRESS
  */
 export const wsMatchProxyGatewayAddress = "http://localhost:5002";
-export const wsCollaborationProxyGatewayAddress = "http://localhost:5003";
 
 export const userApiPathAddress = "http://localhost:5001/api/user-service/";
 export const questionApiPathAddress =
   "http://localhost:5004/api/question-service/";
 export const matchApiPathAddress =
   "http://localhost:5002/api/matching-service/";
-export const collaborationApiPathAddress =
-  "http://localhost:5003/api/collaboration-service/";
