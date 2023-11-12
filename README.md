@@ -37,8 +37,11 @@ your services / frontend.
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
-│   ├── /docker
-│   └── /kubernetes
+│   ├── /gke-prod-manifests
+│   ├── /prod-dockerfiles
+│   └── build-export-prod-images.sh
+├── /prisma
+├── /utils
 ├── .env (not in git)
 ├── .env.firebase_emulators_test (not in git)
 └── README.md (and other root-level files & docs)
@@ -136,6 +139,8 @@ it in case you forget later on when you have a lot more files to commit.
 Docker and Docker Compose are used to set up a simulated production build (meaning that the Docker images and 
 containers that will be spun up locally are almost identical to those in the production environment, with the exception
 of some environment variables).
+
+NOTE: Do not run both Docker and No Docker at the same time. This will cause port conflicts.
 
 1. **Run yarn docker:build:** From the root repo, run
 
