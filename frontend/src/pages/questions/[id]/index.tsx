@@ -26,7 +26,7 @@ export default function Questions() {
     if (!authIsReady || !questionId) {
       console.log("auth not ready or questionId not found");
       return;
-    };
+    }
     if (currentUser) {
       fetchQuestion(currentUser, questionId)
         .then((question) => {
