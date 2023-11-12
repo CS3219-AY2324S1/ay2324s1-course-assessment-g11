@@ -1,6 +1,6 @@
 import Description from "../components/questions/description";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TypographyBody } from "@/components/ui/typography";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
+import { TypographyBody } from "../components/ui/typography";
 import { useEffect, useState } from "react";
 import { Question } from "../types/QuestionTypes";
 import { MrMiyagi } from "@uiball/loaders";

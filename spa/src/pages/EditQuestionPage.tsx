@@ -1,19 +1,18 @@
 import { TypographyH2 } from "../components/ui/typography";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useRouter } from "next/router";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "../components/questions/form";
 import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
+import { useParams } from "react-router-dom";
+
 
 export default function EditQuestionPage() {
+  const questionId = useParams<{ questionId: string }>().questionId;
   const [loading, setLoading] = useState(true);
-
-  const router = useRouter();
-  const { id: questionId } = router.query;
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -39,7 +38,7 @@ export default function EditQuestionPage() {
       form.setValue("description", question.description);
     } else {
       // if question is not found, redirect to home
-      router.push("/");
+
     }
 
     setLoading(false);
@@ -51,7 +50,6 @@ export default function EditQuestionPage() {
     // putQuestion(values, questionId as string)
     setLoading(false);
     alert("Success");
-    router.push("/questions");
   }
 
   function onDelete(event: any) {
@@ -62,7 +60,6 @@ export default function EditQuestionPage() {
       // deleteQuestion(questionId as string)
       setLoading(false);
       alert("Successfully deleted question");
-      router.push("/questions");
     }
   }
 
