@@ -88,7 +88,7 @@ export default function MatchFound() {
   };
 
   const onClickAccept = () => {
-    router.push(`/room/${match?.roomId}`);
+    router.push(`/`);
   };
 
   return (

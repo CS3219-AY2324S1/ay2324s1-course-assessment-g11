@@ -83,7 +83,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       router.route !== "/interviews/match-found" &&
       router.route !== "/interviews/find-match"
     ) {
-      router.push(`/room/${match?.roomId}`);
+      router.push(`/`);
     }
   }, [match]);
 
