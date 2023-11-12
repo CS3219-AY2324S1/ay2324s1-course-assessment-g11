@@ -52,84 +52,13 @@ const userDatabaseFunctions = {
     });
   },
 
-  async getAttemptsOfUser(uid: string) {
-    try {
-      const user = await prismaClient.appUser.findUnique({
-        where: {
-          uid: uid,
-        },
-        include: {
-          attempts: true,
-        },
-      });
-
-      if (user) {
-        return user.attempts;
-      } else {
-        console.error(`User with uid ${uid} not found.`);
-        return [];
-      }
-    } catch (error: any) {
-      console.error(`Error retrieving attempts: ${error.message}`);
-      throw error;
+  async setMatchPreferenceOfUser(
+    uid: string,
+    data: {
+      matchDifficulty: string;
+      matchProgrammingLanguage: string;
     }
-  },
-
-  async getAttemptById(attemptId: string) {
-    try {
-      const attempt = await prismaClient.attempt.findUnique({
-        where: {
-          id: attemptId,
-        },
-      });
-      return attempt;
-    } catch (error: any) {
-      console.error(`Error retrieving attempt: ${error.message}`);
-      throw error;
-    }
-  },
-
-  async createAttemptOfUser(data: {
-    uid: string;
-    question_id: string;
-    answer: string;
-    solved: boolean;
-  }) {
-    try {
-      const user = await prismaClient.appUser.findUnique({
-        where: {
-          uid: data.uid,
-        },
-      });
-
-      if (user) {
-        const attempt = await prismaClient.attempt.create({
-          data: {
-            question_id: data.question_id,
-            answer: data.answer,
-            solved: data.solved,
-            users: {
-              connect: {
-                uid: data.uid,
-              },
-            },
-          },
-        });
-        return attempt;
-      } else {
-        console.error(`User with uid ${data.uid} not found.`);
-        return null;
-      }
-    } catch (error: any) {
-      console.error(`Error creating attempt: ${error.message}`);
-      throw error;
-    }
-  },
-
-  async setMatchPreferenceOfUser(uid: string, data: {
-    matchDifficulty: string;
-    matchProgrammingLanguage: string;
-  }) {
+  ) {
     try {
       const updatedResult = await prismaClient.appUser.update({
         where: {
@@ -145,7 +74,7 @@ const userDatabaseFunctions = {
       console.error(`Error setting match preference: ${error.message}`);
       throw error;
     }
-  }
+  },
 };
 
 export default userDatabaseFunctions;

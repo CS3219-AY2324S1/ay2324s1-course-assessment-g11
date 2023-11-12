@@ -1,6 +1,4 @@
 import DifficultySelector from "@/components/common/difficulty-selector";
-import { columns } from "@/components/interviews/leaderboard/columns";
-import { DataTable } from "@/components/interviews/leaderboard/data-table";
 import { languages } from "@/components/room/code-editor";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,49 +29,6 @@ import { useContext, useEffect, useState } from "react";
 
 type Difficulty = "easy" | "medium" | "hard" | "any";
 
-const leaderboardData = [
-  {
-    displayName: "John Doe",
-    attempts: 10,
-    photoURL: "https://i.pravatar.cc/300",
-  },
-  {
-    displayName: "Mary Jane",
-    attempts: 1,
-    photoURL: "https://i.pravatar.cc/301",
-  },
-  {
-    displayName: "Mark Rober",
-    attempts: 98,
-    photoURL: "https://i.pravatar.cc/302",
-  },
-  {
-    displayName: "Alice Smith",
-    attempts: 15,
-    photoURL: "https://i.pravatar.cc/303",
-  },
-  {
-    displayName: "Bob Johnson",
-    attempts: 22,
-    photoURL: "https://i.pravatar.cc/304",
-  },
-  {
-    displayName: "Charlie Brown",
-    attempts: 5,
-    photoURL: "https://i.pravatar.cc/305",
-  },
-  {
-    displayName: "Daisy Miller",
-    attempts: 40,
-    photoURL: "https://i.pravatar.cc/306",
-  },
-  {
-    displayName: "Edward Stone",
-    attempts: 60,
-    photoURL: "https://i.pravatar.cc/307",
-  },
-];
-
 export default function Interviews() {
   const { user: currentUser } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
@@ -101,8 +56,6 @@ export default function Interviews() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUser]);
-
-  // sync leaderboard data
 
   const onClickSearch = () => {
     try {
@@ -206,11 +159,6 @@ export default function Interviews() {
           >
             Practice with a peer!
           </Button>
-        </div>
-        <div className="flex-col flex gap-4">
-          <TypographyH2 className="text-primary">Leaderboard</TypographyH2>
-          <DataTable columns={columns} data={leaderboardData} />
-          <div></div>
         </div>
       </div>
     </div>
