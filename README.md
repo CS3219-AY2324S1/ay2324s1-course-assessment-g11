@@ -28,20 +28,8 @@ Prerequisites for PeerPrep Monorepo:
    This command will install dependencies for all services and the frontend in a
    centralized `node_modules` directory at the root.
 
-2. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
-   `frontend`), use:
+2. **Running Frontend Scripts:** To run the frontend spa, use:
 
    ```bash
-   yarn workspace frontend add [dependency-name]
-   ```
-
-3. **Running Frontend Scripts:** To run the frontend cod, use:
-
-   ```bash
-   yarn workspace frontend dev ## For development
-
-   # or
-
-   yarn workspace frontend build ## For first time setup run the build command
-   yarn workspace frontend start ## For subsequent runs
+   yarn start
    ```

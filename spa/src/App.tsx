@@ -11,8 +11,12 @@ function App() {
       <Routes>
         <Route path="/" element={AllQuestionsPage()} />
         <Route path="/new" element={NewQuestionPage()} />
-        <Route path="/edit/:id" element={EditQuestionPage()} />
-        <Route path="/view/:id" element={ViewQuestionPage()} />
+        <Route path="/edit">
+          <Route path=":questionId" element={EditQuestionPage()} />
+        </Route>
+        <Route path="/view">
+          <Route path=":questionId" element={ViewQuestionPage()} />
+        </Route>
       </Routes>
     </div>
   );

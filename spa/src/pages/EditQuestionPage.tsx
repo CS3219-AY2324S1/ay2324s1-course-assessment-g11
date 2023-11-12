@@ -63,6 +63,10 @@ export default function EditQuestionPage() {
     }
   }
 
+  if (!questionId) {
+    return <div className="flex items-center justify-center h-screen">Question not found</div>;
+  }
+
   return (
     questionId &&
     <div className="min-h-screen p-12 mx-auto max-w-3xl">

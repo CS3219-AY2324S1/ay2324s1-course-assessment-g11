@@ -17,11 +17,11 @@ export default function ViewQuestionPage() {
   }, [questionId]);
 
   if (question === null && !loading) {
-    return <div className="flex items-center justify-center">Question not found</div>;
+    return <div className="flex items-center justify-center h-screen">Question not found</div>;
   }
 
   return (
-    <div className="h-[calc(100vh-80px)] px-12 py-6">
+    <div className="h-screen px-12 py-6">
       {question === null || loading ? (
         <div className="flex w-full h-full justify-center items-center">
           <MrMiyagi size={35} lineWeight={3.5} speed={1} color="white" />
