@@ -15,6 +15,8 @@ import { useMatchmaking } from "@/hooks/useMatchmaking";
 import Solution from "@/components/room/solution";
 import { AuthContext } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 
 export default function Room() {
   const router = useRouter();
@@ -43,16 +45,12 @@ export default function Room() {
   const [loading, setLoading] = useState(true); // to be used later for loading states
 
   const { fetchQuestion, fetchRandomQuestion } = useQuestions();
-  const { updateQuestionIdInMatch } = useMatch();
-  const { match, leaveMatch } = useMatchmaking();
+  const { match, leaveMatch, changeQuestion, requestToChangeQuestion, setRequestToChangeQuestion } = useMatchmaking();
 
   useEffect(() => {
     if (match && match.questionId !== null) {
       const questionId = match.questionId;
       setQuestionId(questionId);
-    }
-
-    if (questionId !== "") {
       fetchQuestion(questionId).then((fetchQuestion) => {
         if (fetchQuestion != null) {
           setQuestion(fetchQuestion);
@@ -78,9 +76,8 @@ export default function Room() {
       fetchRandomQuestion(difficulty)
         .then((question) => {
           if (question) {
-            updateQuestionIdInMatch(roomId, question.id);
-            setQuestion(question);
-            setQuestionId(question.id);
+            changeQuestion(question.id, question.title, roomId);
+            toast.info("Please wait for other user to accept.");
           }
         })
         .catch((err) => {
@@ -99,6 +96,13 @@ export default function Room() {
     router.push("/interviews");
   }
 
+  function replyToChangeRequest(accept: boolean): void {
+    if (requestToChangeQuestion) {
+      requestToChangeQuestion.cb(accept);
+      setRequestToChangeQuestion(null);
+    }
+  }
+
   return (
     <div>
       {!router.isReady ? (
@@ -107,6 +111,25 @@ export default function Room() {
         </div>
       ) : (
         <div>
+          {requestToChangeQuestion && (<AlertDialog defaultOpen={true}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Do you agree to this change?</AlertDialogTitle>
+                <AlertDialogDescription>
+                The other user requested to change question to {requestToChangeQuestion.questionTitle}. 
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogAction onClick={() => replyToChangeRequest(true)}>
+                  Yes
+                </AlertDialogAction>
+                <AlertDialogAction onClick={() => replyToChangeRequest(false)}>
+                  No
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>)}
+          
           <div className="h-[calc(100vh-80px)] px-12 py-6">
             <div className="flex h-full">
               <Tabs defaultValue="description" className="flex-1">

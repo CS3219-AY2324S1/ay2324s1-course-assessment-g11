@@ -44,7 +44,8 @@ export const getMatchByRoomid = async (user: any, roomId: string) => {
 export const patchMatchQuestionByRoomid = async (
   user: any,
   roomId: string,
-  questionId: string
+  questionId: string,
+  questionTitle: string,
 ) => {
   try {
     const url = `${matchApiPathAddress}match/${roomId}`;
