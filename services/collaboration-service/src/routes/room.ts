@@ -3,7 +3,7 @@ import { type } from "ot-text-unicode";
 import { Socket, Server } from "socket.io";
 
 import {
-  createOrUpdateRoomWithUser,
+  createOrUpdateRoomWithUser as updateRoomWithUser,
   removeUserFromRoom,
   updateRoomText,
   updateRoomStatus,
@@ -112,8 +112,8 @@ async function handleTextOp(
   textOpSet: TextOperationSetWithCursor,
   room_id: string
 ): Promise<{ text: string; cursor: number }> {
-  console.log(textOpSet);
-  console.log(opMap.getLatest(room_id)?.version);
+  // console.log(textOpSet);
+  // console.log(opMap.getLatest(room_id)?.version);
   var resultTextOps = textOpSet.operations;
 
   if (opMap.checkIfLatestVersion(room_id, textOpSet.version)) {
@@ -133,7 +133,7 @@ async function handleTextOp(
       version: textOpSet.version + 1,
       operations: transformedLatestOp,
     });
-    console.log(transformedLatestOp);
+    // console.log(transformedLatestOp);
     resultTextOps = transformedLatestOp;
   }
 
@@ -285,18 +285,18 @@ export const roomRouter = (io: Server) => {
   });
 
   // WebSocket style API
-  io.once("connection", (socket: Socket) => {
-    console.log("Room.ts: User connected:", socket.id);
+  io.on("connection", (socket: Socket) => {
+    console.log("Room.ts: User connected:", socket.id, ", Number of connections:", io.engine.clientsCount);
 
     socket.on(SocketEvents.ROOM_JOIN, (room_id: string, user_id: string) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
-      createOrUpdateRoomWithUser(room_id, user_id);
-      mapSocketToRoomAndUser(socket.id, room_id, user_id);
-      roomUpdateWithTextFromDb(io, socket, room_id);
-      socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id));
-
-      initSocketListeners(io, socket, room_id);
+      updateRoomWithUser(room_id, user_id).then(() => {
+        mapSocketToRoomAndUser(socket.id, room_id, user_id);
+        roomUpdateWithTextFromDb(io, socket, room_id);
+        socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id));
+        initSocketListeners(io, socket, room_id);
+      }).catch((error) => console.log);
     });
 
     socket.on("disconnect", async () => userDisconnect(socket));

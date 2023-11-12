@@ -1,16 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LocalParticipant, LocalVideoTrack, Participant, RemoteParticipant, RemoteAudioTrack, RemoteVideoTrack, Room, Track } from 'twilio-video';
 import { Button } from '../ui/button';
 import { Mic, MicOff, Video, VideoOff } from 'lucide-react';
+import { useUser } from '@/hooks/useUser';
+import { AuthContext } from '../../contexts/AuthContext';
 
 interface VideoRoomProps {
     room: Room | null;
     className?: string;
 }
 
-function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCameraOn, toggleCamera }:
+function SingleVideoTrack({ track, userId, displayName, isLocal, isMute, toggleMute, isCameraOn, toggleCamera }:
     {
-        track: RemoteVideoTrack | LocalVideoTrack, userId: string, isLocal: boolean,
+        track: RemoteVideoTrack | LocalVideoTrack, userId: string, displayName: string, isLocal: boolean,
         isMute: boolean, toggleMute: () => void,
         isCameraOn: boolean, toggleCamera: () => void
     }) {
@@ -31,7 +33,7 @@ function SingleVideoTrack({ track, userId, isLocal, isMute, toggleMute, isCamera
         <div className="w-64 p-2 flex flex-col items-center justify-center border border-primary rounded-lg">
             <div ref={videoContainer}></div>
             <div className="flex-1 ml-1 w-full h-8 flex items-center justify-between">
-                <p>{userId}</p>
+                <p>{displayName}</p>
                 {isLocal ? <div className="flex flex-row gap-2 justify-end">
                     <Button variant="ghost" size="icon" onClick={toggleCamera}>
                         {isCameraOn ? <Video /> : <VideoOff />}
@@ -65,9 +67,18 @@ const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
     const [isMute, setIsMute] = useState(true);
     const [participants, setParticipants] = useState<RemoteParticipant[]>([]);
     const [localParticipant, setLocalParticipant] = useState<LocalParticipant | null>(null);
+    const [participantNames, setParticipantNames] = useState<{[id: string]: string}>({});
+    const {user} = useContext(AuthContext);
+    const {getAppUser} = useUser();
 
 
     const handleNewParticipant = (participant: RemoteParticipant) => {
+        if (!(participant.identity in participantNames)) {
+            setParticipantNames(p => ({...p, [participant.identity]: "Loading..."}));
+            getAppUser(participant.identity, false).then(user => {
+                setParticipantNames(p => ({...p, [participant.identity]: user?.displayName || ""}));
+            }).catch(err => console.log);
+        }
 
         participant.on('trackSubscribed', track => {
             setParticipants(p => [...p])
@@ -82,7 +93,6 @@ const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
         console.log('Participant "%s" connected,', participant.identity);
 
         setParticipants(participants => [...participants, participant]);
-
         handleNewParticipant(participant);
     };
 
@@ -134,13 +144,13 @@ const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
         <div className="flex gap-4 absolute bottom-10">
             {localParticipant ? Array.from(localParticipant.videoTracks.values()).map(publication => {
                 if (publication.track.kind === 'video') {
-                    return <SingleVideoTrack track={publication.track} key={localParticipant.identity} userId={localParticipant.identity} isLocal={true} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
+                    return <SingleVideoTrack track={publication.track} key={localParticipant.identity} userId={localParticipant.identity} displayName={user?.displayName || ""} isLocal={true} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
                 } else { return null; }
             }) : null}
             {participants.flatMap(participant => {
                 return Array.from(participant.videoTracks.values()).map(publication => {
                     if (publication.track?.kind === 'video') {
-                        return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
+                        return <SingleVideoTrack track={publication.track} key={participant.identity} userId={participant.identity} displayName={participantNames[participant.identity] || "Loading..."} isLocal={false} isMute={isMute} toggleMute={toggleMute} isCameraOn={isCameraOn} toggleCamera={toggleCamera} />;
                     } else {
                         return null; 
                     }

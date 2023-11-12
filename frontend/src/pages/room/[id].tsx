@@ -52,20 +52,27 @@ export default function Room() {
       const questionId = match.questionId;
       setQuestionId(questionId);
       fetchQuestion(questionId).then((fetchQuestion) => {
-        if (fetchQuestion != null) {
+        if (fetchQuestion) {
           setQuestion(fetchQuestion);
         }
       });
     }
 
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+
     if (!match) {
       // leave room and redirect to interviews page
-      leaveMatch();
-      toast.info("Other user has left");
-      router.push("/interviews");
+      timeout = setTimeout(() => {
+        leaveMatch();
+        toast.info("Other user has left");
+        router.push("/interviews");
+      }, 5000);
     }
 
     setLoading(false);
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [match, questionId]);
 

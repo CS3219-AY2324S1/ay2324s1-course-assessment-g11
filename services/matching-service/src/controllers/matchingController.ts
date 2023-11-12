@@ -9,7 +9,7 @@ export const MAX_WAITING_TIME = 60 * 1000; // 60 seconds
 
 export async function handleConnection(socket: Socket) {
   let userId = (socket.handshake.query.username as string) || "";
-  console.log(`User connected: ${socket.id} and username ${userId}`);
+  console.log(`User connected: ${socket.id} and username ${userId}. ${(await io.fetchSockets()).length} users in total.`);
 
   const { count: earlierWaitingCount } = await prisma.waitingUser.deleteMany({
     where: {
@@ -153,6 +153,7 @@ export function handleLooking(
               room_id: newMatch.roomId,
               status: EnumRoomStatus.active,
               text: "",
+              users: [matchingUser.userId, userId],
             },
           });
           await tx.waitingUser.deleteMany({

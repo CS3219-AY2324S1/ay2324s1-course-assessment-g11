@@ -77,7 +77,10 @@ const useCollaboration = ({
             "User-Id-Token": token,
           },
         });
-        setSocket(socketConnection);
+        setSocket((prevSocket) => {
+          prevSocket?.disconnect();
+          return socketConnection;
+        });
 
         socketConnection.emit(SocketEvents.ROOM_JOIN, roomId, userId);
         if (
@@ -123,11 +126,11 @@ const useCollaboration = ({
             cursor: number | undefined | null;
           }) => {
             prevCursorRef.current = cursorRef.current;
-            console.log("prevCursor: " + prevCursorRef.current);
+            // console.log("prevCursor: " + prevCursorRef.current);
 
-            console.log("cursor: " + cursor);
+            // console.log("cursor: " + cursor);
 
-            console.log("Update vers to " + version);
+            // console.log("Update vers to " + version);
             vers = version;
 
             if (awaitingAck.current) return;
@@ -136,13 +139,13 @@ const useCollaboration = ({
             prevTextRef.current = text;
             setText(text);
             if (cursor && cursor > -1) {
-              console.log("Update cursor to " + cursor);
+              // console.log("Update cursor to " + cursor);
               cursorRef.current = cursor;
               setCursor(cursor);
             } else {
               cursorRef.current = prevCursorRef.current;
               cursor = prevCursorRef.current;
-              console.log("Update cursor to " + prevCursorRef.current);
+              // console.log("Update cursor to " + prevCursorRef.current);
               setCursor(prevCursorRef.current);
             }
             awaitingSync.current = false;
@@ -177,9 +180,9 @@ const useCollaboration = ({
 
     awaitingAck.current = true;
 
-    console.log("prevtext: " + prevTextRef.current);
-    console.log("currenttext: " + textRef.current);
-    console.log("version: " + vers);
+    // console.log("prevtext: " + prevTextRef.current);
+    // console.log("currenttext: " + textRef.current);
+    // console.log("version: " + vers);
     const textOp: TextOp = createTextOpFromTexts(
       prevTextRef.current,
       textRef.current
@@ -187,7 +190,7 @@ const useCollaboration = ({
 
     prevTextRef.current = textRef.current;
 
-    console.log(textOp);
+    // console.log(textOp);
 
     const textOperationSet: TextOperationSetWithCursor = {
       version: vers,

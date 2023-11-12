@@ -45,6 +45,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  // undefined if is loading, null if not in a match, otherwise Match
   const [match, setMatch] = useState<Match | null>(null);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
@@ -82,6 +83,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       });
     }
     return () => {
+      console.log("Socket disconnected");
       socket?.close();
     };
   }, [currentUser]);
@@ -94,7 +96,8 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     if (
       match &&
       router.route !== "/interviews/match-found" &&
-      router.route !== "/interviews/find-match"
+      router.route !== "/interviews/find-match" &&
+      router.route !== "/room/${match?.roomId}"
     ) {
       router.push(`/room/${match?.roomId}`);
     }
