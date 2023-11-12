@@ -182,6 +182,7 @@ export function handleLooking(
 
     if (!foundMatch) {
       console.log(`Queued user ${userId}.`);
+      console.log("In queue:", await prisma.waitingUser.findMany());
       return;
     }
 
@@ -203,6 +204,8 @@ export function handleLooking(
       } and difficulty ${foundMatch.chosenDifficulty}`
     );
 
+    console.log("In queue:", await prisma.waitingUser.findMany());
+
     // Inform both users of the match
     socket.emit("matchFound", foundMatch);
     io.to(matchingUser?.socketId || "").emit("matchFound", foundMatch);
@@ -212,6 +215,7 @@ export function handleLooking(
 export function handleCancelLooking(userId: string): () => Promise<void> {
   return async () => {
     console.log(`User ${userId} is no longer looking for a match`);
+    console.log("In queue:", await prisma.waitingUser.findMany());
     await prisma.waitingUser.deleteMany({
       where: {
         userId: userId,
