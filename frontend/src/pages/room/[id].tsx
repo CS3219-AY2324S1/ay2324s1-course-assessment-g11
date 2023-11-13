@@ -6,17 +6,14 @@ import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
 import VideoRoom from "../../components/room/video-room";
 import { Difficulty, Question } from "../../types/QuestionTypes";
-import { Match } from "../../types/MatchTypes";
 import { useQuestions } from "@/hooks/useQuestions";
-import { useMatch } from "@/hooks/useMatch";
 import { useContext, useEffect, useState } from "react";
 import { MrMiyagi } from "@uiball/loaders";
 import { useMatchmaking } from "@/hooks/useMatchmaking";
 import Solution from "@/components/room/solution";
 import { AuthContext } from "@/contexts/AuthContext";
 import { toast } from "react-toastify";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 
 export default function Room() {
   const router = useRouter();
@@ -201,6 +198,7 @@ export default function Room() {
               <div className="flex-1">
                 <CodeEditor
                   text={text}
+                  language={match?.chosenProgrammingLanguage || "python"}
                   cursor={cursor}
                   onChange={setText}
                   onCursorChange={setCursor}

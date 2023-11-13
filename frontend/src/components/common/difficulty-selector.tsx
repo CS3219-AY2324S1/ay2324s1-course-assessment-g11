@@ -47,3 +47,16 @@ export default function DifficultySelector({
     </div>
   );
 }
+
+export const getDifficultyColor = (difficulty: Difficulty) => {
+  switch (difficulty) {
+    case "easy":
+      return "text-green-500";
+    case "medium":
+      return "text-orange-500";
+    case "hard":
+      return "text-red-500";
+    default:
+      return "text-gray-500";
+  }
+};
