@@ -32,7 +32,6 @@ export default function EditQuestionPage() {
   });
 
   useEffect(() => {
-
     if (question) {
       form.setValue("title", question.title);
       form.setValue("difficulty", question.difficulty as any);
@@ -47,7 +46,7 @@ export default function EditQuestionPage() {
     setLoading(true);
     putQuestion(values, questionIndex as number)
     setLoading(false);
-    alert("Success");
+    alert("Question has been updated");
   }
 
   function onDelete(event: any) {

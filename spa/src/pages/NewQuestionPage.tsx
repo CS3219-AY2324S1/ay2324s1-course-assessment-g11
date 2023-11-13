@@ -31,11 +31,20 @@ export default function NewQuestion() {
   });
 
   function onSubmit(newQuestion: z.infer<typeof formSchema>) {
+    if (isQuestionDuplicate(newQuestion)) {
+      alert("Question with this title already exists");
+      return;
+    }
     setLoading(true);
-    console.log(questions)
     setNewQuestions((prevQuestions: Array<Question>) => [...prevQuestions, newQuestion])
     setLoading(false);
     navigate("/");
+  }
+
+  function isQuestionDuplicate(newQuestion: z.infer<typeof formSchema>) {
+    return (questions as Array<Question>).findIndex((question: Question) => {
+      return question.title === newQuestion.title;
+    }) !== -1;
   }
 
   return (

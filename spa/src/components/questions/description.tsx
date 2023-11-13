@@ -16,7 +16,11 @@ export default function Description({
   question,
   className,
 }: DescriptionProps) {
-  const cleanDescription = sanitizeHtml(question.description)
+  const cleanDescription = sanitizeHtml(question.description, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img']),
+    allowedAttributes: { 'img': ['src'] },
+    allowedSchemes: ['data', 'http', 'https']
+  })
 
   return (
     <Card className={`m-2 ml-0 px-6 h-full ${className} overflow-y-auto overflow-x-wrap pb-4`}>
@@ -35,7 +39,7 @@ export default function Description({
       </div>
       <div className="my-6 p-6 bg-accent rounded">
         <TypographySmall>
-          <div className="w-[40vw] overflow-x-auto">
+          <div className="overflow-x-auto">
             <Markdown rehypePlugins={[rehypeRaw]}>{cleanDescription}</Markdown>
           </div>
           <br />

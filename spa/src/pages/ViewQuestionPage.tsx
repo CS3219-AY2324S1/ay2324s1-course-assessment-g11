@@ -16,7 +16,6 @@ export default function ViewQuestionPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log(questions, params)
     setLoading(false);
   }, [questionIndex]);
 
