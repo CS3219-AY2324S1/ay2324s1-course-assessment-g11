@@ -5,8 +5,6 @@ import { EditIcon, ArrowUpDown } from "lucide-react";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate()
-
 export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "title",
@@ -55,6 +53,8 @@ export const columns: ColumnDef<Question>[] = [
     header: "Actions",
     cell: ({ row }) => {
       const questionId = row.index;
+      const navigate = useNavigate()
+
       return (
         <div className="flex gap-2 justify-between">
           {
@@ -68,7 +68,7 @@ export const columns: ColumnDef<Question>[] = [
             size="sm"
             className="h-8 gap-2"
             onClick={() => {
-              window.location.href = `${questionId}`;
+              navigate(`view/${questionId}`);
             }}
           >
             View
