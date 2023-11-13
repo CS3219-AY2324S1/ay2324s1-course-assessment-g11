@@ -33,6 +33,7 @@ spec:
             - name: FRONTEND_ADDRESS
               value: "https://www.codeparty.org"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/gateway:latest
+          imagePullPolicy: Always
           name: gateway
           ports:
             - containerPort: 4000

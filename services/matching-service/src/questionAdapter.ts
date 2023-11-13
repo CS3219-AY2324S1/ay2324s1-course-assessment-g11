@@ -2,17 +2,15 @@ import http from "http";
 
 export async function getRandomQuestionOfDifficulty(
   difficulty: string
-): Promise<string> {
-  const requestBody = JSON.stringify({ difficulty });
+): Promise<any> {
 
   const options = {
     hostname: process.env.QUESTION_SERVICE_HOSTNAME || "localhost",
     port: 5004, // Port of the question service
-    path: "/api/question-service/random-question",
-    method: "POST",
+    path: "/api/question-service/random-question?difficulty=" + difficulty,
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": Buffer.byteLength(requestBody),
     },
   };
 
@@ -29,7 +27,7 @@ export async function getRandomQuestionOfDifficulty(
           const parsedData = JSON.parse(data);
           const qnId = parsedData[0]._id;
           if (qnId) {
-            resolve(qnId);
+            resolve(parsedData[0]);
           } else {
             reject(new Error("Invalid response format"));
           }
@@ -43,7 +41,6 @@ export async function getRandomQuestionOfDifficulty(
       reject(err);
     });
 
-    req.write(requestBody);
     req.end();
   });
 }
