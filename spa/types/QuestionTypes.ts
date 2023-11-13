@@ -7,14 +7,5 @@ export type Question = {
   title: string;
   difficulty: string;
   description: string;
-  solution?: string;
-  author: string;
-  defaultCode: {
-    javascript?: string;
-    python?: string;
-    java?: string;
-    "c++"?: string;
-  };
-  testCasesInputs?: string[];
-  testCasesOutputs?: string[];
+  category: string;
 };

@@ -1,10 +1,13 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { TypographySmall } from "../ui/typography";
 import { Button } from "../ui/button";
-import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
+import { EditIcon, ArrowUpDown } from "lucide-react";
 import { Difficulty, Question } from "../../types/QuestionTypes";
+import { useNavigate } from "react-router-dom";
 
-export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isEditable => [
+const navigate = useNavigate()
+
+export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "title",
     header: ({ column }) => {
@@ -35,16 +38,28 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
     },
   },
   {
+    accessorKey: "category",
+    header: "Category",
+    cell: ({ row }) => {
+      const difficulty = row.getValue("difficulty") as Difficulty;
+      return (
+        <TypographySmall className={`${getDifficultyColor(difficulty)}`}>
+          {difficulty}
+        </TypographySmall>
+      );
+    },
+  },
+  {
     accessorKey: "id",
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
-      const questionId = row.original.id;
+      const questionId = row.index;
       return (
         <div className="flex gap-2 justify-between">
-          {isEditable &&
+          {
             <Button variant="secondary" size="icon" className="h-8 w-8" onClick={() => {
-              window.location.href = `${questionId}/edit`;
+              navigate(`edit/${questionId}`);
             }}>
               <EditIcon size={20} />
             </Button>}
@@ -56,8 +71,7 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
               window.location.href = `${questionId}`;
             }}
           >
-            Practice
-            <PlayIcon size={20} />
+            View
           </Button>
         </div>
       );

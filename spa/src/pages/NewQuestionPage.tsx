@@ -9,11 +9,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import QuestionsForm, { formSchema } from "../components/questions/form";
 import { useState } from "react";
+import { useLocalStorage, useReadLocalStorage } from 'usehooks-ts'
+import { Question } from "../../types/QuestionTypes";
+import { useNavigate } from "react-router-dom";
+
 
 
 export default function NewQuestion() {
-
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const questions = useReadLocalStorage('questions') ?? []
+  const [, setNewQuestions] = useLocalStorage('questions', questions)
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -24,9 +31,12 @@ export default function NewQuestion() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(newQuestion: z.infer<typeof formSchema>) {
     setLoading(true);
+    console.log(questions)
+    setNewQuestions((prevQuestions: Array<Question>) => [...prevQuestions, newQuestion])
     setLoading(false);
+    navigate("/");
   }
 
   return (

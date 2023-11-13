@@ -5,13 +5,15 @@ import {
 } from "../components/ui/typography";
 import { Link } from "react-router-dom"
 import { Button } from "../components/ui/button";
-import { getColumnDefs } from "../components/questions/columns";
+import { columns } from "../components/questions/columns";
 import { DataTable } from "../components/questions/data-table";
 import { PlusIcon } from "lucide-react";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useReadLocalStorage } from "usehooks-ts";
+import { Question } from "../../types/QuestionTypes";
 
 export default function AllQuestionsPage() {
-  const queryClientAll = new QueryClient();
+  const questions = useReadLocalStorage('questions') ?? []
+
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
@@ -34,9 +36,7 @@ export default function AllQuestionsPage() {
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
-        <QueryClientProvider client={queryClientAll}>
-          <DataTable columns={getColumnDefs(true)} />
-        </QueryClientProvider>
+        <DataTable columns={columns} data={questions as Array<Question>}/>
       </div>
     </div>
   );
