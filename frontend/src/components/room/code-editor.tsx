@@ -175,17 +175,6 @@ export default function CodeEditor({
             </Command>
           </PopoverContent>
         </Popover>
-        <div className="flex flex-row gap-2 justify-end">
-          <Button variant="secondary" size="icon">
-            <Undo />
-          </Button>
-          <Button variant="secondary" size="icon">
-            <Redo />
-          </Button>
-          <Button variant="secondary" size="icon">
-            <Settings />
-          </Button>
-        </div>
       </div>
       <Editor
         key={frameWork}
@@ -211,7 +200,7 @@ export default function CodeEditor({
                 onClick={() => handleOnSubmitClick(false)}
                 disabled={isSubmitting}
               >
-                Submit as unsolved
+                Submit as Unsolved
               </Button>
               <Button
                 size={"sm"}
