@@ -84,6 +84,7 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       router.route !== "/interviews/find-match"
     ) {
       router.push(`/`);
+      leaveMatch(); // So that we won't always be redirected.
     }
   }, [match]);
 
