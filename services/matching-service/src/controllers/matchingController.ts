@@ -123,6 +123,8 @@ export function handleLooking(
       return;
     }
 
+    console.log(`User ${userId} is looking for a match with difficulties ${difficulties} and language ${programmingLang}. Initial state of queue: `, await prisma.waitingUser.findMany());
+
     let { newMatch: foundMatch, matchingUser } = await prisma.$transaction(
       async (tx) => {
         const matchingUser = await tx.waitingUser.findFirst({
@@ -181,8 +183,7 @@ export function handleLooking(
     );
 
     if (!foundMatch) {
-      console.log(`Queued user ${userId}.`);
-      console.log("In queue:", await prisma.waitingUser.findMany());
+      console.log(`No match found yet. Queued user ${userId}. Current queue: `, await prisma.waitingUser.findMany());
       return;
     }
 
@@ -201,10 +202,10 @@ export function handleLooking(
     console.log(
       `Match found for user ${userId} with user ${
         foundMatch.userId1 === userId ? foundMatch.userId2 : foundMatch.userId1
-      } and difficulty ${foundMatch.chosenDifficulty}`
+      }, difficulty ${foundMatch.chosenDifficulty} and language ${foundMatch.chosenProgrammingLanguage}.
+      Current queue: `,
+      await prisma.waitingUser.findMany()
     );
-
-    console.log("In queue:", await prisma.waitingUser.findMany());
 
     // Inform both users of the match
     socket.emit("matchFound", foundMatch);
@@ -214,13 +215,12 @@ export function handleLooking(
 
 export function handleCancelLooking(userId: string): () => Promise<void> {
   return async () => {
-    console.log(`User ${userId} is no longer looking for a match`);
-    console.log("In queue:", await prisma.waitingUser.findMany());
     await prisma.waitingUser.deleteMany({
       where: {
         userId: userId,
       },
     });
+    console.log(`User ${userId} is no longer looking for a match. In queue now: `, await prisma.waitingUser.findMany());
   };
 }
 
