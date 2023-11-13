@@ -35,8 +35,7 @@ your services / frontend.
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
-│   ├── /docker
-│   └── /kubernetes
+│   └── /prod-dockerfiles (Images can be used with either dev or prod environments)
 ├── .env (not in git)
 ├── .env.firebase_emulators_test (not in git)
 └── README.md (and other root-level files & docs)
