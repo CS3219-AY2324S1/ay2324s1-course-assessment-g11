@@ -95,6 +95,7 @@ export default function QuestionsForm({
                 <Textarea
                   placeholder="Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."
                   className="resize-none"
+                  rows={10}
                   {...field}
                 />
               </FormControl>

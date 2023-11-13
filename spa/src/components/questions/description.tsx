@@ -31,7 +31,7 @@ export default function Description({
         </div>
       </div>
       <div className="flex gap-2">
-        <TypographySmall>Category: {question.category}</TypographySmall>
+        <TypographySmall>This question will help you practice: <span className="text-secondary">{question.category}</span></TypographySmall>
       </div>
       <div className="my-6 p-6 bg-accent rounded">
         <TypographySmall>

@@ -12,7 +12,7 @@ export default function ViewQuestionPage() {
   const params = useParams<{ questionId: string }>();
   const questionIndex: number = parseInt(params.questionId ?? '');
   const questions = useReadLocalStorage<Array<Question>>('questions') ?? []
-  const [question, setQuestion] = useState<Question | null>(questions[questionIndex] ?? null);
+  const [question] = useState<Question | null>(questions[questionIndex] ?? null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

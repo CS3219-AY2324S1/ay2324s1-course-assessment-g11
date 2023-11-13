@@ -1,6 +1,6 @@
 import { TypographyH2 } from "../components/ui/typography";
 import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,10 +8,17 @@ import QuestionsForm, { formSchema } from "../components/questions/form";
 import { useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
 import { useParams } from "react-router-dom";
+import { useReadLocalStorage, useLocalStorage } from "usehooks-ts";
+import { Question } from "../../types/QuestionTypes";
 
 
 export default function EditQuestionPage() {
-  const questionId = useParams<{ questionId: string }>().questionId;
+  const navigate = useNavigate();
+  const params = useParams<{ questionId: string }>();
+  const questionIndex: number = parseInt(params.questionId ?? '');
+  const questions = useReadLocalStorage<Array<Question>>('questions') ?? []
+  const [, setNewQuestions] = useLocalStorage('questions', questions)
+  const [question] = useState<Question | null>(questions[questionIndex] ?? null);
   const [loading, setLoading] = useState(true);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -25,29 +32,20 @@ export default function EditQuestionPage() {
   });
 
   useEffect(() => {
-    const question = {
-      title: "Two Sum",
-      difficulty: "easy",
-      description: "Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.",
-      category: "Array",
-    };
 
     if (question) {
       form.setValue("title", question.title);
       form.setValue("difficulty", question.difficulty as any);
       form.setValue("description", question.description);
-    } else {
-      // if question is not found, redirect to home
-
-    }
+      form.setValue("category", question.category);
+    } 
 
     setLoading(false);
-  }, [questionId]);
+  }, [questionIndex]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    console.log("Submitting", values)
-    // putQuestion(values, questionId as string)
+    putQuestion(values, questionIndex as number)
     setLoading(false);
     alert("Success");
   }
@@ -57,18 +55,37 @@ export default function EditQuestionPage() {
     event.stopPropagation();
     if (confirm("Are you sure you want to delete this question?")) {
       setLoading(true);
-      // deleteQuestion(questionId as string)
+      deleteQuestion(questionIndex)
       setLoading(false);
+      navigate("/");
       alert("Successfully deleted question");
     }
   }
 
-  if (!questionId) {
+  function putQuestion(question: z.infer<typeof formSchema>, questionIndex: number) {
+    const newQuestions = questions.map((q, index) => {
+      if (index === questionIndex) {
+        return {
+          ...question,
+          id: String(questionIndex),
+        } as Question
+      }
+      return q
+    });
+    setNewQuestions(newQuestions);
+  }
+
+  function deleteQuestion(questionIndex: number) {
+    const newQuestions = questions.filter((question, index) => index !== questionIndex);
+    setNewQuestions(newQuestions);
+  }
+
+  if (!question) {
     return <div className="flex items-center justify-center h-screen">Question not found</div>;
   }
 
   return (
-    questionId &&
+    question &&
     <div className="min-h-screen p-12 mx-auto max-w-3xl">
       <div className="flex gap-x-4 items-center">
         <Link to="/">

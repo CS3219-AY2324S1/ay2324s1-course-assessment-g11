@@ -46,9 +46,10 @@ export const columns: ColumnDef<Question>[] = [
       return (
         <div className="flex gap-2 justify-between">
           {
-            <Button variant="secondary" size="icon" className="h-8 w-8" onClick={() => {
+            <Button variant="secondary" className="h-8 gap-2" onClick={() => {
               navigate(`edit/${questionId}`);
             }}>
+              Edit/Delete
               <EditIcon size={20} />
             </Button>}
           <Button
