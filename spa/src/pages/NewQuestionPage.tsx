@@ -43,7 +43,7 @@ export default function NewQuestion() {
 
   function isQuestionDuplicate(newQuestion: z.infer<typeof formSchema>) {
     return (questions as Array<Question>).findIndex((question: Question) => {
-      return question.title === newQuestion.title;
+      return question.title.toLowerCase() === newQuestion.title.toLowerCase();
     }) !== -1;
   }
 

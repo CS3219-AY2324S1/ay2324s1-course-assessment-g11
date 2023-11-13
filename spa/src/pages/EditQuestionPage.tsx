@@ -43,6 +43,10 @@ export default function EditQuestionPage() {
   }, [questionIndex]);
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    if (isQuestionDuplicate(values)) {
+      alert("Question with this title already exists");
+      return;
+    }
     setLoading(true);
     putQuestion(values, questionIndex as number)
     setLoading(false);
@@ -59,6 +63,12 @@ export default function EditQuestionPage() {
       navigate("/");
       alert("Successfully deleted question");
     }
+  }
+
+  function isQuestionDuplicate(newQuestion: z.infer<typeof formSchema>) {
+    return (questions as Array<Question>).findIndex((question: Question) => {
+      return question.title.toLowerCase() === newQuestion.title.toLowerCase();
+    }) !== -1;
   }
 
   function putQuestion(question: z.infer<typeof formSchema>, questionIndex: number) {
