@@ -27,6 +27,7 @@ spec:
             - name: PORT
               value: "5004"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/question-service:latest
+          imagePullPolicy: Always
           name: question-service
           ports:
             - containerPort: 5004

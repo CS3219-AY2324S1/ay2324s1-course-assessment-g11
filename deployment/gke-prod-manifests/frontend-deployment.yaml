@@ -19,6 +19,7 @@ spec:
     spec:
       containers:
         - image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/frontend:latest
+          imagePullPolicy: Always
           name: frontend
           ports:
             - containerPort: 3000
