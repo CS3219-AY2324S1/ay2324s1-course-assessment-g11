@@ -190,7 +190,7 @@ export default function CodeEditor({
       <Editor
         key={frameWork}
         height={height}
-        defaultLanguage={frameWork}
+        defaultLanguage={frameWork === "c++" ? "cpp" : frameWork}
         defaultValue={defaultValue}
         value={text}
         theme={theme}
