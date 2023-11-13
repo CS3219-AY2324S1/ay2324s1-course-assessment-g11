@@ -1,5 +1,5 @@
 import util from "util";
-import express from "express";
+import express, { Response } from "express";
 import sanitizeHtml from "sanitize-html";
 import { MongoClient, ObjectId, ServerApiVersion } from "mongodb";
 import { NewQuestion, isDifficulty } from "../models/new_question.model";
@@ -285,9 +285,14 @@ router.delete("/question/:id", async (req, res, next) => {
   }
 });
 
+/**
+ * Deprecated: Use GET /random-question instead, with query params:
+ * - difficulty: string
+ * - topics: string separated by commas
+ */
 router.post("/random-question", async (req, res, next) => {
   /**
-   * #swagger.description = 'Get a random question.'
+   * #swagger.description = 'Get a random question. Deprecated: Use GET /random-question instead, with query params: difficulty: string, topics: string separated by commas'
    * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }
    * #swagger.parameters['topics'] = { description: 'Array of topics of the question to choose.', type: 'array' }
    */
@@ -297,6 +302,25 @@ router.post("/random-question", async (req, res, next) => {
   }
   let difficulty = req.body.difficulty;
   let topics = req.body.topics ?? [];
+  await getRandomQuestion(topics, difficulty, res);
+});
+
+router.get("/random-question", async (req, res, next) => {
+  /**
+   * #swagger.description = 'Get a random question.'
+   * #swagger.parameters['difficulty'] = { description: 'Difficulty of the question.', type: 'string' }
+   * #swagger.parameters['topics'] = { description: 'Topics of the question to choose, separated by commas', type: 'string' }
+   */
+  if (!isDifficulty(req.query.difficulty as string)) {
+    res.status(400).send("Invalid difficulty");
+    return;
+  }
+  let difficulty = req.query.difficulty as string;
+  let topics = req.query.topics ? (req.query.topics as string).split(",") : [];
+  await getRandomQuestion(topics, difficulty, res);
+});
+
+async function getRandomQuestion(topics: string[], difficulty: string, res: Response) {
   try {
     let db = mongoClient.db("question_db");
     let collection = db.collection<Question>("questions");
@@ -319,4 +343,4 @@ router.post("/random-question", async (req, res, next) => {
     );
     res.status(500).send("Failed to get random question");
   }
-});
+}

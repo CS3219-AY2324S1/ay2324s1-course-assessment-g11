@@ -21,7 +21,8 @@ export default function Page() {
   const [loadingState, setLoadingState] = useState<"loading" | "error" | "success">("loading");
 
   useEffect(() => {
-    if (attemptId === undefined || Array.isArray(attemptId)) {
+    if (!attemptId) return;
+    if (Array.isArray(attemptId)) {
       router.push("/profile");
       return;
     }

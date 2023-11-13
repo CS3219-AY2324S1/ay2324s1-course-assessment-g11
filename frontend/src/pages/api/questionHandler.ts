@@ -10,12 +10,14 @@ export const fetchRandomQuestion = async (
   topics: string[] = []
 ) => {
   try {
-    const url = `${questionApiPathAddress}random-question`;
+    const url = `${questionApiPathAddress}random-question?`;
     const idToken = await user.getIdToken(true);
 
-    const response = await fetch(url, {
-      method: "POST",
-      body: JSON.stringify({ difficulty, topics }),
+    const response = await fetch(url + new URLSearchParams({
+      difficulty: difficulty === "any" ? ["easy", "medium", "hard"][Math.floor(Math.random()*3)] : difficulty,
+      topics: topics.join(",")
+    }), {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,

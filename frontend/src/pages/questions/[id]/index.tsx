@@ -10,6 +10,7 @@ import { fetchQuestion } from "../../api/questionHandler";
 import { MrMiyagi } from "@uiball/loaders";
 import { useHistory } from "@/hooks/useHistory";
 import Solution from "@/components/room/solution";
+import { useUser } from "@/hooks/useUser";
 
 export default function Questions() {
   const router = useRouter();
@@ -22,6 +23,10 @@ export default function Questions() {
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
   useEffect(() => {
+    if (!authIsReady || !questionId) {
+      console.log("auth not ready or questionId not found");
+      return;
+    }
     if (currentUser) {
       fetchQuestion(currentUser, questionId)
         .then((question) => {
@@ -43,12 +48,12 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  function onSubmitClick(value: string) {
+  function onSubmitClick(value: string, solved: boolean) {
     postAttempt({
       uid: currentUser ? currentUser.uid : "user",
       question_id: questionId,
       answer: value || answer,
-      solved: true, // assume true
+      solved: solved, // assume true
     })
       .catch((err: any) => {
         console.log(err);
@@ -94,6 +99,7 @@ export default function Questions() {
           </Tabs>
           <div className="flex-1">
             <CodeEditor
+              language="python"
               defaultValue={question.defaultCode.python}
               onChange={setAnswer}
               text={answer}

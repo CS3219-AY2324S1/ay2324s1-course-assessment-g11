@@ -7,6 +7,7 @@ import {
   handleDisconnect,
   handleJoinRoom,
   handleLooking,
+  handleChangeQuestion,
 } from "./controllers/matchingController";
 import { handleCancelLooking } from "./controllers/matchingController";
 import { handleLeaveMatch } from "./controllers/matchingController";
@@ -56,6 +57,8 @@ io.on("connection", async (socket) => {
   socket.on("sendMessage", handleSendMessage(userId, socket));
 
   socket.on("joinRoom", handleJoinRoom(userId, socket));
+
+  socket.on("changeQuestion", handleChangeQuestion(userId, socket, io));
 
 });
 

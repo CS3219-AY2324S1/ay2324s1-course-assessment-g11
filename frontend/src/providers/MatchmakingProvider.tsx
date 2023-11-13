@@ -14,6 +14,11 @@ import { toast } from "react-toastify";
 
 const SERVER_URL = wsMatchProxyGatewayAddress;
 
+interface RequestToChangeQuestion {
+  questionTitle: string,
+  cb: (x: boolean) => void,
+}
+
 interface MatchmakingContextValue {
   socket: Socket | null;
   match: Match | null;
@@ -23,6 +28,9 @@ interface MatchmakingContextValue {
   sendMessage: (message: string) => void;
   leaveMatch: () => void;
   cancelLooking: () => void;
+  changeQuestion: (questionId: string, questionTitle: string, roomId: string) => void;
+  requestToChangeQuestion: RequestToChangeQuestion | null;
+  setRequestToChangeQuestion: React.Dispatch<React.SetStateAction<RequestToChangeQuestion | null>>;
 }
 
 export const MatchmakingContext = createContext<
@@ -37,9 +45,11 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
   children,
 }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
+  // undefined if is loading, null if not in a match, otherwise Match
   const [match, setMatch] = useState<Match | null>(null);
   const [message, setMessage] = useState<string>("");
   const [error, setError] = useState<string>("");
+  const [requestToChangeQuestion, setRequestToChangeQuestion] = useState<RequestToChangeQuestion | null>(null);
 
   const { user: currentUser, authIsReady } = useContext(AuthContext);
   const router = useRouter();
@@ -61,16 +71,21 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
             "User-Id-Token": token,
           },
         });
-        setSocket(newSocket);
+        setSocket((oldSocket) => {
+          if (oldSocket) {
+            oldSocket.close();
+          }
+          return newSocket;
+        });
         newSocket.connect();
 
         console.log("Socket connected");
-
-        return () => {
-          newSocket.close();
-        };
       });
     }
+    return () => {
+      console.log("Socket disconnected");
+      socket?.close();
+    };
   }, [currentUser]);
 
   useEffect(() => {
@@ -81,7 +96,8 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     if (
       match &&
       router.route !== "/interviews/match-found" &&
-      router.route !== "/interviews/find-match"
+      router.route !== "/interviews/find-match" &&
+      router.route !== "/room/${match?.roomId}"
     ) {
       router.push(`/room/${match?.roomId}`);
     }
@@ -120,6 +136,23 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       console.log("Disconnected from server");
     });
 
+    socket.on("changeQuestion", (questionTitle: string, cb: (x: boolean) => void) => {
+      setRequestToChangeQuestion({questionTitle, cb});
+    });
+
+    socket.on("questionChanged", (questionId: string) => {
+      toast.info("Question is changed");
+      setMatch((prevMatch) => {
+        if (prevMatch) {
+          return {
+            ...prevMatch,
+            questionId: questionId,
+          };
+        }
+        return prevMatch;
+      });
+    });
+
     return () => {
       socket.off("connect");
       socket.off("matchFound");
@@ -127,6 +160,8 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
       socket.off("receiveMessage");
       socket.off("error");
       socket.off("disconnect");
+      socket.off("changeQuestion");
+      socket.off("questionChanged");
     };
   }, [socket]);
 
@@ -160,7 +195,13 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     socket.emit("cancelLooking");
   }, [socket]);
 
-  const value = {
+  const changeQuestion = useCallback((questionId: string, questionTitle: string, roomId: string) => {
+    if (!socket) return;
+
+    socket.emit("changeQuestion", questionId, questionTitle, roomId);
+  }, [socket]);
+
+  const value: MatchmakingContextValue = {
     socket,
     match,
     message,
@@ -169,6 +210,9 @@ export const MatchmakingProvider: React.FC<MatchmakingProviderProps> = ({
     sendMessage,
     leaveMatch,
     cancelLooking,
+    changeQuestion,
+    requestToChangeQuestion,
+    setRequestToChangeQuestion
   };
 
   return (

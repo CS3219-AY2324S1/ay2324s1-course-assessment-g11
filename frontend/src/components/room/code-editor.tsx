@@ -37,7 +37,7 @@ type CodeEditorProps = {
   onChange: React.Dispatch<React.SetStateAction<string>>;
   onCursorChange?: React.Dispatch<React.SetStateAction<number>>;
   hasRoom?: boolean;
-  onSubmitClick?: (param: string) => void;
+  onSubmitClick?: (param: string, solved: boolean) => void;
   onLeaveRoomClick?: () => void;
 };
 
@@ -72,6 +72,7 @@ export default function CodeEditor({
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
+  const [frameWork, setFrameWork] = React.useState(language); // default to python
   const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const [monacoInstance, setMonacoInstance] =
@@ -114,13 +115,13 @@ export default function CodeEditor({
     [onChange, onCursorChange, monacoInstance]
   );
 
-  const handleOnSubmitClick = async () => {
+  const handleOnSubmitClick = async (solved: boolean) => {
     if (isSubmitting) {
       return; // Do nothing if a submission is already in progress.
     }
     setIsSubmitting(true);
     try {
-      onSubmitClick(monacoInstance?.getValue() ?? value);
+      onSubmitClick(monacoInstance?.getValue() ?? value, solved);
     } catch (error) {
       console.log(error);
     }
@@ -137,8 +138,8 @@ export default function CodeEditor({
               aria-expanded={open}
               className="w-[240px] justify-between"
             >
-              {value
-                ? languages.find((framework) => framework.value === value)
+              {frameWork
+                ? languages.find((framework) => framework.value === frameWork)
                     ?.label
                 : "Select framework..."}
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -153,14 +154,18 @@ export default function CodeEditor({
                   <CommandItem
                     key={framework.value}
                     onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
+                      setFrameWork(
+                        currentValue === frameWork ? "" : currentValue
+                      );
                       setOpen(false);
                     }}
                   >
                     <Check
                       className={cn(
                         "mr-2 h-4 w-4",
-                        value === framework.value ? "opacity-100" : "opacity-0"
+                        frameWork === framework.value
+                          ? "opacity-100"
+                          : "opacity-0"
                       )}
                     />
                     {framework.label}
@@ -183,8 +188,9 @@ export default function CodeEditor({
         </div>
       </div>
       <Editor
+        key={frameWork}
         height={height}
-        defaultLanguage={language}
+        defaultLanguage={frameWork}
         defaultValue={defaultValue}
         value={text}
         theme={theme}
@@ -198,14 +204,24 @@ export default function CodeEditor({
               Leave Room
             </Button>
           ) : (
-            <Button
-              size={"sm"}
-              variant="default"
-              onClick={handleOnSubmitClick}
-              disabled={isSubmitting}
-            >
-              Submit
-            </Button>
+            <div className="flex flex-row space-x-4">
+              <Button
+                size={"sm"}
+                variant="secondary"
+                onClick={() => handleOnSubmitClick(false)}
+                disabled={isSubmitting}
+              >
+                Submit as unsolved
+              </Button>
+              <Button
+                size={"sm"}
+                variant="default"
+                onClick={() => handleOnSubmitClick(true)}
+                disabled={isSubmitting}
+              >
+                Submit as Solved
+              </Button>
+            </div>
           )}
         </div>
       </Card>
