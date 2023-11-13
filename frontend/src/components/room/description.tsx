@@ -34,7 +34,7 @@ export default function Description({
       <div className="flex flex-row items-center justify-between py-2">
         <div className="flex items-center justify-center">
           <TypographyH2 className="w-fit">{question.title}</TypographyH2>
-          <Badge variant="secondary" className="h-min">
+          <Badge variant="secondary" className="h-min ml-2">
             <TypographySmall className={getDifficultyColor(question.difficulty as Difficulty)}>
               {question.difficulty}
             </TypographySmall>

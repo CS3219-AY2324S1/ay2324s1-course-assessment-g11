@@ -84,7 +84,7 @@ export default function Page() {
       <div>
         <Label className="text-primary">Solution</Label>
         <TypographyBody>{attempt?.solved ? "Solved": "Unsolved"}</TypographyBody>
-        <Textarea disabled={true} className="my-4" defaultValue={attempt?.answer || ""}>
+        <Textarea disabled={true} className="my-4" rows={10} defaultValue={attempt?.answer || ""}>
         </Textarea>
       </div></>}
     </div> 
