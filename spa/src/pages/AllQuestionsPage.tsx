@@ -11,9 +11,9 @@ import { PlusIcon } from "lucide-react";
 import { useReadLocalStorage } from "usehooks-ts";
 import { Question } from "../../types/QuestionTypes";
 
+
 export default function AllQuestionsPage() {
   const questions = useReadLocalStorage('questions') ?? []
-
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">

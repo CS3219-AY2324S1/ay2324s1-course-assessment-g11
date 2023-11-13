@@ -4,17 +4,21 @@ import { TypographyBody } from "../components/ui/typography";
 import { useEffect, useState } from "react";
 import { Question } from "../types/QuestionTypes";
 import { MrMiyagi } from "@uiball/loaders";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import useReadLocalStorage from "usehooks-ts/dist/esm/useReadLocalStorage/useReadLocalStorage";
+import { ChevronLeft } from "lucide-react";
 
 export default function ViewQuestionPage() {
-  const questionId = useParams<{ questionId: string }>().questionId;
-  const [question, setQuestion] = useState<Question | null>(null);
+  const params = useParams<{ questionId: string }>();
+  const questionIndex: number = parseInt(params.questionId ?? '');
+  const questions = useReadLocalStorage<Array<Question>>('questions') ?? []
+  const [question, setQuestion] = useState<Question | null>(questions[questionIndex] ?? null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setQuestion(question);
+    console.log(questions, params)
     setLoading(false);
-  }, [questionId]);
+  }, [questionIndex]);
 
   if (question === null && !loading) {
     return <div className="flex items-center justify-center h-screen">Question not found</div>;
@@ -28,6 +32,9 @@ export default function ViewQuestionPage() {
         </div>
       ) : (
         <div className="flex h-full">
+          <Link to="/">
+            <ChevronLeft className="w-6 h-6 mt-2" />
+          </Link>
           <Tabs defaultValue="description" className="flex-1">
             <TabsList>
               <TabsTrigger value="description">
@@ -38,7 +45,6 @@ export default function ViewQuestionPage() {
               <Description
                 question={question}
                 className="h-full"
-                hasRoom={false}
               />
             </TabsContent>
           </Tabs>

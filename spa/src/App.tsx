@@ -9,14 +9,10 @@ function App() {
   return (
     <div className="dark bg-background text-foreground border-border">
       <Routes>
-        <Route path="/" element={AllQuestionsPage()} />
-        <Route path="/new" element={NewQuestionPage()} />
-        <Route path="/edit">
-          <Route path=":questionId" element={EditQuestionPage()} />
-        </Route>
-        <Route path="/view">
-          <Route path=":questionId" element={ViewQuestionPage()} />
-        </Route>
+        <Route path="/" element={<AllQuestionsPage />} />
+        <Route path="/new" element={<NewQuestionPage />} />
+        <Route path="/edit/:questionId" element={<EditQuestionPage />} />
+        <Route path="/view/:questionId" element={<ViewQuestionPage />} />
       </Routes>
     </div>
   );

@@ -14,7 +14,6 @@ import { Question } from "../../types/QuestionTypes";
 import { useNavigate } from "react-router-dom";
 
 
-
 export default function NewQuestion() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

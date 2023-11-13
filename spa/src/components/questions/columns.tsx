@@ -8,19 +8,7 @@ import { useNavigate } from "react-router-dom";
 export const columns: ColumnDef<Question>[] = [
   {
     accessorKey: "title",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="pl-0"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Title
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
+    header: "Title",
     enableHiding: false,
   },
   {
@@ -39,10 +27,10 @@ export const columns: ColumnDef<Question>[] = [
     accessorKey: "category",
     header: "Category",
     cell: ({ row }) => {
-      const difficulty = row.getValue("difficulty") as Difficulty;
+      const category = row.getValue("category") as String;
       return (
-        <TypographySmall className={`${getDifficultyColor(difficulty)}`}>
-          {difficulty}
+        <TypographySmall>
+          {category}
         </TypographySmall>
       );
     },
@@ -80,7 +68,7 @@ export const columns: ColumnDef<Question>[] = [
   },
 ];
 
-const getDifficultyColor = (difficulty: Difficulty) => {
+export const getDifficultyColor = (difficulty: Difficulty) => {
   switch (difficulty) {
     case "easy":
       return "text-green-500";
