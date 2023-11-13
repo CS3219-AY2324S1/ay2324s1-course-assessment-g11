@@ -2,7 +2,7 @@
 FROM peerprep-base:latest
 
 # Copy utils
-COPY utils /app/utils/
+# COPY utils /app/utils/
 
 # Set working directory for frontend
 WORKDIR /app/frontend
