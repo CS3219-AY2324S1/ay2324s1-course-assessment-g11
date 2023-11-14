@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useReducer } from "react";
 import * as z from "zod";
 import { UseFormReturn } from "react-hook-form";
+import { Editor } from "@monaco-editor/react";
 
 export const formSchema = z.object({
   title: z.string().min(2).max(100),
@@ -178,12 +179,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Question Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                />
+                <Editor height="50vh" defaultLanguage="markdown" theme="vs-dark" options={{wordWrap: "on"}} defaultValue={"Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -230,14 +229,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Default C++ Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  defaultValue={defaultCodes["c++"]}
-                  value={field.value}
-                />
+                <Editor height="50vh" defaultLanguage="cpp" theme="vs-dark" defaultValue={defaultCodes["c++"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -250,14 +245,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Default Java Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  defaultValue={defaultCodes["java"]}
-                  value={field.value}
-                />
+                <Editor height="50vh" defaultLanguage="java" theme="vs-dark" defaultValue={defaultCodes["java"]} value={field.value} onChange={(e) => {
+                    field.onChange(e);
+                    forceUpdate();
+                  }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -270,14 +261,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Default Python Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  defaultValue={defaultCodes["python"]}
-                  value={field.value}
-                />
+              <Editor height="50vh" defaultLanguage="python" theme="vs-dark" defaultValue={defaultCodes["python"]} value={field.value} onChange={(e) => {
+                    field.onChange(e);
+                    forceUpdate();
+                  }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -290,13 +277,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Solution Python Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  value={field.value}
-                />
+                <Editor height="50vh" defaultLanguage="python" theme="vs-dark" defaultValue={defaultCodes["python"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
