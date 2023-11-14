@@ -178,6 +178,7 @@ export default function QuestionsForm({
                 <Textarea
                   placeholder="Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."
                   className="resize-none"
+                  rows={10}
                   {...field}
                 />
               </FormControl>
@@ -229,6 +230,7 @@ export default function QuestionsForm({
                 <Textarea
                   placeholder="Write your code here."
                   className="resize-none"
+                  rows={10}
                   {...field}
                   value={field.value || defaultCodes["c++"]}
                 />
@@ -247,6 +249,7 @@ export default function QuestionsForm({
                 <Textarea
                   placeholder="Write your code here."
                   className="resize-none"
+                  rows={10}
                   {...field}
                   value={field.value || defaultCodes["java"]}
                 />
@@ -265,6 +268,7 @@ export default function QuestionsForm({
                 <Textarea
                   placeholder="Write your code here."
                   className="resize-none"
+                  rows={10}
                   {...field}
                   value={field.value || defaultCodes["python"]}
                 />
