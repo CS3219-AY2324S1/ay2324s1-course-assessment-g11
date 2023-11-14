@@ -49,9 +49,6 @@ your services / frontend.
  MONGO_ATLAS_URL=<redacted>
  FIREBASE_SERVICE_ACCOUNT=<redacted>
  NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
- TWILIO_ACCOUNT_SID=<redacted>
- TWILIO_API_KEY=<redacted>
- TWILIO_API_SECRET=<redacted>
  `
    Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
    The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
@@ -122,7 +119,7 @@ it in case you forget later on when you have a lot more files to commit.
 8. **Running everything at once:** To run everything at once and still maintain the ability to hot-reload your changes, use:
 
    ```bash
-   ./start-app-no-docker.sh # on mac /linus
+   ./start-app-no-docker.sh # on mac /linux
 
    # You can also use the above command on Windows with Git Bash
 
@@ -163,7 +160,7 @@ This will stop and delete all the containers.
 **Run the start-app-with-docker.sh script:** From the root repo, run
 
 ```bash
-./start-app-with-docker.sh # on mac / linus
+./start-app-with-docker.sh # on mac / linux
 
 # You can also use the above command on Windows with Git Bash
 ```
