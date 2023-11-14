@@ -39,6 +39,7 @@ type CodeEditorProps = {
   hasRoom?: boolean;
   onSubmitClick?: (param: string, solved: boolean) => void;
   onLeaveRoomClick?: () => void;
+  onLanguageChange?: (param: string) => void;
 };
 
 export const languages = [
@@ -69,6 +70,7 @@ export default function CodeEditor({
   hasRoom = true,
   onSubmitClick = () => {},
   onLeaveRoomClick = () => {},
+  onLanguageChange,
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -82,6 +84,8 @@ export default function CodeEditor({
     setMonacoInstance(editorL);
   };
 
+  const [previousText, setPreviousText] = React.useState(text);
+
   const setCursorPosition = React.useCallback(
     (cursor: number) => {
       if (!monacoInstance) return;
@@ -92,11 +96,33 @@ export default function CodeEditor({
     [monacoInstance]
   );
 
+  const updateCursorPosition = (prevText: any, newText: any) => {
+    if (!monacoInstance) return;
+    if (!cursor) return;
+    if (prevText.slice(0, cursor) !== newText.slice(0, cursor)) {
+      return true;
+    }
+    return false;
+  };
+
   React.useEffect(() => {
     if (cursor !== undefined) {
-      setCursorPosition(cursor);
+      console.log(cursor);
+      if (updateCursorPosition(previousText, text)) {
+        setCursorPosition(cursor + 1);
+      } else {
+        setCursorPosition(cursor);
+      }
     }
-  }, [cursor, setCursorPosition]);
+
+    monacoInstance?.onDidChangeCursorPosition((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
+  }, [text, cursor, setCursorPosition, monacoInstance, onCursorChange]);
 
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
@@ -111,6 +137,7 @@ export default function CodeEditor({
         onCursorChange(cursor);
       }
       onChange(value);
+      setPreviousText(value);
     },
     [onChange, onCursorChange, monacoInstance]
   );
@@ -157,6 +184,11 @@ export default function CodeEditor({
                       setFrameWork(
                         currentValue === frameWork ? "" : currentValue
                       );
+                      if (onLanguageChange) {
+                        onLanguageChange(
+                          currentValue === frameWork ? "" : currentValue
+                        );
+                      }
                       setOpen(false);
                     }}
                   >

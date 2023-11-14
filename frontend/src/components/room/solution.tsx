@@ -28,7 +28,7 @@ export default function Solution({
       <div className="pb-6 w-[43vw]">
         <TypographySmall>
           <SyntaxHighlighter language="python" style={vscDarkPlus} showLineNumbers wrapLines>
-            { question.solution ? question.solution : `# Sample solution code to demo syntax highlighting.
+            { question.solution?.python ? question.solution.python : `# Sample solution code to demo syntax highlighting.
 import sys
 class Solution(object):
     def isValidBST(self, root):

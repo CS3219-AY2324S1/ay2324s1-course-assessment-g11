@@ -110,6 +110,7 @@ const useCollaboration = ({
               setRoom(room);
             })
             .catch((err) => {
+              toast.error("An error occured when starting video: " + (err as Error).message);
               console.log(err, token, userId, roomId);
             });
         });
