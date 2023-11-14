@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { TypographyBody, TypographyCode, TypographyH2 } from "@/components/ui/typography";
+import { TypographyBody, TypographyH2 } from "@/components/ui/typography";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
@@ -10,6 +9,7 @@ import { useHistory } from "@/hooks/useHistory";
 import { useQuestions } from "@/hooks/useQuestions";
 import { Question } from "@/types/QuestionTypes";
 import { DotWave } from "@uiball/loaders";
+import { Editor } from "@monaco-editor/react";
 
 export default function Page() {
   const router = useRouter();
@@ -84,8 +84,7 @@ export default function Page() {
       <div>
         <Label className="text-primary">Solution</Label>
         <TypographyBody>{attempt?.solved ? "Solved": "Unsolved"}</TypographyBody>
-        <Textarea disabled={true} className="my-4" rows={10} defaultValue={attempt?.answer || ""}>
-        </Textarea>
+        <Editor className="my-4" height="50vh" defaultLanguage="plaintext" defaultValue={attempt?.answer || ""} options={{readOnly: true}} theme="vs-dark" />
       </div></>}
     </div> 
   )
