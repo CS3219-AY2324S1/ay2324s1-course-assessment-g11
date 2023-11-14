@@ -185,7 +185,7 @@ export default function Interviews() {
         </div>
         <div className="flex-col flex gap-4">
           <TypographyH2 className="text-primary">Leaderboard</TypographyH2>
-          <DataTable columns={columns} data={leaderboardData} />
+          <DataTable columns={columns} data={leaderboardData.slice(0, 10)} />
           <div></div>
         </div>
       </div>
