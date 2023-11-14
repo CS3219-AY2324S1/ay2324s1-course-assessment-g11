@@ -1,3 +1,4 @@
+import { count } from "console";
 import prismaClient from "./prismaClient";
 
 const userDatabaseFunctions = {
@@ -126,10 +127,13 @@ const userDatabaseFunctions = {
     }
   },
 
-  async setMatchPreferenceOfUser(uid: string, data: {
-    matchDifficulty: string;
-    matchProgrammingLanguage: string;
-  }) {
+  async setMatchPreferenceOfUser(
+    uid: string,
+    data: {
+      matchDifficulty: string;
+      matchProgrammingLanguage: string;
+    }
+  ) {
     try {
       const updatedResult = await prismaClient.appUser.update({
         where: {
@@ -145,7 +149,39 @@ const userDatabaseFunctions = {
       console.error(`Error setting match preference: ${error.message}`);
       throw error;
     }
-  }
+  },
+
+  async getLeaderboard() {
+    try {
+      const leaderboard = await prismaClient.appUser.findMany({
+        select: {
+          uid: true,
+          displayName: true,
+          photoUrl: true,
+          _count: {
+            select: {
+              attempts: true,
+            },
+          },
+        },
+        orderBy: {
+          attempts: { _count: "desc" },
+        },
+        take: 20,
+      });
+      return leaderboard.map((user) => {
+        return {
+          uid: user.uid,
+          displayName: user.displayName,
+          photoUrl: user.photoUrl,
+          attempts: user._count.attempts,
+        };
+      });
+    } catch (error: any) {
+      console.error(`Error retrieving leaderboard: ${error.message}`);
+      throw error;
+    }
+  },
 };
 
 export default userDatabaseFunctions;

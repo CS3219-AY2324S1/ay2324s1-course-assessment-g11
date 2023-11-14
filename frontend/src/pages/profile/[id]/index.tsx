@@ -21,7 +21,7 @@ export default function Page() {
 
   useEffect(() => {
     if (currentUser && typeof id === "string") {
-      Promise.all([getAppUser(id), fetchAttempts(id)])
+      Promise.all([getAppUser(id, false), fetchAttempts(id)])
         .then(([user, attempts]) => {
           if (user && attempts) {
             console.log(user);
