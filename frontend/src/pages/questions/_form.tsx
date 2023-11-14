@@ -22,8 +22,8 @@ export const formSchema = z.object({
   difficulty: z.enum(['easy', 'medium', 'hard']),
   topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(10000),
-  testCasesInputs: z.array(z.string().min(2).max(10000)),
-  testCasesOutputs: z.array(z.string().min(2).max(10000)),
+  testCasesInputs: z.array(z.string().min(1).max(10000)),
+  testCasesOutputs: z.array(z.string().min(1).max(10000)),
   defaultCode: z.object({
     "python": z.string().min(0).max(10000),
     "java": z.string().min(0).max(10000),
@@ -109,7 +109,7 @@ export default function QuestionsForm({
   type = "add",
   loading = false,
 }: QuestionsFormProps) {
-  const {testCasesInputs, testCasesOutputs} = form.getValues();
+  const { testCasesInputs, testCasesOutputs } = form.getValues();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
