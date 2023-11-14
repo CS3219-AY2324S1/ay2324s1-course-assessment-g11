@@ -225,14 +225,15 @@ export default function QuestionsForm({
           name="defaultCode.c++"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Default C++ Code (TODO: Change to Code Editor)</FormLabel>
+              <FormLabel>Default C++ Code</FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Write your code here."
                   className="resize-none"
                   rows={10}
                   {...field}
-                  value={field.value || defaultCodes["c++"]}
+                  defaultValue={defaultCodes["c++"]}
+                  value={field.value}
                 />
               </FormControl>
               <FormMessage />
@@ -251,7 +252,8 @@ export default function QuestionsForm({
                   className="resize-none"
                   rows={10}
                   {...field}
-                  value={field.value || defaultCodes["java"]}
+                  defaultValue={defaultCodes["java"]}
+                  value={field.value}
                 />
               </FormControl>
               <FormMessage />
@@ -270,7 +272,8 @@ export default function QuestionsForm({
                   className="resize-none"
                   rows={10}
                   {...field}
-                  value={field.value || defaultCodes["python"]}
+                  defaultValue={defaultCodes["python"]}
+                  value={field.value}
                 />
               </FormControl>
               <FormMessage />
