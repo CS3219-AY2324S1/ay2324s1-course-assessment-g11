@@ -19,6 +19,7 @@ export const fetchRandomQuestion = async (
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": (user as User).uid
       },
     });
 
@@ -87,6 +88,7 @@ export const fetchQuestions = async (user: any, pageNumber: number = 1, pageSize
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": (user as User).uid
       },
     });
 
@@ -123,6 +125,7 @@ export const fetchQuestion = async (currentUser: User, questionId: string) => {
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": currentUser.uid
       },
     });
 
@@ -170,6 +173,7 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": (user as User).uid
       },
     });
 
@@ -202,6 +206,7 @@ export const putQuestion = async (user: any, question: z.infer<typeof formSchema
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": (user as User).uid
       },
     });
 
@@ -225,6 +230,7 @@ export const deleteQuestion = async (user: any, questionId: string) => {
       headers: {
         "Content-Type": "application/json",
         "User-Id-Token": idToken,
+        "user-id": (user as User).uid
       },
     });
 

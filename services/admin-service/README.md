@@ -69,19 +69,3 @@ yarn workspace admin-service dev:local
 ```
 
 This uses the default `.env` file which has a `FIREBASE_SERVICE_ACCOUNT` corresponding to the development app.
-
-## How to do automated testing
-Automated testing is done using a [Firebase Local Emulator Suite](https://firebase.google.com/docs/emulator-suite).
-The README file at the project root has more details on this. Be sure to read that before trying to run any tests here.
-
-To run the unit tests locally, run this command at the project root:
-`yarn workspace admin-service test`
-
-To run the system tests locally, run this command at the project root:
-`yarn workspace admin-service systemtest`
-
-You may also run them in CI. In such a case, you need to provide the environment variables manually:
-```
-yarn workspace admin-service test:ci
-yarn workspace admin-service systemtest:ci
-```
