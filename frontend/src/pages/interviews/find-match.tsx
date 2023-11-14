@@ -58,7 +58,7 @@ export default function FindMatch() {
 
       <Loader />
 
-      <Button variant="secondary" onClick={onClickCancel}>
+      <Button className="z-50" variant="secondary" onClick={onClickCancel}>
         Cancel Search
       </Button>
     </div>
