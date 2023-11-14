@@ -94,9 +94,18 @@ export default function CodeEditor({
 
   React.useEffect(() => {
     if (cursor !== undefined) {
+      console.log(cursor);
       setCursorPosition(cursor);
     }
-  }, [cursor, setCursorPosition]);
+
+    monacoInstance?.onDidChangeCursorPosition((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
+  }, [text, cursor, setCursorPosition, monacoInstance, onCursorChange]);
 
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
