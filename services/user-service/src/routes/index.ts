@@ -19,9 +19,23 @@ indexRouter.post("/", function (req: express.Request, res: express.Response) {
     });
 });
 
+
+indexRouter.get(
+  "/leaderboard",
+  function (req: express.Request, res: express.Response) {
+    console.log("Getting leaderboard");
+    userDatabaseFunctions.getLeaderboard().catch((err) => {
+      // Server side error such as database not being available
+      console.log(err);
+      res.status(500).end();
+    });
+  }
+);
+
 indexRouter.get(
   "/:uid",
   function (req: express.Request, res: express.Response) {
+    console.log("UID CALLED")
     userDatabaseFunctions
       .getUserByUid(req.params.uid)
       .then((result) => {

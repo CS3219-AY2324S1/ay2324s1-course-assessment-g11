@@ -13,7 +13,7 @@ import { useQuestions } from "../../hooks/useQuestions";
 import { AuthContext } from "@/contexts/AuthContext";
 
 export default function NewQuestion() {
-  const {postNewQuestion} = useQuestions();
+  const { postNewQuestion } = useQuestions();
   const [loading, setLoading] = useState(false);
   const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   const router = useRouter();
