@@ -97,7 +97,7 @@ export default function EditQuestion() {
 
   return (
     questionId &&
-    <div className="min-h-screen p-12 mx-auto max-w-3xl">
+    <div className="min-h-screen p-12 mx-auto max-w-6xl">
       <div className="flex gap-x-4 items-center">
         <Link href="/questions">
           <Button className="gap-2" size="sm" variant="ghost">
