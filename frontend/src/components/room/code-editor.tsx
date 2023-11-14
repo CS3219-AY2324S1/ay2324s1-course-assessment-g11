@@ -39,6 +39,7 @@ type CodeEditorProps = {
   hasRoom?: boolean;
   onSubmitClick?: (param: string, solved: boolean) => void;
   onLeaveRoomClick?: () => void;
+  onLanguageChange?: (param: string) => void;
 };
 
 export const languages = [
@@ -69,6 +70,7 @@ export default function CodeEditor({
   hasRoom = true,
   onSubmitClick = () => {},
   onLeaveRoomClick = () => {},
+  onLanguageChange,
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -166,6 +168,11 @@ export default function CodeEditor({
                       setFrameWork(
                         currentValue === frameWork ? "" : currentValue
                       );
+                      if (onLanguageChange) {
+                        onLanguageChange(
+                          currentValue === frameWork ? "" : currentValue
+                        );
+                      }
                       setOpen(false);
                     }}
                   >
