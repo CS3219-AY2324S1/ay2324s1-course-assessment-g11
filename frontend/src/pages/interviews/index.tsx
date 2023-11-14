@@ -33,7 +33,7 @@ import { useLeaderboard } from "@/hooks/useLeaderboard";
 type Difficulty = "easy" | "medium" | "hard" | "any";
 
 type LeaderboardUser = {
-  id: string;
+  uid: string;
   displayName: string;
   photoURL: string;
   attempts: number;
