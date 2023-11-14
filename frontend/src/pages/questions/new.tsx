@@ -26,6 +26,7 @@ export default function NewQuestion() {
       description: "",
       testCasesInputs: [],
       testCasesOutputs: [],
+      solution: {python: ""},
     },
   });
 

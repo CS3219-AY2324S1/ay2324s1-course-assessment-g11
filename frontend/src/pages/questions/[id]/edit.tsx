@@ -44,6 +44,7 @@ export default function EditQuestion() {
           form.setValue("defaultCode", {python: "", java: "", "c++": "", ...question.defaultCode});
           form.setValue("testCasesInputs", question.testCasesInputs || []);
           form.setValue("testCasesOutputs", question.testCasesOutputs || []);
+          form.setValue("solution", {python: "", ...question.solution ?? {}});
         } else {
           // if question is not found, redirect to home
           router.push("/");

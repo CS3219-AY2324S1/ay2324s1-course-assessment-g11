@@ -28,6 +28,9 @@ export const formSchema = z.object({
     "java": z.string().min(0).max(10000),
     "c++": z.string().min(0).max(10000)
   }) || undefined,
+  solution: z.object({
+    "python": z.string().min(0).max(10000),
+  }) || undefined,
 })
 
 
@@ -273,6 +276,25 @@ export default function QuestionsForm({
                   rows={10}
                   {...field}
                   defaultValue={defaultCodes["python"]}
+                  value={field.value}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="solution.python"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Solution Python Code</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="Write your code here."
+                  className="resize-none"
+                  rows={10}
+                  {...field}
                   value={field.value}
                 />
               </FormControl>

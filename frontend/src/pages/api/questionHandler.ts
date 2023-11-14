@@ -39,7 +39,7 @@ export const fetchRandomQuestion = async (
       difficulty: data.difficulty,
       topics: data.topics,
       description: data.content,
-      solution: "", // Not supported atm
+      solution: data.solution || {}, // Not supported atm
       author: data.author, // Author id
       defaultCode: {
           ...data.defaultCode
@@ -139,14 +139,14 @@ export const fetchQuestion = async (currentUser: User, questionId: string) => {
       difficulty: data.difficulty,
       topics: data.topics,
       description: data.content,
-      solution: "", // Not supported atm
+      solution: data.solution || {}, // Not supported atm
       author: data.author, // Author id
       defaultCode: {
           ...data.defaultCode
       },
       testCasesInputs: data.testCasesInputs,
       testCasesOutputs: data.testCasesOutputs
-    }
+    };
   } catch (error) {
     console.error("There was an error fetching the questions", error);
   }
@@ -167,7 +167,8 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
         content: question.description,
         testCasesInputs: question.testCasesInputs,
         testCasesOutputs: question.testCasesOutputs,
-        defaultCode: question.defaultCode
+        defaultCode: question.defaultCode,
+        solution: question.solution,
       }),
       headers: {
         "Content-Type": "application/json",
@@ -199,7 +200,8 @@ export const putQuestion = async (user: any, question: z.infer<typeof formSchema
         content: question.description,
         testCasesInputs: question.testCasesInputs,
         testCasesOutputs: question.testCasesOutputs,
-        defaultCode: question.defaultCode
+        defaultCode: question.defaultCode,
+        solution: question.solution,
       }),
       headers: {
         "Content-Type": "application/json",
