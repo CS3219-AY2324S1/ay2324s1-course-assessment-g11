@@ -1,5 +1,5 @@
 import DifficultySelector from "@/components/common/difficulty-selector";
-import { columns } from "@/components/interviews/leaderboard/columns";
+import { columns, PublicUser } from "@/components/interviews/leaderboard/columns";
 import { DataTable } from "@/components/interviews/leaderboard/data-table";
 import { languages } from "@/components/room/code-editor";
 import { Button } from "@/components/ui/button";
@@ -32,13 +32,6 @@ import { useLeaderboard } from "@/hooks/useLeaderboard";
 
 type Difficulty = "easy" | "medium" | "hard" | "any";
 
-type LeaderboardUser = {
-  id: string;
-  displayName: string;
-  photoURL: string;
-  attempts: number;
-};
-
 export default function Interviews() {
   const { user: currentUser } = useContext(AuthContext);
 
@@ -53,7 +46,7 @@ export default function Interviews() {
   const [selectedLanguage, setSelectedLanguage] = useState(
     languages.length > 0 ? languages[0].value : "c++"
   );
-  const [leaderboardData, setLeaderboardData] = useState<Array<LeaderboardUser>>([]);
+  const [leaderboardData, setLeaderboardData] = useState<Array<PublicUser>>([]);
 
   useEffect(() => {
     if (currentUser) {
@@ -76,7 +69,7 @@ export default function Interviews() {
 
   useEffect(() => {
     fetchLeaderboard().then((data) => {
-      setLeaderboardData(data as Array<LeaderboardUser>);
+      setLeaderboardData(data as Array<PublicUser>);
     });
   }, [])
 
