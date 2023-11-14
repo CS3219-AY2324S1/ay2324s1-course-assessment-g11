@@ -16,6 +16,7 @@ export type Question = {
   };
   author: string;
   defaultCode: {
+    selectedLanguage(selectedLanguage: any): unknown;
     javascript?: string;
     python?: string;
     java?: string;
