@@ -4,16 +4,17 @@ import { Button } from "@/components/ui/button";
 import { ColumnDef } from "@tanstack/react-table";
 
 export type PublicUser = {
+  uid: string;
   displayName: string;
   attempts: number;
-  photoURL: string;
+  photoUrl: string;
 };
 
 const getInitials = (name: string) => {
   const names = name.split(" ");
   let initials = "";
   names.forEach((n) => {
-    initials += n[0].toUpperCase();
+    initials += n[0]?.toUpperCase() || "";
   });
   return initials;
 };
@@ -24,13 +25,14 @@ export const columns: ColumnDef<PublicUser>[] = [
     header: "User",
     cell: ({ row }) => {
       const displayName = row.getValue("displayName") as string;
-      const photoURL = row.original.photoURL;
+      const photoURL = row.original.photoUrl;
+      const uid = row.original.uid;
 
       return (
         <Button
           variant="ghost"
           onClick={() => {
-            window.location.href = `/profile/Y4sCNQ4ZBqOlHjqoXmCAFAHnBWU2`;
+            window.location.href = `/profile/${uid}`;
           }}
           className="w-64"
         >
@@ -47,7 +49,7 @@ export const columns: ColumnDef<PublicUser>[] = [
   },
   {
     accessorKey: "attempts",
-    header: "Solved",
+    header: "Attempts",
     invertSorting: true,
   },
 ];

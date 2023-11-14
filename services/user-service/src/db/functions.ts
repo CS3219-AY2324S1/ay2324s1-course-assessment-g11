@@ -158,13 +158,25 @@ const userDatabaseFunctions = {
           uid: true,
           displayName: true,
           photoUrl: true,
-          attempts: true,
+          _count: {
+            select: {
+              attempts: true,
+            },
+          },
         },
         orderBy: {
           attempts: { _count: "desc" },
         },
+        take: 20,
       });
-      return leaderboard;
+      return leaderboard.map((user) => {
+        return {
+          uid: user.uid,
+          displayName: user.displayName,
+          photoUrl: user.photoUrl,
+          attempts: user._count.attempts,
+        };
+      });
     } catch (error: any) {
       console.error(`Error retrieving leaderboard: ${error.message}`);
       throw error;

@@ -24,7 +24,7 @@ indexRouter.get(
   "/leaderboard",
   function (req: express.Request, res: express.Response) {
     console.log("Getting leaderboard");
-    userDatabaseFunctions.getLeaderboard().catch((err) => {
+    userDatabaseFunctions.getLeaderboard().then((val) => res.json(val)).catch((err) => {
       // Server side error such as database not being available
       console.log(err);
       res.status(500).end();
