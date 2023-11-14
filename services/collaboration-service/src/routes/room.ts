@@ -194,6 +194,7 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
           roomUpdate(io, socket, room_id, text);
         }
         ackCallback();
+        socket.emit("ACK");
       });
     }
   );
@@ -286,17 +287,24 @@ export const roomRouter = (io: Server) => {
 
   // WebSocket style API
   io.on("connection", (socket: Socket) => {
-    console.log("Room.ts: User connected:", socket.id, ", Number of connections:", io.engine.clientsCount);
+    console.log(
+      "Room.ts: User connected:",
+      socket.id,
+      ", Number of connections:",
+      io.engine.clientsCount
+    );
 
     socket.on(SocketEvents.ROOM_JOIN, (room_id: string, user_id: string) => {
       socket.join(room_id);
       console.log(socket.id + " joined room:", room_id);
-      updateRoomWithUser(room_id, user_id).then(() => {
-        mapSocketToRoomAndUser(socket.id, room_id, user_id);
-        roomUpdateWithTextFromDb(io, socket, room_id);
-        socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id));
-        initSocketListeners(io, socket, room_id);
-      }).catch((error) => console.log);
+      updateRoomWithUser(room_id, user_id)
+        .then(() => {
+          mapSocketToRoomAndUser(socket.id, room_id, user_id);
+          roomUpdateWithTextFromDb(io, socket, room_id);
+          socket.emit("twilio-token", getTwilioAccessToken(room_id, user_id));
+          initSocketListeners(io, socket, room_id);
+        })
+        .catch((error) => console.log);
     });
 
     socket.on("disconnect", async () => userDisconnect(socket));
