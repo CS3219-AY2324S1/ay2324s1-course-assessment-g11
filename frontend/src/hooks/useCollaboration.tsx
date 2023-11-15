@@ -103,6 +103,7 @@ const useCollaboration = ({
               console.log("Connected to Room");
               room.localParticipant.videoTracks.forEach((publication) => {
                 publication.track.disable();
+                publication.track.stop();
               });
               room.localParticipant.audioTracks.forEach((publication) => {
                 publication.track.disable();

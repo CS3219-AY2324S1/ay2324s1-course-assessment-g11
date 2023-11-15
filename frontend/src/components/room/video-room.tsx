@@ -106,6 +106,11 @@ const VideoRoom: React.FC<VideoRoomProps> = ({ room, className }) => {
         room?.localParticipant.videoTracks.forEach(publication => {
             if (publication.track) {
                 publication.track.enable(!isCameraOn);
+                if (isCameraOn) {
+                    setTimeout(publication => publication.track.stop(), 1000, publication);
+                } else {
+                    publication.track.restart();
+                }
                 setIsCameraOn(!isCameraOn);
             }
         });
