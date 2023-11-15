@@ -3,7 +3,7 @@ import Description from "@/components/room/description";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TypographyBody } from "@/components/ui/typography";
 import { useRouter } from "next/router";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { Question } from "../../../types/QuestionTypes";
 import { AuthContext } from "@/contexts/AuthContext";
 import { fetchQuestion } from "../../api/questionHandler";
@@ -11,6 +11,7 @@ import { MrMiyagi } from "@uiball/loaders";
 import { useHistory } from "@/hooks/useHistory";
 import Solution from "@/components/room/solution";
 import { useUser } from "@/hooks/useUser";
+import { EditableUser } from "@/types/UserTypes";
 
 export default function Questions() {
   const router = useRouter();
@@ -22,6 +23,25 @@ export default function Questions() {
 
   const { user: currentUser, authIsReady } = useContext(AuthContext);
 
+  const [ansCache, setAnsCache] = useState<Record<any, any>>({});
+
+  // fetch user preferences
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("python");
+  const { getAppUser } = useUser();
+
+  useEffect(() => {
+    if (currentUser) {
+      getAppUser().then((user) => {
+        if (user) {
+          setSelectedLanguage(
+            user.matchProgrammingLanguage || selectedLanguage
+          );
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
+
   useEffect(() => {
     if (!authIsReady || !questionId) {
       console.log("auth not ready or questionId not found");
@@ -32,6 +52,11 @@ export default function Questions() {
         .then((question) => {
           if (question) {
             setQuestion(question);
+            setAnsCache({
+              python: question.defaultCode.python || "",
+              java: question.defaultCode.java || " ",
+              "c++": question.defaultCode["c++"] || "",
+            });
           }
         })
         .catch((err) => {
@@ -47,6 +72,15 @@ export default function Questions() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
+
+  const updateLanguage = useCallback(
+    (framework: string) => {
+      if (question && question.defaultCode) {
+        setAnswer(ansCache[framework]);
+      }
+    },
+    [ansCache, question]
+  );
 
   function onSubmitClick(value: string, solved: boolean) {
     postAttempt({
@@ -99,7 +133,8 @@ export default function Questions() {
           </Tabs>
           <div className="flex-1">
             <CodeEditor
-              language="python"
+              language={selectedLanguage}
+              onLanguageChange={updateLanguage}
               defaultValue={question.defaultCode.python}
               onChange={setAnswer}
               text={answer}

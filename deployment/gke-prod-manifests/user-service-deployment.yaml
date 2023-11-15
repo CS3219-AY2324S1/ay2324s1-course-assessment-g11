@@ -27,6 +27,7 @@ spec:
             - name: PORT
               value: "5001"
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/user-service:latest
+          imagePullPolicy: Always
           name: user-service
           ports:
             - containerPort: 5001
@@ -36,6 +37,6 @@ spec:
             # You must specify requests for CPU to autoscale
             # based on CPU utilization
             requests:
-              cpu: "100m"
+              cpu: "250m"
       restartPolicy: Always
 status: {}

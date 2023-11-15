@@ -1,6 +1,6 @@
 export default function Loader() {
   return (
-    <div className="loader">
+    <div className="loader z-0">
       <div className="box box0">
         <div></div>
       </div>

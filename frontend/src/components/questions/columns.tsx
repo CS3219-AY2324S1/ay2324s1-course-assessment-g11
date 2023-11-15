@@ -4,6 +4,7 @@ import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { EditIcon, PlayIcon, ArrowUpDown } from "lucide-react";
 import { Difficulty, Question } from "../../types/QuestionTypes";
+import { getDifficultyColor } from "../common/difficulty-selector";
 
 export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isEditable => [
   {
@@ -84,16 +85,3 @@ export const getColumnDefs: (isEditable: boolean) => ColumnDef<Question>[] = isE
     enableHiding: false,
   },
 ];
-
-const getDifficultyColor = (difficulty: Difficulty) => {
-  switch (difficulty) {
-    case "easy":
-      return "text-green-500";
-    case "medium":
-      return "text-orange-500";
-    case "hard":
-      return "text-red-500";
-    default:
-      return "text-gray-500";
-  }
-};

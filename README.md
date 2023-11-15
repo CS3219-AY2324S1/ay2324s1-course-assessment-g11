@@ -14,7 +14,7 @@ Prerequisites for PeerPrep Monorepo:
 
 3. **Node.js:** Check each application's documentation for the recommended
     Node.js version.
-4. **Git (Optional but Recommended):**
+4. **Git**
 5. **Docker (If deploying with Docker):**
 6. **Kubernetes Tools (If deploying with Kubernetes):**
 
@@ -37,8 +37,11 @@ your services / frontend.
 ├── /frontend
 │   └── /pages for peerprep (NextJs application)
 ├── /deployment
-│   ├── /docker
-│   └── /kubernetes
+│   ├── /gke-prod-manifests
+│   ├── /prod-dockerfiles
+│   └── build-export-prod-images.sh
+├── /prisma
+├── /utils
 ├── .env (not in git)
 ├── .env.firebase_emulators_test (not in git)
 └── README.md (and other root-level files & docs)
@@ -69,7 +72,8 @@ The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
     pip install pre-commit
     pre-commit install
     ```
-   
+This step requires Git to be installed.
+
 **Disclaimer:** There is no guarantee that all secrets will be detected.
 As a tip, if you think a file will eventually store secrets, immediately add it to .gitignore upon creating
 it in case you forget later on when you have a lot more files to commit.
@@ -89,8 +93,11 @@ it in case you forget later on when you have a lot more files to commit.
 
    (if you have hadoop yarn installed)
 
+   If you want to use the exact `yarn.lock` versions without any modification, add a `--frozen-lockfile` flag to the
+   command.
+
    This command will install dependencies for all services and the frontend in a
-   centralized `node_modules` directory at the root.
+   centralized `node_modules` directory at the root as well as within the respective directories.
 
 4. **Adding Dependencies:** To add a dependency to a specific workspace (e.g.,
    `user-service`), use:
@@ -137,6 +144,8 @@ Docker and Docker Compose are used to set up a simulated production build (meani
 containers that will be spun up locally are almost identical to those in the production environment, with the exception
 of some environment variables).
 
+NOTE: Do not run both Docker and No Docker at the same time. This will cause port conflicts.
+
 1. **Run yarn docker:build:** From the root repo, run
 
 ```bash
@@ -150,11 +159,7 @@ yarn docker:devup
 ```
 This will start all the containers.
 
-3. **Once done, run yarn docker:devdown:** From the root repo, run
-```bash
-yarn docker:devdown 
-```
-This will stop and delete all the containers.
+
 
 #### If you want to do all the above steps at once, see the below section
 
@@ -167,14 +172,32 @@ This will stop and delete all the containers.
 ```
 This will create new Docker images everytime it is run. Be careful of how much disk space you have left.
 
+3. **Once done, run yarn docker:devdown:** From the root repo, run
+```bash
+yarn docker:devdown 
+```
+This will stop and delete all the containers. You must run this to delete containers regardless of whether you used
+`./start-app-with-docker.sh` or `yarn docker:devup`.
+
 Any edits you make to the source code will not be automatically reflected on the site. We recommend using Docker
 Compose to check if your changes are likely to work on the production environment once they have been proven to work
 in your local development environment.
 
-### Notes:
+### Playing around with the app locally
 
-- After setting up Yarn Workspaces, any `node_modules` directories in individual
-  services or applications can be safely removed.
+- To test all features of the application, you will need 2 GitHub accounts. 
+- You must login on both accounts on the same computer, since the setup assumes that services are centralised
+services just like in the production environment. 
+- You can do the login for your second account by opening a new browser tab in 
+incognito mode.
+
+#### Note on NUS WiFi:
+
+Access to remote databases may be blocked when using NUS WiFi. You will need a VPN to overcome this limitation if you
+are running the local app on campus.
+
+### Dependency Notes:
+
 - Always ensure thorough testing after adding or updating dependencies to ensure
   all parts of the system function as expected.
 

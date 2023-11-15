@@ -1,4 +1,4 @@
-import { Question } from "../../types/QuestionTypes";
+import { Difficulty, Question } from "@/types/QuestionTypes";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
@@ -6,6 +6,7 @@ import { TypographyH2, TypographySmall } from "../ui/typography";
 import sanitizeHtml from "sanitize-html";
 import Markdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import { getDifficultyColor } from "../common/difficulty-selector";
 
 type DescriptionProps = {
   question: Question;
@@ -33,8 +34,8 @@ export default function Description({
       <div className="flex flex-row items-center justify-between py-2">
         <div className="flex items-center justify-center">
           <TypographyH2 className="w-fit">{question.title}</TypographyH2>
-          <Badge variant="secondary" className="h-min">
-            <TypographySmall className="text-[#27CA40]">
+          <Badge variant="secondary" className="h-min ml-2">
+            <TypographySmall className={getDifficultyColor(question.difficulty as Difficulty)}>
               {question.difficulty}
             </TypographySmall>
           </Badge>

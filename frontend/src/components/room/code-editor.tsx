@@ -39,6 +39,7 @@ type CodeEditorProps = {
   hasRoom?: boolean;
   onSubmitClick?: (param: string, solved: boolean) => void;
   onLeaveRoomClick?: () => void;
+  onLanguageChange?: (param: string) => void;
 };
 
 export const languages = [
@@ -69,6 +70,7 @@ export default function CodeEditor({
   hasRoom = true,
   onSubmitClick = () => {},
   onLeaveRoomClick = () => {},
+  onLanguageChange,
 }: CodeEditorProps) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState("");
@@ -80,6 +82,21 @@ export default function CodeEditor({
 
   const editorMount: OnMount = (editorL: editor.IStandaloneCodeEditor) => {
     setMonacoInstance(editorL);
+    monacoInstance?.onDidChangeCursorPosition((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
+    // allow for range selection - since the above event prevents highlighting
+    monacoInstance?.onDidChangeCursorSelection((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
   };
 
   const setCursorPosition = React.useCallback(
@@ -92,19 +109,34 @@ export default function CodeEditor({
     [monacoInstance]
   );
 
+  // function updateCursorPosition(
+  //   prevText: string,
+  //   currText: string,
+  //   cursor: number
+  // ) {
+  //   if (!monacoInstance) return;
+  //   if (!cursor) return;
+  //   if (prevText.slice(0, cursor) !== currText.slice(0, cursor)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
   React.useEffect(() => {
     if (cursor !== undefined) {
       setCursorPosition(cursor);
+      console.log(cursor);
     }
-  }, [cursor, setCursorPosition]);
+  }, [text, cursor, monacoInstance]);
 
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
       if (!monacoInstance) return;
       if (value === undefined) return;
-      if (onCursorChange === undefined) return;
 
       if (monacoInstance.getPosition()) {
+        if (onCursorChange === undefined) return;
         const cursor = monacoInstance
           .getModel()!
           .getOffsetAt(monacoInstance.getPosition()!);
@@ -157,6 +189,11 @@ export default function CodeEditor({
                       setFrameWork(
                         currentValue === frameWork ? "" : currentValue
                       );
+                      if (onLanguageChange) {
+                        onLanguageChange(
+                          currentValue === frameWork ? "" : currentValue
+                        );
+                      }
                       setOpen(false);
                     }}
                   >
@@ -175,22 +212,11 @@ export default function CodeEditor({
             </Command>
           </PopoverContent>
         </Popover>
-        <div className="flex flex-row gap-2 justify-end">
-          <Button variant="secondary" size="icon">
-            <Undo />
-          </Button>
-          <Button variant="secondary" size="icon">
-            <Redo />
-          </Button>
-          <Button variant="secondary" size="icon">
-            <Settings />
-          </Button>
-        </div>
       </div>
       <Editor
         key={frameWork}
         height={height}
-        defaultLanguage={frameWork}
+        defaultLanguage={frameWork === "c++" ? "cpp" : frameWork}
         defaultValue={defaultValue}
         value={text}
         theme={theme}
@@ -211,7 +237,7 @@ export default function CodeEditor({
                 onClick={() => handleOnSubmitClick(false)}
                 disabled={isSubmitting}
               >
-                Submit as unsolved
+                Submit as Unsolved
               </Button>
               <Button
                 size={"sm"}

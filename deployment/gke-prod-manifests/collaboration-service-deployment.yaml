@@ -44,6 +44,7 @@ spec:
                   name: twilio-api-secret
                   key: twilio-api-secret
           image: asia-southeast1-docker.pkg.dev/peerprep-group11-prod/codeparty-prod-images/collaboration-service:latest
+          imagePullPolicy: Always
           name: collaboration-service
           ports:
             - containerPort: 5003
@@ -53,6 +54,6 @@ spec:
             # You must specify requests for CPU to autoscale
             # based on CPU utilization
             requests:
-              cpu: "100m"
+              cpu: "250m"
       restartPolicy: Always
 status: {}

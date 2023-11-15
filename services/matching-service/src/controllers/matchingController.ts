@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import e, { Request, Response } from "express";
 import { Server, Socket } from "socket.io";
 import { io } from "../app";
 import prisma from "../prismaClient";
@@ -179,24 +179,54 @@ export function handleLooking(
           };
         }
       }
-    );
+    ).catch((err) => {
+      console.log(err);
+      socket.emit("error", "An error occurred in lookingForMatch.");
+      hasError = true;
+      return {newMatch: null, matchingUser: null};
+    });
+
+    if (hasError) {
+      return;
+    }
 
     if (!foundMatch) {
       console.log(`Queued user ${userId}.`);
       return;
     }
 
-    const qnId = await getRandomQuestionOfDifficulty(
+    const {_id: qnId, defaultCode} = await getRandomQuestionOfDifficulty(
       foundMatch.chosenDifficulty
     );
-    foundMatch = await prisma.match.update({
-      where: {
-        roomId: foundMatch.roomId,
-      },
-      data: {
-        questionId: qnId,
-      },
+    [foundMatch, ] = await prisma.$transaction([
+      prisma.match.update({
+        where: {
+          roomId: foundMatch.roomId,
+        },
+        data: {
+          questionId: qnId,
+        },
+      }),
+      prisma.room.update({
+        where: {
+          room_id: foundMatch.roomId,
+        },
+        data: {
+          status: EnumRoomStatus.active,
+          text: defaultCode?.[foundMatch.chosenProgrammingLanguage] || "",
+          question_id: qnId,
+        },
+      }),
+    ]).catch((err) => {
+      console.log(err);
+      socket.emit("error", "An error occurred in lookingForMatch.");
+      hasError = true;
+      return [null, null];
     });
+
+    if (hasError || !foundMatch) {
+      return;
+    }
 
     console.log(
       `Match found for user ${userId} with user ${

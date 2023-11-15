@@ -79,7 +79,6 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        {isAdmin && <p>Admin Page</p>}
         {!currentUser && (
           <div className="grid grid-cols-2 gap-4">
             <Button variant={"outline"} onClick={login}>
@@ -89,36 +88,39 @@ export default function Navbar() {
           </div>
         )}
         {currentUser && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex justify-center items-center gap-2 h-14"
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={currentUser.photoURL || ""}
-                    className="rounded-full"
-                  />
-                </Avatar>
-                <ChevronDown className="w-6 h-6" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel
-                className="hover:bg-card"
-                onClick={() => router.push("/profile")}
-              >
-                Profile
-              </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
-                Settings
-              </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
-                Log Out
-              </DropdownMenuLabel>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-x-4">
+            {isAdmin && <p>Admin</p>}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="flex justify-center items-center gap-2 h-14"
+                >
+                  <Avatar className="h-10 w-10">
+                    <AvatarImage
+                      src={currentUser.photoURL || ""}
+                      className="rounded-full"
+                    />
+                  </Avatar>
+                  <ChevronDown className="w-6 h-6" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel
+                  className="hover:bg-card"
+                  onClick={() => router.push("/profile")}
+                >
+                  Profile
+                </DropdownMenuLabel>
+                <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
+                  Settings
+                </DropdownMenuLabel>
+                <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
+                  Log Out
+                </DropdownMenuLabel>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         )}
       </div>
     </header>
