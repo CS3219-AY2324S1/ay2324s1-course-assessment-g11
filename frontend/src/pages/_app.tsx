@@ -24,23 +24,21 @@ export default function App({ Component, pageProps }: AppProps) {
       <main>
         <AuthContextProvider>
           <AuthChecker>
-            <MatchmakingProvider>
-              <ToastContainer
-                position="bottom-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-              />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </MatchmakingProvider>
+            <ToastContainer
+              position="bottom-center"
+              autoClose={2000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss
+              draggable
+              pauseOnHover
+              theme="dark"
+            />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </AuthChecker>
         </AuthContextProvider>
       </main>

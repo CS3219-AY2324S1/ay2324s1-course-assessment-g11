@@ -5,7 +5,6 @@ import { TypographyH1 } from "@/components/ui/typography";
 import { UserIcon, Settings2Icon } from "lucide-react";
 import { useRouter } from "next/router";
 import AccountSettingsCard from "./_account";
-import MatchSettingsCard from "./_match";
 
 const settingsOptions = [
   {
@@ -43,7 +42,6 @@ export default function Settings() {
         </div>
         <div className="w-full p-10 m-10 flex flex-col gap-10">
           <AccountSettingsCard />
-          <MatchSettingsCard />
         </div>
       </div>
     </div>

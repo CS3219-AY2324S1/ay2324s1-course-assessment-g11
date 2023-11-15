@@ -1,4 +1,4 @@
-import { questionApiPathAddress } from "@/gateway-address/gateway-address";
+import { questionApiPathAddress } from "@/backend-address/backend-address";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 import { formSchema } from "../questions/_form";
 import { z } from "zod";

@@ -2,7 +2,7 @@ import { GithubAuthProvider, signInWithPopup, User } from "firebase/auth";
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext, useState } from "react";
-import {userApiPathAddress} from "@/gateway-address/gateway-address";
+import {userApiPathAddress} from "@/backend-address/backend-address";
 
 export const useLogin = () => {
   const [error, setError] = useState<string | null>(null);
