@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Code Collaboration Room</title>
+  </head>
+  <body>
+    <h1>Text Collaboration Room</h1>
+    <h3>Enter in textbox the TextOperation in this format:</h3>
+    <ul>
+      <li>
+        Ops are lists of components which iterate over the document. Components
+        are either:
+      </li>
+      <ul>
+        <li>A number N: Skip N characters in the original document</li>
+        <li>"str": Insert "str" at the current position in the document</li>
+        <li>
+          {d:N}: Delete N characters at the current position in the document
+        </li>
+        <li>
+          {d:"str"}: Delete "str" at the current position in the document. This
+          is equivalent to {d:N} but provides extra information for operation
+          invertability.
+        </li>
+      </ul>
+      <li>Eg: [3, 'hi', 5, {d:8}]</li>
+    </ul>
+    <textarea id="textEditor" rows="10" cols="50"></textarea>
+    <button id="saveButton">Save</button>
+    <button id="loadButton">Load</button>
+    <button id="disconnectButton">Disconnect</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      const params = new URL(document.location).searchParams;
+      const room = params.get("room") ?? "1";
+      const user = params.get("user") ?? "user";
+      const api = params.get("api") ?? "socket";
+      const qn = params.get("qn") ?? "1";
+
+      const socket = io("http://localhost:5003/");
+
+      joinRoomBySocket(socket, room, user);
+
+      socket.emit("api/collaboration-service/question/set", qn);
+
+      function saveRoomByRestApi(room, text) {
+        var apiUrl =
+          "http://localhost:5003/api/collaboration-service/room/save";
+
+        fetch(apiUrl, {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ room_id: room, text: text }),
+          cache: "default",
+        })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((err) => {
+            console.error("Error:", err);
+          });
+      }
+
+      /** Recommended: Using Socket.io EventEmitters as API **/
+      function joinRoomBySocket(socket, room, user) {
+        socket.emit("api/collaboration-service/room/join", room, user);
+      }
+
+      function saveRoomBySocket(socket, text) {
+        socket.emit("api/collaboration-service/room/save", text);
+      }
+
+      // Socket EventListeners and EventEmitters
+      const textEditor = document.getElementById("textEditor"); // text is now textop format
+      const saveButton = document.getElementById("saveButton");
+      const loadButton = document.getElementById("loadButton");
+      var vers = 0;
+
+      window.onload = () => {
+        socket.on(
+          "api/collaboration-service/room/update",
+          ({ version, text }) => {
+            console.log(version);
+            vers = version;
+            textEditor.value = text;
+            console.log("api/collaboration-service/room/update");
+          }
+        );
+
+        textEditor.addEventListener("change", () => {
+          const text = textEditor.value;
+          console.log(text);
+          console.log(vers);
+          textOp = eval(text);
+          socket.emit(
+            "api/collaboration-service/room/update",
+            {
+              version: vers,
+              operations: textOp,
+            },
+            () => {}
+          );
+        });
+
+        saveButton.addEventListener("click", () => {
+          const text = textEditor.value;
+          console.log("to save: " + text);
+
+          if (api === "rest") {
+            saveRoomByRestApi(room, text);
+          } else {
+            saveRoomBySocket(socket, text);
+          }
+        });
+
+        loadButton.addEventListener("click", () => {
+          console.log("to load");
+          socket.emit("api/collaboration-service/room/load");
+        });
+
+        disconnectButton.addEventListener("click", () => {
+          console.log("to disconnect");
+          socket.disconnect();
+        });
+      };
+    </script>
+  </body>
+</html>

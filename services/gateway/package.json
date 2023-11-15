@@ -1,0 +1,27 @@
+{
+  "name": "gateway",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gateway Service between frontend and backend",
+  "main": "src/app.ts",
+  "scripts": {
+    "lint": "eslint src/**/*.{ts,js}",
+    "dev:local": "dotenv -e ../../.env -c development -- yarnpkg dev",
+    "dev": "ts-node-dev src/app.ts",
+    "build": "tsc",
+    "start": "node dist/src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express-healthcheck": "^0.1.0",
+    "firebase-admin": "^11.10.1",
+    "http-proxy-middleware": "^2.0.6",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.14",
+    "@types/express-healthcheck": "^0.1.2",
+    "@types/morgan": "^1.9.6"
+  }
+}

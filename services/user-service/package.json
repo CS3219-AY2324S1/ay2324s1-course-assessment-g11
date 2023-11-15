@@ -1,0 +1,34 @@
+{
+  "name": "user-service",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev:local": "dotenv -e ../../.env -c development -- yarnpkg dev",
+    "dev": "ts-node-dev src/app.ts",
+    "swagger-autogen": "ts-node swagger-doc-gen.ts",
+    "lint": "eslint src/**/*.{ts,js} test/**/*.{ts,js} systemtest/**/*.{ts,js} swagger-doc-gen.ts",
+    "build": "yarnpkg swagger-autogen && tsc",
+    "start": "node dist/src/app.js",
+    "test": "vitest run -c ./test/vitest.config.unit.ts",
+    "systemtest": "dotenv -e systemtest/secrets/.env.user-service-system-test yarnpkg systemtest:ci",
+    "systemtest:ci": "yarnpkg systemtest:docker:up && yarnpkg systemtest:prisma:migrate:deploy && yarnpkg systemtest:vitest && yarnpkg systemtest:docker:down",
+    "systemtest:docker:up": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml up -d",
+    "systemtest:prisma:migrate:deploy": "yarnpkg prisma migrate deploy && prisma generate",
+    "systemtest:vitest": "vitest run -c ./systemtest/vitest.config.system.ts",
+    "systemtest:docker:down": "docker compose -f ./systemtest/user-service-postgre-Docker-compose.yml down"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "debug": "~2.6.9",
+    "morgan": "~1.9.1"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.4",
+    "@types/cors": "^2.8.14",
+    "@types/morgan": "^1.9.5",
+    "@types/supertest": "^2.0.12",
+    "supertest": "^6.3.3",
+    "vitest": "^0.34.4",
+    "vitest-mock-extended": "^1.2.1"
+  }
+}

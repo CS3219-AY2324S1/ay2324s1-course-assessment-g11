@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Service</title>
+</head>
+<body>
+    <h1 id="welcome-message"></h1>
+    <input type="text" id="lang" placeholder="Enter your programming language">
+    <select name="difficulties" id="difficulties" multiple>
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+    </select>
+    <button id="look-for-match">Look for match</button>
+    <button id="cancel-match">Cancel</button>
+    <button id="leave-match">Leave</button>
+    <br>
+    <textarea id="messages" cols="30" rows="10"></textarea>
+    <button id="send-message">Send message</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        function getSelectValues(select) {
+            var result = [];
+            var options = select && select.options;
+            var opt;
+
+            for (var i=0, iLen=options.length; i<iLen; i++) {
+                opt = options[i];
+
+                if (opt.selected) {
+                result.push(opt.value || opt.text);
+                }
+            }
+            return result;
+            }
+        
+        function JSONAlert(data) {
+            alert(JSON.stringify(data));
+        }
+        let username = ""
+        while (!username)
+            username = prompt("Enter your name", "");
+        
+        const socket = io({
+            query: `username=${username}`
+        });
+
+        document.getElementById("welcome-message").innerHTML = "Welcome, " + username;
+        
+        const look_button = document.getElementById("look-for-match");
+        const cancel_button = document.getElementById("cancel-match");
+        cancel_button.setAttribute("disabled", true);
+        const leave_button = document.getElementById("leave-match");
+        leave_button.setAttribute("disabled", true);
+        const send_button = document.getElementById("send-message");
+
+        const lang = document.getElementById("lang");
+        const difficulties = document.getElementById("difficulties");
+        // const username = document.getElementById("username");
+        const messages = document.getElementById("messages");
+        look_button.addEventListener("click", () => {
+            socket.emit("lookingForMatch",getSelectValues(difficulties), lang.value);
+            look_button.setAttribute("disabled", true);
+            cancel_button.removeAttribute("disabled");
+        });
+        cancel_button.addEventListener("click", () => {
+            socket.emit("cancelLooking");
+            look_button.removeAttribute("disabled");
+            cancel_button.setAttribute("disabled", true);
+        });
+        leave_button.addEventListener("click", () => {
+            socket.emit("leaveMatch");
+            look_button.removeAttribute("disabled");
+            leave_button.setAttribute("disabled", true);
+            cancel_button.setAttribute("disabled", true);
+        });
+        send_button.addEventListener("click", () => {
+            socket.emit("sendMessage", messages.value);
+        });
+
+        socket.on("matchFound", (data) => {
+            JSONAlert(data);
+            look_button.setAttribute("disabled", true);
+            cancel_button.setAttribute("disabled", true);
+            leave_button.removeAttribute("disabled");
+        });
+        socket.on("matchNotFound", () => {
+            alert("Match not found");
+            look_button.removeAttribute("disabled");
+            cancel_button.setAttribute("disabled", true);
+        });
+        socket.on("matchLeft", (data) => {
+            JSONAlert(data);
+            look_button.removeAttribute("disabled");
+            leave_button.setAttribute("disabled", true);
+        });
+        socket.on("receiveMessage", (username, data) => {
+            alert(username + ": " + data);
+        });
+        socket.on("error", data => {
+            JSONAlert(data);
+        });
+    </script>
+</body>
+</html>

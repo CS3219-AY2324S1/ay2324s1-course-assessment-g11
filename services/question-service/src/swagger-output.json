@@ -1,0 +1,444 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Question Service API",
+    "description": "API for CRUD operations on questions",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:5004/"
+    }
+  ],
+  "paths": {
+    "/api/question-service/question": {
+      "post": {
+        "description": "Create a new question.",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "description": "Title of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content",
+            "description": "Content of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "description": "Array of topics of the question.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "difficulty",
+            "description": "Difficulty of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "testCasesInputs",
+            "description": "Array of test case inputs.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "testCasesOutputs",
+            "description": "Array of test case outputs.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "defaultCode",
+            "description": "Object of default code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "solution",
+            "description": "Object of solution code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "any"
+                  },
+                  "content": {
+                    "example": "any"
+                  },
+                  "topics": {
+                    "example": "any"
+                  },
+                  "testCasesInputs": {
+                    "example": "any"
+                  },
+                  "testCasesOutputs": {
+                    "example": "any"
+                  },
+                  "defaultCode": {
+                    "example": "any"
+                  },
+                  "solution": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/question-service/list": {
+      "get": {
+        "description": "Get questions based on topics or difficulty, with offset based pagination. Note: This will not return the content, test cases, default code, and solution of each question.",
+        "parameters": [
+          {
+            "name": "user-id",
+            "in": "header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "description": "Array of topics to filter by.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "difficulty",
+            "description": "Array of difficulties to filter by.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "searchTitle",
+            "description": "Search for questions with titles containing this string.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "author",
+            "description": "User ID of the author of the questions",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "description": "Number of questions to return per page.",
+            "default": 20,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "description": "Page index to return.",
+            "default": 0,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "sort",
+            "description": "Sort object. Example: {title: 1} sorts by title in ascending order.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/question-service/question/{id}": {
+      "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "put": {
+        "description": "Update a question.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "title",
+            "description": "Title of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "content",
+            "description": "Content of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "description": "Array of topics of the question.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "difficulty",
+            "description": "Difficulty of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "testCasesInputs",
+            "description": "Array of test case inputs.",
+            "items": {
+              "type": "string"
+            },
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "testCasesOutputs",
+            "description": "Array of test case outputs.",
+            "items": {
+              "type": "string"
+            },
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          },
+          {
+            "name": "defaultCode",
+            "description": "Object of default code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          },
+          {
+            "name": "solution",
+            "description": "Object of solution code for each language.",
+            "in": "query",
+            "schema": {
+              "type": "object"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "title": {
+                    "example": "any"
+                  },
+                  "content": {
+                    "example": "any"
+                  },
+                  "difficulty": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/question-service/random-question": {
+      "post": {
+        "description": "Get a random question.",
+        "parameters": [
+          {
+            "name": "difficulty",
+            "description": "Difficulty of the question.",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "topics",
+            "description": "Array of topics of the question to choose.",
+            "in": "query",
+            "schema": {
+              "type": "array"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "difficulty": {
+                    "example": "any"
+                  },
+                  "topics": {
+                    "example": "any"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

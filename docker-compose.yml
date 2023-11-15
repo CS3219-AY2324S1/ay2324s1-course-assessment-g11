@@ -1,0 +1,90 @@
+version: "3"
+
+services:
+  user-service:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.user-service
+    container_name: user-service
+    ports:
+      - "5001:5001"
+    environment:
+      PORT: 5001
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
+
+  matching-service:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.matching-service
+    container_name: matching-service
+    ports:
+      - "5002:5002"
+    environment:
+      PORT: 5002
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
+      QUESTION_SERVICE_HOSTNAME: "question-service"
+
+  collaboration-service:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.collaboration-service
+    container_name: collaboration-service
+    ports:
+      - "5003:5003"
+    environment:
+      PORT: 5003
+      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
+      TWILIO_API_KEY: ${TWILIO_API_KEY}
+      TWILIO_API_SECRET: ${TWILIO_API_SECRET}
+      PRISMA_DATABASE_URL: ${PRISMA_DATABASE_URL}
+
+  question-service:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.question-service
+    container_name: question-service
+    ports:
+      - "5004:5004"
+    environment:
+      PORT: 5004
+      MONGO_ATLAS_URL: ${MONGO_ATLAS_URL}
+
+  admin-service:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.admin-service
+    container_name: admin-service
+    ports:
+      - "5005:5005"
+    environment:
+      PORT: 5005
+      FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
+
+  gateway:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.gateway
+    container_name: gateway
+    ports:
+      - "4000:4000"
+      - "4002:4002"
+      - "4003:4003"
+    environment:
+      HTTP_PROXY_PORT: 4000
+      WS_MATCH_PROXY_PORT: 4002
+      WS_COLLABORATION_PROXY_PORT: 4003
+      FIREBASE_SERVICE_ACCOUNT: ${FIREBASE_SERVICE_ACCOUNT}
+      FRONTEND_ADDRESS: "http://localhost:3000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: deployment/prod-dockerfiles/Dockerfile.frontend
+      args:
+        NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG_ARG: ${NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG}
+        NEXT_PUBLIC_HTTP_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4000/"
+        NEXT_PUBLIC_WS_MATCH_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4002/"
+        NEXT_PUBLIC_WS_COLLABORATION_PROXY_GATEWAY_ADDRESS_ARG: "http://localhost:4003/"
+    container_name: frontend
+    ports:
+      - "3000:3000"

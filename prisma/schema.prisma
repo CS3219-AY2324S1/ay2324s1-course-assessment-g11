@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("PRISMA_DATABASE_URL")
+}
+
+model User {
+  id                String    @id @default(uuid())
+  isLookingForMatch Boolean
+  matchedUserId     String?   @unique
+  lastConnected     DateTime?
+}
+
+model WaitingUser {
+  userId     String   @id
+  user       AppUser  @relation(fields: [userId], references: [uid])
+  createdAt  DateTime @default(now())
+  progLang   String
+  difficulty String[]
+  socketId   String
+}
+
+model Match {
+  roomId                    String   @id @default(uuid())
+  userId1                   String
+  userId2                   String
+  chosenDifficulty          String
+  chosenProgrammingLanguage String
+  questionId                String?
+  createdAt                 DateTime @default(now())
+}
+
+model AppUser {
+  uid                      String        @id
+  displayName              String?
+  photoUrl                 String?
+  matchDifficulty          String?
+  matchProgrammingLanguage String?
+  attempts                 Attempt[]     @relation("AppUserToAttempt")
+  WaitingUser              WaitingUser[]
+}
+
+model Room {
+  room_id      String         @id
+  users        String[]
+  status       EnumRoomStatus
+  text         String
+  saved_text   String?
+  question_id  String?
+  attempt_id   String?        @unique
+  active_users String[]
+  attempt      Attempt?       @relation(fields: [attempt_id], references: [id])
+}
+
+model Attempt {
+  id            String    @id @default(uuid())
+  question_id   String
+  answer        String?
+  solved        Boolean   @default(false)
+  time_saved_at DateTime  @default(now())
+  room_id       String?
+  time_updated  DateTime  @updatedAt
+  time_created  DateTime  @default(now())
+  room          Room?
+  users         AppUser[] @relation("AppUserToAttempt")
+}
+
+enum EnumRoomStatus {
+  active
+  inactive
+}
