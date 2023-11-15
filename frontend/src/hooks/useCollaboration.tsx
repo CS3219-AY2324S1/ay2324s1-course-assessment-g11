@@ -36,15 +36,14 @@ const useCollaboration = ({
 }: UseCollaborationProps) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [text, setText] = useState<string>("#Write your solution here");
-  const [cursor, setCursor] = useState<number>(
-    "#Write your solution here".length
-  );
+  const [cursor, setCursor] = useState<number>(text.length);
   const [room, setRoom] = useState<Room | null>(null); // twilio room
   const [questionId, setQuestionId] = useState<string>("");
   const textRef = useRef<string>(text);
   const cursorRef = useRef<number>(cursor);
   const prevCursorRef = useRef<number>(cursor);
   const prevTextRef = useRef<string>(text);
+  const [prevText, setPrevText] = useState<string>("");
   const awaitingAck = useRef<boolean>(false); // ack from sending update
   const awaitingSync = useRef<boolean>(false); // synced with server
   const twilioTokenRef = useRef<string>("");
@@ -111,7 +110,10 @@ const useCollaboration = ({
               setRoom(room);
             })
             .catch((err) => {
-              toast.error("An error occured when starting video: " + (err as Error).message);
+              toast.error(
+                "An error occured when starting video: " +
+                  (err as Error).message
+              );
               console.log(err, token, userId, roomId);
             });
         });
@@ -140,16 +142,30 @@ const useCollaboration = ({
             textRef.current = text;
             prevTextRef.current = text;
             setText(text);
+
             if (cursor && cursor > -1) {
-              // console.log("Update cursor to " + cursor);
-              cursorRef.current = cursor;
-              setCursor(cursor);
-            } else {
-              cursorRef.current = prevCursorRef.current;
-              cursor = prevCursorRef.current;
-              // console.log("Update cursor to " + prevCursorRef.current);
-              setCursor(prevCursorRef.current);
+              if (prevText.slice(0, cursor) !== text.slice(0, cursor)) {
+                console.log("+1  " + cursor);
+                setCursor(cursor + 1);
+              } else {
+                console.log("normal " + cursor);
+
+                setCursor(cursor);
+              }
             }
+
+            // if (cursor && cursor > -1) {
+            //   console.log("Update cursor to " + cursor);
+            //   cursorRef.current = cursor;
+            //   setCursor(cursor);
+            // } else {
+            //   cursorRef.current = prevCursorRef.current;
+            //   cursor = prevCursorRef.current;
+            //   console.log("Update cursor to " + prevCursorRef.current);
+            //   setCursor(prevCursorRef.current);
+            // }
+            setPrevText(text);
+
             awaitingSync.current = false;
           }
         );
@@ -192,7 +208,7 @@ const useCollaboration = ({
 
     prevTextRef.current = textRef.current;
 
-    // console.log(textOp);
+    console.log(textOp);
 
     const textOperationSet: TextOperationSetWithCursor = {
       version: vers,
