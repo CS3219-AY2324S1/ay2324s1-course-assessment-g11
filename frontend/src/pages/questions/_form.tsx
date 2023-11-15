@@ -22,8 +22,8 @@ export const formSchema = z.object({
   difficulty: z.enum(['easy', 'medium', 'hard']),
   topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(10000),
-  testCasesInputs: z.array(z.string().min(1).max(10000)),
-  testCasesOutputs: z.array(z.string().min(1).max(10000)),
+  testCasesInputs: z.array(z.string().min(0).max(10000)),
+  testCasesOutputs: z.array(z.string().min(0).max(10000)),
   defaultCode: z.object({
     "python": z.string().min(0).max(10000),
     "java": z.string().min(0).max(10000),
@@ -117,7 +117,15 @@ export default function QuestionsForm({
   const topics = ["Algorithms", "Arrays", "Bit Manipulation", "Brainteaser", "Data Structures", "Databases", "Graph", "Recursion", "Strings"].map(createTopic);
 
   useEffect(() => {
-    form.setValue('defaultCode', defaultCodes);
+    if (!form.getValues().defaultCode) {
+      form.setValue('defaultCode', defaultCodes);
+    }
+    if (!form.getValues().solution) {
+      form.setValue('solution', {python: defaultCodes['python']});
+    }
+    if (!form.getValues().description) {
+      form.setValue('description', "Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags.");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -179,7 +187,7 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Question Description</FormLabel>
               <FormControl>
-                <Editor height="50vh" defaultLanguage="markdown" theme="vs-dark" options={{ wordWrap: "on" }} defaultValue={"Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."} value={field.value} onChange={(e) => {
+                <Editor height="50vh" defaultLanguage="markdown" theme="vs-dark" options={{ wordWrap: "on" }} value={field.value} onChange={(e) => {
                   field.onChange(e);
                   forceUpdate();
                 }} />
