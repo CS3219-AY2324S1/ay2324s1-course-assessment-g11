@@ -82,9 +82,22 @@ export default function CodeEditor({
 
   const editorMount: OnMount = (editorL: editor.IStandaloneCodeEditor) => {
     setMonacoInstance(editorL);
+    monacoInstance?.onDidChangeCursorPosition((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
+    // allow for range selection - since the above event prevents highlighting
+    monacoInstance?.onDidChangeCursorSelection((e) => {
+      if (onCursorChange === undefined) return;
+      const cursor = monacoInstance
+        .getModel()!
+        .getOffsetAt(monacoInstance.getPosition()!);
+      onCursorChange(cursor);
+    });
   };
-
-  const [previousText, setPreviousText] = React.useState(text);
 
   const setCursorPosition = React.useCallback(
     (cursor: number) => {
@@ -96,48 +109,40 @@ export default function CodeEditor({
     [monacoInstance]
   );
 
-  const updateCursorPosition = (prevText: any, newText: any) => {
-    if (!monacoInstance) return;
-    if (!cursor) return;
-    if (prevText.slice(0, cursor) !== newText.slice(0, cursor)) {
-      return true;
-    }
-    return false;
-  };
+  // function updateCursorPosition(
+  //   prevText: string,
+  //   currText: string,
+  //   cursor: number
+  // ) {
+  //   if (!monacoInstance) return;
+  //   if (!cursor) return;
+  //   if (prevText.slice(0, cursor) !== currText.slice(0, cursor)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   React.useEffect(() => {
     if (cursor !== undefined) {
+      setCursorPosition(cursor);
       console.log(cursor);
-      if (updateCursorPosition(previousText, text)) {
-        setCursorPosition(cursor + 1);
-      } else {
-        setCursorPosition(cursor);
-      }
     }
-
-    monacoInstance?.onDidChangeCursorPosition((e) => {
-      if (onCursorChange === undefined) return;
-      const cursor = monacoInstance
-        .getModel()!
-        .getOffsetAt(monacoInstance.getPosition()!);
-      onCursorChange(cursor);
-    });
-  }, [text, cursor, setCursorPosition, monacoInstance, onCursorChange]);
+  }, [text, cursor, monacoInstance]);
 
   const editorOnChange = React.useCallback(
     (value: string | undefined) => {
       if (!monacoInstance) return;
       if (value === undefined) return;
-      if (onCursorChange === undefined) return;
 
       if (monacoInstance.getPosition()) {
+        if (onCursorChange === undefined) return;
         const cursor = monacoInstance
           .getModel()!
           .getOffsetAt(monacoInstance.getPosition()!);
         onCursorChange(cursor);
       }
       onChange(value);
-      setPreviousText(value);
     },
     [onChange, onCursorChange, monacoInstance]
   );
