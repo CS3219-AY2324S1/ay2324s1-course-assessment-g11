@@ -13,7 +13,7 @@ import { useQuestions } from "../../hooks/useQuestions";
 import { AuthContext } from "@/contexts/AuthContext";
 
 export default function NewQuestion() {
-  const {postNewQuestion} = useQuestions();
+  const { postNewQuestion } = useQuestions();
   const [loading, setLoading] = useState(false);
   const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   const router = useRouter();
@@ -26,6 +26,7 @@ export default function NewQuestion() {
       description: "",
       testCasesInputs: [],
       testCasesOutputs: [],
+      solution: {python: ""},
     },
   });
 
@@ -55,7 +56,7 @@ export default function NewQuestion() {
   }
 
   return (
-    <div className="min-h-screen p-12 mx-auto max-w-3xl">
+    <div className="min-h-screen p-12 mx-auto max-w-6xl">
       <div className="flex gap-x-4 items-center">
         <Link href="/questions">
           <Button className="gap-2" size="sm" variant="ghost">

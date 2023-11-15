@@ -15,18 +15,22 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useReducer } from "react";
 import * as z from "zod";
 import { UseFormReturn } from "react-hook-form";
+import { Editor } from "@monaco-editor/react";
 
 export const formSchema = z.object({
   title: z.string().min(2).max(100),
   difficulty: z.enum(['easy', 'medium', 'hard']),
   topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(10000),
-  testCasesInputs: z.array(z.string().min(2).max(10000)),
-  testCasesOutputs: z.array(z.string().min(2).max(10000)),
+  testCasesInputs: z.array(z.string().min(1).max(10000)),
+  testCasesOutputs: z.array(z.string().min(1).max(10000)),
   defaultCode: z.object({
     "python": z.string().min(0).max(10000),
     "java": z.string().min(0).max(10000),
     "c++": z.string().min(0).max(10000)
+  }) || undefined,
+  solution: z.object({
+    "python": z.string().min(0).max(10000),
   }) || undefined,
 })
 
@@ -41,7 +45,7 @@ if __name__ == "__main__":
   target = int(input())
   print(" ".join(twoSum(nums, target)))`,
 
-'java': `import java.util.*;
+  'java': `import java.util.*;
 
 class Solution {
   public int[] twoSum(int[] nums, int target) {
@@ -62,7 +66,7 @@ class Solution {
   }
 }`,
 
-'c++': `#include <iostream>
+  'c++': `#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -101,11 +105,11 @@ interface QuestionsFormProps {
 export default function QuestionsForm({
   form,
   onSubmit,
-  onDelete = () => {},
+  onDelete = () => { },
   type = "add",
   loading = false,
 }: QuestionsFormProps) {
-  const {testCasesInputs, testCasesOutputs} = form.getValues();
+  const { testCasesInputs, testCasesOutputs } = form.getValues();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
   const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
@@ -175,12 +179,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Question Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                />
+                <Editor height="50vh" defaultLanguage="markdown" theme="vs-dark" options={{ wordWrap: "on" }} defaultValue={"Write your question here in markdown format. Your question may be sanitized to remove harmful HTML tags."} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -208,7 +210,7 @@ export default function QuestionsForm({
         })}
         <div className="flex gap-x-4">
           <Button variant="outline" className="border-primary text-primary" onClick={(e) => {
-            e.stopPropagation(); e.preventDefault(); 
+            e.stopPropagation(); e.preventDefault();
             form.setValue('testCasesInputs', [...testCasesInputs, ""]);
             form.setValue('testCasesOutputs', [...testCasesOutputs, ""]);
             forceUpdate();
@@ -220,20 +222,19 @@ export default function QuestionsForm({
             forceUpdate();
           }}>Clear Test Cases</Button>
         </div>
+        { form.getFieldState('testCasesInputs').invalid && <p className="text-destructive text-sm">Test case inputs cannot be empty</p> }
+        { form.getFieldState('testCasesOutputs').invalid && <p className="text-destructive text-sm">Test case outputs cannot be empty</p> }
         <FormField
           control={form.control}
           name="defaultCode.c++"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Default C++ Code (TODO: Change to Code Editor)</FormLabel>
+              <FormLabel>Default C++ Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  value={field.value || defaultCodes["c++"]}
-                />
+                <Editor height="50vh" defaultLanguage="cpp" theme="vs-dark" defaultValue={defaultCodes["c++"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -246,13 +247,10 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Default Java Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  value={field.value || defaultCodes["java"]}
-                />
+                <Editor height="50vh" defaultLanguage="java" theme="vs-dark" defaultValue={defaultCodes["java"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -265,13 +263,26 @@ export default function QuestionsForm({
             <FormItem>
               <FormLabel>Default Python Code</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="Write your code here."
-                  className="resize-none"
-                  rows={10}
-                  {...field}
-                  value={field.value || defaultCodes["python"]}
-                />
+                <Editor height="50vh" defaultLanguage="python" theme="vs-dark" defaultValue={defaultCodes["python"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="solution.python"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Solution Python Code</FormLabel>
+              <FormControl>
+                <Editor height="50vh" defaultLanguage="python" theme="vs-dark" defaultValue={defaultCodes["python"]} value={field.value} onChange={(e) => {
+                  field.onChange(e);
+                  forceUpdate();
+                }} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -284,8 +295,9 @@ export default function QuestionsForm({
         ) : (
           <div className="flex gap-x-6">
             <Button type="submit" disabled={loading} onClick={e => {
-            e.stopPropagation(); e.preventDefault();
-            onSubmit(form.getValues());
+              e.stopPropagation(); 
+              e.preventDefault();
+              onSubmit(form.getValues());
             }}>Save Changes</Button>
             <Button
               variant="outline"
