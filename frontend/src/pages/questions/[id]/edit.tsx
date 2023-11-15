@@ -34,7 +34,9 @@ export default function EditQuestion() {
     if (!questionId || !authIsReady) {
       return;
     }
-    if (currentUser && isAdmin) {
+    if (currentUser) {
+      // Note, non-admins will be able to see the form but should not be able to update the question
+      // This is done to trigger the backend authorization failure messages.
       fetchQuestion(currentUser, questionId as string).then(question => {
         if (question) {
           form.setValue("title", question.title);
@@ -103,7 +105,7 @@ export default function EditQuestion() {
             <ArrowLeft className="w-6 h-6" />
           </Button>
         </Link>
-        <TypographyH2>Edit a Question</TypographyH2>
+        <TypographyH2>{isAdmin ? 'Edit a Question' : 'Try to Edit question'}</TypographyH2>
       </div>
       <QuestionsForm form={form} onSubmit={onSubmit} onDelete={onDelete} loading={loading} type="edit" />
     </div>
