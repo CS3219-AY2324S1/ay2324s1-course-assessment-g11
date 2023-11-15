@@ -70,13 +70,13 @@ Copy the environment secrets from the uploaded file on CANVAS.
 
    (if you have hadoop yarn installed)
 
-3**Initializing Prisma:** In the root file, run the following:
+3. **Initializing Prisma:** In the root file, run the following:
 
    ```bash
    yarn prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
-4**Running Scripts:** On separate tabs, run the following scripts:
+4. **Running Scripts:** On separate tabs, run the following scripts:
 
    ```bash
    yarn workspace user-service dev:local
