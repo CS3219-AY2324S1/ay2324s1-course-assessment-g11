@@ -56,7 +56,7 @@ export default function Questions() {
             Practice our questions to ace your coding interview!
           </TypographyBodyHeavy>
         </div>
-        <Link href="/questions/new" hidden={!isAdmin}>
+        <Link href="/questions/new">
           <Button className="gap-2">
             <PlusIcon />
             Contribute question
@@ -91,7 +91,7 @@ export default function Questions() {
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
         <QueryClientProvider client={queryClientAll}>
-          <DataTable columns={getColumnDefs(isAdmin)} />
+          <DataTable columns={getColumnDefs(true)} />
         </QueryClientProvider>
       </div>
     </div>

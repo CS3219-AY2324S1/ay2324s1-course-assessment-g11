@@ -33,7 +33,7 @@ export default function NewQuestion() {
     if (!authIsReady) {
       return;
     }
-    if (!currentUser || !isAdmin) {
+    if (!currentUser) {
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

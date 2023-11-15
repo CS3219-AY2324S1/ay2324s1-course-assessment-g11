@@ -3,8 +3,6 @@ import type { AppProps } from "next/app";
 import Layout from "../components/common/layout";
 import { Noto_Sans } from "next/font/google";
 import AuthContextProvider from "@/contexts/AuthContext";
-import { MatchmakingProvider } from "../providers/MatchmakingProvider";
-import AuthChecker from "@/components/common/auth-checker";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,25 +21,21 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <main>
         <AuthContextProvider>
-          <AuthChecker>
-            <MatchmakingProvider>
-              <ToastContainer
-                position="bottom-center"
-                autoClose={2000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="dark"
-              />
-              <Layout>
-                <Component {...pageProps} />
-              </Layout>
-            </MatchmakingProvider>
-          </AuthChecker>
+          <ToastContainer
+            position="bottom-center"
+            autoClose={2000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
         </AuthContextProvider>
       </main>
     </>

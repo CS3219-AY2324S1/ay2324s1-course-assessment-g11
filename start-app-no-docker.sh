@@ -10,7 +10,5 @@ prepend() {
     trap 'kill 0' INT TERM; \
     (yarnpkg workspace frontend dev:local | prepend "frontend: ") & \
     (yarnpkg workspace user-service dev:local | prepend "user-service: ") & \
-    (yarnpkg workspace admin-service dev:local | prepend "admin-service: ") & \
-    (yarnpkg workspace matching-service dev:local | prepend "matching-service: ") & \
     (yarnpkg workspace question-service dev:local | prepend "question-service: ") & \
     wait)

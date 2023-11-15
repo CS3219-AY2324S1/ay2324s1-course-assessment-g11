@@ -34,7 +34,7 @@ export default function EditQuestion() {
     if (!questionId || !authIsReady) {
       return;
     }
-    if (currentUser && isAdmin) {
+    if (currentUser) {
       fetchQuestion(currentUser, questionId as string).then(question => {
         if (question) {
           form.setValue("title", question.title);
@@ -55,7 +55,7 @@ export default function EditQuestion() {
         setLoading(false);
       });
     } else {
-      // if user is not logged in or is not admin, redirect to home
+      // if user is not logged in, redirect to home
       router.push("/");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
