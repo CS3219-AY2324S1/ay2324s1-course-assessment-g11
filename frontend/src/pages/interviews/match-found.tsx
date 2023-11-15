@@ -23,8 +23,8 @@ type UserInfo = {
 };
 
 const defaultUser: UserInfo = {
-  displayName: "John Doe",
-  photoUrl: "https://github.com/shadcn.png",
+  displayName: "Loading...",
+  photoUrl: "",
 };
 
 export default function MatchFound() {
