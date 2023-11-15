@@ -194,6 +194,7 @@ function initSocketListeners(io: Server, socket: Socket, room_id: string) {
           roomUpdate(io, socket, room_id, text);
         }
         ackCallback();
+        socket.emit("ACK");
       });
     }
   );

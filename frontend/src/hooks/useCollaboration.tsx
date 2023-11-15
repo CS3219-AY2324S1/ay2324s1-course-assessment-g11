@@ -216,8 +216,12 @@ const useCollaboration = ({
       cursor: cursorRef.current,
     };
 
-    socket.emit(SocketEvents.ROOM_UPDATE, textOperationSet, () => {
+    socket.on("ACK", () => {
       awaitingAck.current = false;
+    });
+
+    socket.emit(SocketEvents.ROOM_UPDATE, textOperationSet, () => {
+      awaitingAck.current = false; // may not work on prod
     });
   }, [text, socket]);
 
