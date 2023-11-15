@@ -17,7 +17,6 @@ import { useLogout } from "@/firebase-client/useLogout";
 import { useLogin } from "@/firebase-client/useLogin";
 
 enum TabsOptions {
-  INTERVIEWS = "interviews",
   QUESTIONS = "questions",
   NULL = "",
 }
@@ -33,9 +32,7 @@ export default function Navbar() {
   const currentPage = router.pathname;
 
   useEffect(() => {
-    if (currentPage === "/interviews") {
-      setActiveTab(TabsOptions.INTERVIEWS);
-    } else if (currentPage === "/questions") {
+    if (currentPage === "/questions") {
       setActiveTab(TabsOptions.QUESTIONS);
     } else {
       setActiveTab(TabsOptions.NULL);
@@ -58,14 +55,6 @@ export default function Navbar() {
             <div className="h-12 flex justify-center items-center">
               <Tabs value={activeTab}>
                 <TabsList>
-                  <Link href="/interviews">
-                    <TabsTrigger
-                      value="interviews"
-                      className="h-20 w-36 hover:bg-accent duration-100"
-                    >
-                      Interviews
-                    </TabsTrigger>
-                  </Link>
                   <Link href="/questions">
                     <TabsTrigger
                       value="questions"

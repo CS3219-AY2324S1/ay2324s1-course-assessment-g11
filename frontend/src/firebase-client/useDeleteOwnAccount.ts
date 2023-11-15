@@ -1,7 +1,7 @@
 import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
-import { userApiPathAddress } from "@/gateway-address/gateway-address";
+import { userApiPathAddress } from "@/backend-address/backend-address";
 import { GithubAuthProvider, reauthenticateWithCredential, signInWithPopup } from "firebase/auth";
 
 export const useDeleteOwnAccount = () => {

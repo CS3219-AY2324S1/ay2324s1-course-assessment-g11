@@ -1,4 +1,4 @@
-import { userApiPathAddress } from "@/gateway-address/gateway-address";
+import { userApiPathAddress } from "@/backend-address/backend-address";
 import { EditableUser } from "@/types/UserTypes";
 import { AppUser } from "@prisma/client";
 
