@@ -76,7 +76,7 @@ Copy the environment secrets from the uploaded file on CANVAS.
    yarn prisma generate ## Do this whenever we change the models in schema.prisma
    ```
 
-4**Running Scripts:** Run the following scripts:
+4**Running Scripts:** On separate tabs, run the following scripts:
 
    ```bash
    yarn workspace user-service dev:local
