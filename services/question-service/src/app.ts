@@ -8,6 +8,7 @@ import swaggerFile from "./swagger-output.json";
 import cors from "cors";
 
 import { router as indexRouter } from "./routes";
+import {setupAdmin, setupIsLoggedIn} from "./auth/auth";
 
 const app: Express = express();
 const server: HTTPServer = http.createServer(app);
@@ -20,6 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+
+/* Authentication and authorization middleware */
+app.use("/api/question-service", setupIsLoggedIn)
+app.use("/api/question-service", setupAdmin)
 
 /* Routers */
 app.use("/api/question-service", indexRouter);

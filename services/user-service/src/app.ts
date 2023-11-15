@@ -5,6 +5,7 @@ import indexRouter from "./routes/index";
 import swaggerUi from "swagger-ui-express";
 import swaggerFile from "./swagger-output.json";
 import cors from "cors";
+import {setupIsLoggedIn, setupUserIdMatch} from "./auth/auth";
 
 const port: number = parseInt(process.env.PORT || "5001");
 
@@ -15,6 +16,10 @@ app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Authentication
+app.use("/api/user-service", setupIsLoggedIn);
+app.use("/api/user-service", setupUserIdMatch);
 
 app.use("/api/user-service", indexRouter);
 
