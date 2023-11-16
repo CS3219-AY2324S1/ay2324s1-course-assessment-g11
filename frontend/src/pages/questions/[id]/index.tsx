@@ -25,6 +25,8 @@ export default function Questions() {
 
   const [ansCache, setAnsCache] = useState<Record<any, any>>({});
 
+  console.log("test");
+
   // fetch user preferences
   const [selectedLanguage, setSelectedLanguage] = useState<string>("python");
   const { getAppUser } = useUser();
