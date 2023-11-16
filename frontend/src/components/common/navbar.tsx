@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
-import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import { useRouter } from "next/router";
@@ -13,8 +12,6 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useLogout } from "@/firebase-client/useLogout";
-import { useLogin } from "@/firebase-client/useLogin";
 
 enum TabsOptions {
   QUESTIONS = "questions",
@@ -22,11 +19,8 @@ enum TabsOptions {
 }
 
 export default function Navbar() {
-  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState<TabsOptions>(TabsOptions.NULL);
 
-  const { login } = useLogin();
-  const { logout } = useLogout();
   const router = useRouter();
 
   const currentPage = router.pathname;
@@ -51,7 +45,6 @@ export default function Navbar() {
               height={25}
             />
           </Link>
-          {currentUser && (
             <div className="h-12 flex justify-center items-center">
               <Tabs value={activeTab}>
                 <TabsList>
@@ -66,49 +59,7 @@ export default function Navbar() {
                 </TabsList>
               </Tabs>
             </div>
-          )}
         </div>
-        {isAdmin && <p>Admin Page</p>}
-        {!currentUser && (
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant={"outline"} onClick={login}>
-              Log In
-            </Button>
-            <Button onClick={login}>Sign Up</Button>
-          </div>
-        )}
-        {currentUser && (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="flex justify-center items-center gap-2 h-14"
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={currentUser.photoURL || ""}
-                    className="rounded-full"
-                  />
-                </Avatar>
-                <ChevronDown className="w-6 h-6" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel
-                className="hover:bg-card"
-                onClick={() => router.push("/profile")}
-              >
-                Profile
-              </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
-                Settings
-              </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card" onClick={logout}>
-                Log Out
-              </DropdownMenuLabel>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )}
       </div>
     </header>
   );

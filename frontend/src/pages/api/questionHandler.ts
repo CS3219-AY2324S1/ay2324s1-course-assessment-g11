@@ -2,24 +2,19 @@ import { questionApiPathAddress } from "@/backend-address/backend-address";
 import { Difficulty, Question } from "../../types/QuestionTypes";
 import { formSchema } from "../questions/_form";
 import { z } from "zod";
-import { User } from "firebase/auth";
 
 export const fetchRandomQuestion = async (
   difficulty: Difficulty,
-  user: any,
   topics: string[] = []
 ) => {
   try {
     const url = `${questionApiPathAddress}random-question`;
-    const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
       method: "POST",
       body: JSON.stringify({ difficulty, topics }),
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": (user as User).uid
+        "Content-Type": "application/json"
       },
     });
 
@@ -60,10 +55,9 @@ export type QuestionFilterConditions = {
   sort?: {"title": 1 | -1} // 1 for asc, -1 for desc
 }
 
-export const fetchQuestions = async (user: any, pageNumber: number = 1, pageSize: number = 10, conditions: QuestionFilterConditions = {}) => {
+export const fetchQuestions = async (pageNumber: number = 1, pageSize: number = 10, conditions: QuestionFilterConditions = {}) => {
   try {
     const url = `${questionApiPathAddress}list?`;
-    const idToken = await user.getIdToken(true);
 
     const jsonBody: any = {
       page: pageNumber,
@@ -86,9 +80,7 @@ export const fetchQuestions = async (user: any, pageNumber: number = 1, pageSize
       method: "GET",
       mode: "cors",
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": (user as User).uid
+        "Content-Type": "application/json"
       },
     });
 
@@ -114,8 +106,7 @@ export const fetchQuestions = async (user: any, pageNumber: number = 1, pageSize
   }
 };
 
-export const fetchQuestion = async (currentUser: User, questionId: string) => {
-  const idToken = await currentUser.getIdToken(true);
+export const fetchQuestion = async (questionId: string) => {
   const url = `${questionApiPathAddress}question/${questionId}`;
 
   try {
@@ -123,9 +114,7 @@ export const fetchQuestion = async (currentUser: User, questionId: string) => {
       method: "GET",
       mode: "cors",
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": currentUser.uid
+        "Content-Type": "application/json"
       },
     });
 
@@ -153,10 +142,9 @@ export const fetchQuestion = async (currentUser: User, questionId: string) => {
   }
 };
 
-export const postQuestion = async (user: any, question: z.infer<typeof formSchema>) => {
+export const postQuestion = async (question: z.infer<typeof formSchema>) => {
   try {
     const url = `${questionApiPathAddress}question`;
-    const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
       method: "POST",
@@ -171,9 +159,7 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
         defaultCode: question.defaultCode
       }),
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": (user as User).uid
+        "Content-Type": "application/json"
       },
     });
 
@@ -186,10 +172,9 @@ export const postQuestion = async (user: any, question: z.infer<typeof formSchem
   }
 };
 
-export const putQuestion = async (user: any, question: z.infer<typeof formSchema>, questionId: string) => {
+export const putQuestion = async (question: z.infer<typeof formSchema>, questionId: string) => {
   try {
     const url = `${questionApiPathAddress}question/${questionId}`;
-    const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
       method: "PUT",
@@ -204,9 +189,7 @@ export const putQuestion = async (user: any, question: z.infer<typeof formSchema
         defaultCode: question.defaultCode
       }),
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": (user as User).uid
+        "Content-Type": "application/json"
       },
     });
 
@@ -219,18 +202,15 @@ export const putQuestion = async (user: any, question: z.infer<typeof formSchema
   }
 }
 
-export const deleteQuestion = async (user: any, questionId: string) => {
+export const deleteQuestion = async (questionId: string) => {
   try {
     const url = `${questionApiPathAddress}question/${questionId}`;
-    const idToken = await user.getIdToken(true);
 
     const response = await fetch(url, {
       method: "DELETE",
       mode: "cors",
       headers: {
-        "Content-Type": "application/json",
-        "User-Id-Token": idToken,
-        "user-id": (user as User).uid
+        "Content-Type": "application/json"
       },
     });
 

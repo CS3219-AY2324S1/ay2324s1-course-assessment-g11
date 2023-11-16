@@ -11,7 +11,6 @@ import DifficultySelector from "@/components/common/difficulty-selector";
 import { getColumnDefs } from "@/components/questions/columns";
 import { DataTable } from "@/components/questions/data-table";
 import { Difficulty, Question } from "../../types/QuestionTypes";
-import { AuthContext } from "@/contexts/AuthContext";
 import { PlusIcon } from "lucide-react";
 import { useRouter } from "next/router";
 import { useQuestions } from "@/hooks/useQuestions";
@@ -20,7 +19,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 export default function Questions() {
   const router = useRouter();
   const [difficulty, setDifficulty] = useState<Difficulty>("medium");
-  const { user: currentUser, authIsReady, isAdmin } = useContext(AuthContext);
 
   const { fetchRandomQuestion } = useQuestions();
 
@@ -40,10 +38,6 @@ export default function Questions() {
       console.error(error);
     }
   };
-
-  if (!authIsReady) {
-    return <div></div>
-  }
 
   return (
     <div className="min-h-screen p-12 mx-auto max-w-7xl">
@@ -81,12 +75,12 @@ export default function Questions() {
         </Link>
       </div>
 
-      {isAdmin && <div className="flex-col flex gap-4 py-12">
+      <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
         <QueryClientProvider client={queryClientMyQuestions}>
           <DataTable columns={getColumnDefs(true)} isEditable />
         </QueryClientProvider>
-      </div>}
+      </div>
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>

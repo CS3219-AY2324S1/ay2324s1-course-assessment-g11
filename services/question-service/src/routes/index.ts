@@ -91,7 +91,7 @@ router.post("/question", async (req, res, next) => {
       testCasesOutputs: req.body.testCasesOutputs ?? [],
       defaultCode: req.body.defaultCode ?? {},
       solution: req.body.solution ?? {},
-      author: req.headers['user-id']
+      author: "AnonPlaceholder"
     });
     if (!result.acknowledged) {
       res.status(500).send("Failed to insert question");
