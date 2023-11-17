@@ -68,7 +68,7 @@ export default function Navbar() {
             </div>
           )}
         </div>
-        {isAdmin && <p>Admin Page</p>}
+        {isAdmin && <div>Admin Page</div>}
         {!currentUser && (
           <div className="grid grid-cols-2 gap-4">
             <Button variant={"outline"} onClick={login}>
@@ -100,7 +100,10 @@ export default function Navbar() {
               >
                 Profile
               </DropdownMenuLabel>
-              <DropdownMenuLabel className="hover:bg-card" onClick={() => router.push("/settings")}>
+              <DropdownMenuLabel
+                className="hover:bg-card"
+                onClick={() => router.push("/settings")}
+              >
                 Settings
               </DropdownMenuLabel>
               <DropdownMenuLabel className="hover:bg-card" onClick={logout}>

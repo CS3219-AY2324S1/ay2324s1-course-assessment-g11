@@ -18,21 +18,21 @@ import { UseFormReturn } from "react-hook-form";
 
 export const formSchema = z.object({
   title: z.string().min(2).max(100),
-  difficulty: z.enum(['easy', 'medium', 'hard']),
+  difficulty: z.enum(["easy", "medium", "hard"]),
   topics: z.array(z.string().min(2).max(100)),
   description: z.string().min(2).max(10000),
   testCasesInputs: z.array(z.string().min(2).max(10000)),
   testCasesOutputs: z.array(z.string().min(2).max(10000)),
-  defaultCode: z.object({
-    "python": z.string().min(0).max(10000),
-    "java": z.string().min(0).max(10000),
-    "c++": z.string().min(0).max(10000)
-  }) || undefined,
-})
-
+  defaultCode:
+    z.object({
+      python: z.string().min(0).max(10000),
+      java: z.string().min(0).max(10000),
+      "c++": z.string().min(0).max(10000),
+    }) || undefined,
+});
 
 const defaultCodes = {
-  'python': `def twoSum(self, nums: list[int], target: int) -> list[int]:
+  python: `def twoSum(self, nums: list[int], target: int) -> list[int]:
   pass
 
 if __name__ == "__main__":
@@ -41,7 +41,7 @@ if __name__ == "__main__":
   target = int(input())
   print(" ".join(twoSum(nums, target)))`,
 
-'java': `import java.util.*;
+  java: `import java.util.*;
 
 class Solution {
   public int[] twoSum(int[] nums, int target) {
@@ -62,7 +62,7 @@ class Solution {
   }
 }`,
 
-'c++': `#include <iostream>
+  "c++": `#include <iostream>
 #include <vector>
 using namespace std;
 
@@ -86,9 +86,8 @@ int main() {
   vector<int> result = solution.twoSum(nums, target);
   cout << result[0] << " " << result[1] << endl;
   return 0;
-}`
+}`,
 };
-
 
 interface QuestionsFormProps {
   form: UseFormReturn<z.infer<typeof formSchema>>;
@@ -105,15 +104,28 @@ export default function QuestionsForm({
   type = "add",
   loading = false,
 }: QuestionsFormProps) {
-  const {testCasesInputs, testCasesOutputs} = form.getValues();
+  const { testCasesInputs, testCasesOutputs } = form.getValues();
   const [, forceUpdate] = useReducer((x) => x + 1, 0);
 
-  const createTopic = (label: string) => ({ value: label.toLowerCase(), label });
+  const createTopic = (label: string) => ({
+    value: label.toLowerCase(),
+    label,
+  });
 
-  const topics = ["Algorithms", "Arrays", "Bit Manipulation", "Brainteaser", "Data Structures", "Databases", "Graph", "Recursion", "Strings"].map(createTopic);
+  const topics = [
+    "Algorithms",
+    "Arrays",
+    "Bit Manipulation",
+    "Brainteaser",
+    "Data Structures",
+    "Databases",
+    "Graph",
+    "Recursion",
+    "Strings",
+  ].map(createTopic);
 
   useEffect(() => {
-    form.setValue('defaultCode', defaultCodes);
+    form.setValue("defaultCode", defaultCodes);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -185,46 +197,87 @@ export default function QuestionsForm({
             </FormItem>
           )}
         />
-        <p>Test cases</p>
+        <div>Test cases</div>
         {testCasesInputs.map((testCase, index) => {
-          return <div className="flex flex-row items-center justify-between gap-0.5" key={`testCase-${index}`}>
-            <Textarea placeholder="Input" value={testCase} onChange={(e) => {
-              form.setValue(`testCasesInputs.${index}`, e.target.value);
-              forceUpdate();
-
-            }} />
-            <Textarea placeholder="Output" value={testCasesOutputs[index]} onChange={(e) => {
-              form.setValue(`testCasesOutputs.${index}`, e.target.value);
-              forceUpdate();
-            }} />
-            <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
-              e.stopPropagation(); e.preventDefault();
-              form.setValue('testCasesInputs', testCasesInputs.filter((_, i) => i != index));
-              form.setValue('testCasesOutputs', testCasesOutputs.filter((_, i) => i != index));
-              forceUpdate();
-            }}>Delete</Button>
-          </div>
+          return (
+            <div
+              className="flex flex-row items-center justify-between gap-0.5"
+              key={`testCase-${index}`}
+            >
+              <Textarea
+                placeholder="Input"
+                value={testCase}
+                onChange={(e) => {
+                  form.setValue(`testCasesInputs.${index}`, e.target.value);
+                  forceUpdate();
+                }}
+              />
+              <Textarea
+                placeholder="Output"
+                value={testCasesOutputs[index]}
+                onChange={(e) => {
+                  form.setValue(`testCasesOutputs.${index}`, e.target.value);
+                  forceUpdate();
+                }}
+              />
+              <Button
+                variant="outline"
+                className="border-destructive text-destructive"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  form.setValue(
+                    "testCasesInputs",
+                    testCasesInputs.filter((_, i) => i != index)
+                  );
+                  form.setValue(
+                    "testCasesOutputs",
+                    testCasesOutputs.filter((_, i) => i != index)
+                  );
+                  forceUpdate();
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          );
         })}
         <div className="flex gap-x-4">
-          <Button variant="outline" className="border-primary text-primary" onClick={(e) => {
-            e.stopPropagation(); e.preventDefault(); 
-            form.setValue('testCasesInputs', [...testCasesInputs, ""]);
-            form.setValue('testCasesOutputs', [...testCasesOutputs, ""]);
-            forceUpdate();
-          }}>Add Test Case</Button>
-          <Button variant="outline" className="border-destructive text-destructive" onClick={(e) => {
-            e.stopPropagation(); e.preventDefault();
-            form.setValue('testCasesInputs', []);
-            form.setValue('testCasesOutputs', []);
-            forceUpdate();
-          }}>Clear Test Cases</Button>
+          <Button
+            variant="outline"
+            className="border-primary text-primary"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              form.setValue("testCasesInputs", [...testCasesInputs, ""]);
+              form.setValue("testCasesOutputs", [...testCasesOutputs, ""]);
+              forceUpdate();
+            }}
+          >
+            Add Test Case
+          </Button>
+          <Button
+            variant="outline"
+            className="border-destructive text-destructive"
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              form.setValue("testCasesInputs", []);
+              form.setValue("testCasesOutputs", []);
+              forceUpdate();
+            }}
+          >
+            Clear Test Cases
+          </Button>
         </div>
         <FormField
           control={form.control}
           name="defaultCode.c++"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Default C++ Code (TODO: Change to Code Editor)</FormLabel>
+              <FormLabel>
+                Default C++ Code (TODO: Change to Code Editor)
+              </FormLabel>
               <FormControl>
                 <Textarea
                   placeholder="Write your code here."
@@ -279,10 +332,17 @@ export default function QuestionsForm({
           </Button>
         ) : (
           <div className="flex gap-x-6">
-            <Button type="submit" disabled={loading} onClick={e => {
-            e.stopPropagation(); e.preventDefault();
-            onSubmit(form.getValues());
-            }}>Save Changes</Button>
+            <Button
+              type="submit"
+              disabled={loading}
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                onSubmit(form.getValues());
+              }}
+            >
+              Save Changes
+            </Button>
             <Button
               variant="outline"
               className="border-destructive text-destructive"
@@ -293,7 +353,6 @@ export default function QuestionsForm({
             </Button>
           </div>
         )}
-
       </form>
     </Form>
   );

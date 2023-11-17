@@ -8,11 +8,11 @@ export function TypographyH1({
   className?: string;
 }) {
   return (
-    <h1
+    <div
       className={`scroll-m-20 text-4xl font-black tracking-tight lg:text-5xl leading-normal lg:leading-normal ${className}`}
     >
       {children}
-    </h1>
+    </div>
   );
 }
 
@@ -24,11 +24,11 @@ export function TypographyH2({
   className?: string;
 }) {
   return (
-    <h2
+    <div
       className={`scroll-m-20 text-3xl font-semibold tracking-tight leading-normal lg:leading-normal ${className}`}
     >
       {children}
-    </h2>
+    </div>
   );
 }
 
@@ -40,16 +40,16 @@ export function TypographyH3({
   className?: string;
 }) {
   return (
-    <h3
+    <div
       className={`scroll-m-20 text-2xl font-semibold tracking-tight leading-normal lg:leading-normal ${className}`}
     >
       {children}
-    </h3>
+    </div>
   );
 }
 
 export function TypographyBody({ children }: { children: React.ReactNode }) {
-  return <p className="text-base font-normal leading-snug">{children}</p>;
+  return <div className="text-base font-normal leading-snug">{children}</div>;
 }
 
 export function TypographyBodyHeavy({
@@ -57,7 +57,7 @@ export function TypographyBodyHeavy({
 }: {
   children: React.ReactNode;
 }) {
-  return <p className="text-base font-semibold leading-snug">{children}</p>;
+  return <div className="text-base font-semibold leading-snug">{children}</div>;
 }
 
 export function TypographySmall({
@@ -68,9 +68,9 @@ export function TypographySmall({
   className?: string;
 }) {
   return (
-    <small className={`text-sm font-normal leading-tight ${className}`}>
+    <div className={`text-sm font-normal leading-tight ${className}`}>
       {children}
-    </small>
+    </div>
   );
 }
 
@@ -79,9 +79,7 @@ export function TypographySmallHeavy({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <small className="text-sm font-semibold leading-tight">{children}</small>
-  );
+  return <div className="text-sm font-semibold leading-tight">{children}</div>;
 }
 
 export function TypographyBlockquote({

@@ -22,7 +22,7 @@ export default function Questions() {
     if (!authIsReady || !questionId) {
       console.log("auth not ready or questionId not found");
       return;
-    };
+    }
     if (currentUser) {
       fetchQuestion(currentUser, questionId)
         .then((question) => {
@@ -44,7 +44,7 @@ export default function Questions() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [questionId, authIsReady, currentUser]);
 
-  if (question === null && !loading) return <p>Question not found</p>;
+  if (question === null && !loading) return <div>Question not found</div>;
 
   return (
     <div className="h-[calc(100vh-80px)] px-12 py-6">
