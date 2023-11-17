@@ -15,7 +15,8 @@ Prerequisites for PeerPrep Assignment 2:
 3. **Node.js:** Check each application's documentation for the recommended
    Node.js version.
 4. **Git**
-5. **Postman** or any other REST API testing tool (optional)
+5. **Dotenv** - `yarn global add dotenv` - This is used to open the services
+6. **Postman** or any other REST API testing tool (optional)
 
 ---
 
@@ -40,11 +41,11 @@ your services / frontend.
 
 1. Ensure that you have an `.env` file at the root directory with the following variables:
    `bash
-   PRISMA_DATABASE_URL=<redacted>
-   MONGO_ATLAS_URL=<redacted>
-   FIREBASE_SERVICE_ACCOUNT=<redacted>
-   NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
-   `
+PRISMA_DATABASE_URL=<redacted>
+MONGO_ATLAS_URL=<redacted>
+FIREBASE_SERVICE_ACCOUNT=<redacted>
+NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
+`
    Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
    The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
 
@@ -54,7 +55,6 @@ your services / frontend.
 | NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG | For the frontend to connect to Firebase           |
 
 Copy the environment secrets from the uploaded file on CANVAS.
-
 
 2. **Installing Dependencies:** From the root directory (`/peerprep`), run:
 
@@ -83,8 +83,9 @@ Copy the environment secrets from the uploaded file on CANVAS.
    yarn workspace question-service dev:local
    yarn workspace frontend dev:local
    ```
-You may also run `yarn workspace admin-service dev:local` if you want to set/remove admin permissions on a user but
-otherwise, this is not necessary since admin verification is done within the respective services.
+
+   You may also run `yarn workspace admin-service dev:local` if you want to set/remove admin permissions on a user but
+   otherwise, this is not necessary since admin verification is done within the respective services.
 
 ### Prisma Notes
 

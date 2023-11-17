@@ -38,10 +38,6 @@ export default function AccountSettingsCard() {
     uid: currentUser?.uid ?? "",
   } as EditableUser);
 
-  useEffect(() => {
-    console.log(updatedUser);
-  }, [updatedUser]);
-
   return (
     <Card id="account" className="p-10">
       <CardHeader>
