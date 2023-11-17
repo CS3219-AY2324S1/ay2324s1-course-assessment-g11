@@ -3,7 +3,6 @@ import type { AppProps } from "next/app";
 import Layout from "../components/common/layout";
 import { Noto_Sans } from "next/font/google";
 import AuthContextProvider from "@/contexts/AuthContext";
-import { MatchmakingProvider } from "../providers/MatchmakingProvider";
 import AuthChecker from "@/components/common/auth-checker";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

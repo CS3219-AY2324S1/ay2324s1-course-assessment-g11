@@ -14,6 +14,7 @@
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
+    "firebase-admin": "^11.11.0",
     "mongodb": "^6.1.0",
     "morgan": "~1.9.1",
     "sanitize-html": "^2.11.0"
