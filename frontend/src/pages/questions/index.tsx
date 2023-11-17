@@ -81,12 +81,12 @@ export default function Questions() {
         </Link>
       </div>
 
-      {isAdmin && <div className="flex-col flex gap-4 py-12">
+      <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">My Contributed Questions</TypographyH2>
         <QueryClientProvider client={queryClientMyQuestions}>
           <DataTable columns={getColumnDefs(true)} isEditable />
         </QueryClientProvider>
-      </div>}
+      </div>
 
       <div className="flex-col flex gap-4 py-12">
         <TypographyH2 className="text-primary">All Questions</TypographyH2>
