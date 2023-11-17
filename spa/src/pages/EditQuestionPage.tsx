@@ -66,9 +66,11 @@ export default function EditQuestionPage() {
   }
 
   function isQuestionDuplicate(newQuestion: z.infer<typeof formSchema>) {
-    return (questions as Array<Question>).findIndex((question: Question) => {
-      return question.title.toLowerCase() === newQuestion.title.toLowerCase();
-    }) !== -1;
+    for(let i = 0; i < questions.length; i++) {
+      if (questions[i].title === newQuestion.title && i !== questionIndex) {
+        return true;
+      }
+    }
   }
 
   function putQuestion(question: z.infer<typeof formSchema>, questionIndex: number) {
