@@ -11,7 +11,7 @@ import { useDeleteOwnAccount } from "@/firebase-client/useDeleteOwnAccount";
 import { useUser } from "@/hooks/useUser";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button2 } from "@/components/ui/alt-button";
 import { TypographyH3 } from "@/components/ui/typography";
 import { EditableUser } from "@/types/UserTypes";
 import {
@@ -31,7 +31,7 @@ export default function AccountSettingsCard() {
   const { user: currentUser } = useContext(AuthContext);
   const { deleteOwnAccount } = useDeleteOwnAccount();
   const { updateUserProfile } = useUpdateProfile();
-  const saveButtonRef = useRef<HTMLButtonElement>(null);
+  // const saveButtonRef = useRef<HTMLButtonElement>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const { updateUser } = useUser();
   const [updatedUser, setUpdatedUser] = useState<EditableUser>({
@@ -73,29 +73,22 @@ export default function AccountSettingsCard() {
             />
           </div>
           <div className="flex flex-row items-center gap-x-2">
-            <Button
-              ref={saveButtonRef}
-              className="w-fit"
+            <Button2
+              type="submit"
               onClick={() => {
                 if (!updatedUser.displayName) {
                   return;
-                }
-                if (saveButtonRef.current) {
-                  saveButtonRef.current.setAttribute("disabled", "true");
                 }
                 updateUser(updatedUser);
                 updateUserProfile({
                   displayName: updatedUser.displayName,
                 }).then(() => {
-                  if (saveButtonRef.current) {
-                    saveButtonRef.current.removeAttribute("disabled");
-                  }
                   setShowSuccess(true);
                 });
               }}
             >
               Save Changes
-            </Button>
+            </Button2>
             {showSuccess && (
               <span className="text-green-500">
                 Successfully updated user profile!
@@ -107,12 +100,12 @@ export default function AccountSettingsCard() {
             <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
             <AlertDialog>
               <AlertDialogTrigger>
-                <Button
+                <Button2
                   variant="outline"
                   className="border-destructive text-destructive w-fit"
                 >
                   Delete Account
-                </Button>
+                </Button2>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
