@@ -122,7 +122,6 @@ router.get("/list", async (req, res, next) => {
    * #swagger.parameters['page'] = { description: 'Page index to return.', type: 'number', default: 0 }
    * #swagger.parameters['sort'] = { description: 'Sort object. Example: {title: 1} sorts by title in ascending order.', type: 'object' }
    */
-  console.log(req.headers['user-id'])
   if (req.query.body) {
     req.body = JSON.parse(req.query.body as string);
   }
