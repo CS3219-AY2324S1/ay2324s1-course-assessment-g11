@@ -2,9 +2,15 @@ import { auth } from "./firebase_config";
 import { AuthContext } from "../contexts/AuthContext";
 import { useContext } from "react";
 import { userApiPathAddress } from "@/backend-address/backend-address";
-import { GithubAuthProvider, reauthenticateWithCredential, signInWithPopup } from "firebase/auth";
+import {
+  GithubAuthProvider,
+  reauthenticateWithCredential,
+  signInWithPopup,
+} from "firebase/auth";
+import { useRouter } from "next/router";
 
 export const useDeleteOwnAccount = () => {
+  const router = useRouter();
   const { dispatch } = useContext(AuthContext);
   const deleteOwnAccount = async () => {
     try {
@@ -18,18 +24,19 @@ export const useDeleteOwnAccount = () => {
           throw new Error("Could not get credential");
         }
         await reauthenticateWithCredential(currentUser, credential);
-        
+
         await fetch(userApiPathAddress + currentUser.uid, {
           method: "DELETE",
           headers: {
             "User-Id-Token": idToken,
-            "User-Id": currentUser.uid
+            "User-Id": currentUser.uid,
           },
         });
         // This will delete the user from the Firebase Authentication database
         await currentUser.delete();
         dispatch({ type: "LOGOUT" });
         console.log("user logged out and deleted");
+        router.push("/");
       } else {
         console.log("You are not logged in.");
       }
