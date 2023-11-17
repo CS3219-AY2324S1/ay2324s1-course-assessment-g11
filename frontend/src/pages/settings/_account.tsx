@@ -11,7 +11,6 @@ import { useDeleteOwnAccount } from "@/firebase-client/useDeleteOwnAccount";
 import { useUser } from "@/hooks/useUser";
 import { AuthContext } from "@/contexts/AuthContext";
 import { useContext, useEffect, useRef, useState } from "react";
-import { Button2 } from "@/components/ui/alt-button";
 import { TypographyH3 } from "@/components/ui/typography";
 import { EditableUser } from "@/types/UserTypes";
 import {
@@ -26,6 +25,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useUpdateProfile } from "../../firebase-client/useUpdateProfile";
+import { Button } from "@/components/ui/button";
 
 export default function AccountSettingsCard() {
   const { user: currentUser } = useContext(AuthContext);
@@ -73,7 +73,8 @@ export default function AccountSettingsCard() {
             />
           </div>
           <div className="flex flex-row items-center gap-x-2">
-            <Button2
+            <Button
+              className="inline-flex items-center justify-center rounded-md text-base font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-30 cursor-pointer bg-primary text-primary-foreground hover:bg-primary/80 h-12 px-4 py-3"
               type="submit"
               onClick={() => {
                 if (!updatedUser.displayName) {
@@ -88,7 +89,7 @@ export default function AccountSettingsCard() {
               }}
             >
               Save Changes
-            </Button2>
+            </Button>
             {showSuccess && (
               <span className="text-green-500">
                 Successfully updated user profile!
@@ -100,12 +101,9 @@ export default function AccountSettingsCard() {
             <TypographyH3 className="mb-4">Danger Zone</TypographyH3>
             <AlertDialog>
               <AlertDialogTrigger>
-                <Button2
-                  variant="outline"
-                  className="border-destructive text-destructive w-fit"
-                >
+                <div className="border-destructive w-fit inline-flex items-center justify-center rounded-md text-base font-semibold ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-30 cursor-pointer bg-destructive text-destructive-foreground hover:bg-destructive/90 h-12 px-4 py-3">
                   Delete Account
-                </Button2>
+                </div>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
