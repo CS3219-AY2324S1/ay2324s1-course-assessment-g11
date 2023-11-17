@@ -1,4 +1,3 @@
-import Loader from "../interviews/loader";
 import { Button } from "../ui/button";
 
 type Difficulty = "easy" | "medium" | "hard" | "any";
