@@ -67,7 +67,7 @@ export default function EditQuestionPage() {
 
   function isQuestionDuplicate(newQuestion: z.infer<typeof formSchema>) {
     for(let i = 0; i < questions.length; i++) {
-      if (questions[i].title === newQuestion.title && i !== questionIndex) {
+      if (questions[i].title.toLowerCase().trim() === newQuestion.title.toLowerCase().trim() && i !== questionIndex) {
         return true;
       }
     }
@@ -78,7 +78,6 @@ export default function EditQuestionPage() {
       if (index === questionIndex) {
         return {
           ...question,
-          id: String(questionIndex),
         } as Question
       }
       return q
