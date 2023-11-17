@@ -90,6 +90,12 @@ This will create new Docker images everytime it is run. Be careful of how much d
 Note: Even though services are containerised, they are still accessed from the browser/API testing tool using
 ```http://localhost:<insert port number here>```
 
+Aternatively, you can run the below scripts (this also works on Windows Command Line):
+```bash
+yarn docker:build # Not needed if you have built the images already and did not update the source code afterwards
+yarn docker:devup
+```
+
 5. **Once done, run yarn docker:devdown:** From the root repo, run
 
 ```bash
