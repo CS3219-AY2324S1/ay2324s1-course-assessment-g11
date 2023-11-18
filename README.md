@@ -96,7 +96,10 @@ yarn docker:build # Not needed if you have built the images already and did not 
 yarn docker:devup
 ```
 
-5. **Once done, run yarn docker:devdown:** From the root repo, run
+5. **Login using the provided GitHub account:** The details of the GitHub account to use for testing Assignment 4 are 
+uploaded in CANVAS.
+
+6. **Once done, run yarn docker:devdown:** From the root repo, run
 
 ```bash
 yarn docker:devdown
