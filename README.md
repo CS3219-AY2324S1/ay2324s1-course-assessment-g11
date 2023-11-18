@@ -12,8 +12,7 @@ Prerequisites for PeerPrep Assignment 3:
    npm install -g yarn
    ```
 
-3. **Node.js:** Check each application's documentation for the recommended
-   Node.js version.
+3. **Node.js:** Node 18 is recommended.
 4. **Git**
 5. **Postman** or any other REST API testing tool
 
@@ -39,12 +38,12 @@ your services / frontend.
 ### Getting Started - Local Development:
 
 1. Ensure that you have an `.env` file at the root directory with the following variables:
-   `bash
+```bash
  PRISMA_DATABASE_URL=<redacted>
  MONGO_ATLAS_URL=<redacted>
  FIREBASE_SERVICE_ACCOUNT=<redacted>
  NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG={"apiKey": <redacted>,"authDomain": <redacted>,"projectId": <redacted>,"storageBucket": <redacted>,"messagingSenderId": <redacted>,"appId": <redacted>}
- `
+```
    Note: For `NEXT_PUBLIC_FRONTEND_FIREBASE_CONFIG`, the JSON should not have newlines since Next.js may not process it correctly.
    The difference between it and `FIREBASE_SERVICE_ACCOUNT` are shown below:
 
