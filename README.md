@@ -86,6 +86,13 @@ Copy the environment secrets from the uploaded file on CANVAS.
 You may also run `yarn workspace admin-service dev:local` if you want to set/remove admin permissions on a user but 
 otherwise, this is not necessary since admin verification is done within the respective services.
 
+5. **Login using the provided GitHub accounts:** The GitHub account details are uploaded to CANVAS.
+
+One account has admin permissions while the other does not.
+
+Note: Both accounts should be used on the same computer. To do so, you may open an Incognito tab to access the app
+using the other account.
+
 ### Prisma Notes
 
 Next steps:
